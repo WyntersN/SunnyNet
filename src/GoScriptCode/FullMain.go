@@ -163,12 +163,12 @@ func init() {
 		"ZSTDCompress":      reflect.ValueOf(Compress.ZSTDCompress),
 		"ZSTDDecompress":    reflect.ValueOf(Compress.ZSTDDecompress),
 	}
-	Symbols["SunnyNet/src/protobuf/protobuf"] = map[string]reflect.Value{
-		"ToJson":    reflect.ValueOf(protobuf.ToJson),
+	Symbols["SunnyNet/src/SunnyProtobuf/SunnyProtobuf"] = map[string]reflect.Value{
+		"PbToJson":  reflect.ValueOf(protobuf.ToJson),
 		"JsonToPB":  reflect.ValueOf(protobuf.JsonToPB),
 		"JsonParse": reflect.ValueOf(protobuf.JsonParse),
 	}
-	Symbols["github.com/WyntersN/SunnyNet/src/public/public"] = map[string]reflect.Value{
+	Symbols["github.com/qtgolang/SunnyNet/src/public/public"] = map[string]reflect.Value{
 		"Free": reflect.ValueOf(public.Free),
 	}
 	Symbols["github.com/qtgolang/SunnyNet/src/RSA/RSA"] = map[string]reflect.Value{
