@@ -8,7 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/qtgolang/SunnyNet/src/protobuf/JSON"
+	"github.com/WyntersN/SunnyNet/src/protobuf/JSON"
 	"google.golang.org/protobuf/encoding/protowire"
 	"google.golang.org/protobuf/reflect/protoreflect"
 	"io"

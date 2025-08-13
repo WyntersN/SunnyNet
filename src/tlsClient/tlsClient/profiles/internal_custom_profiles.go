@@ -3,8 +3,8 @@ package profiles
 import (
 	"math"
 
-	"github.com/qtgolang/SunnyNet/src/http/http2"
-	"github.com/qtgolang/SunnyNet/src/crypto/tls"
+	"github.com/WyntersN/SunnyNet/src/http/http2"
+	"github.com/WyntersN/SunnyNet/src/crypto/tls"
 )
 
 var MMSIos2 = getMMSClientProfile2()

@@ -3,8 +3,8 @@ package SunnyNet
 import (
 	"bytes"
 	"fmt"
-	"github.com/qtgolang/SunnyNet/src/Call"
-	"github.com/qtgolang/SunnyNet/src/ProcessDrv/nfapi"
+	"github.com/WyntersN/SunnyNet/src/Call"
+	"github.com/WyntersN/SunnyNet/src/ProcessDrv/nfapi"
 	"github.com/WyntersN/SunnyNet/src/public"
 
 	"net"

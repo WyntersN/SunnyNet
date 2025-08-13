@@ -1,6 +1,6 @@
 package x25519
 
-import "github.com/qtgolang/SunnyNet/src/tlsClient/circl/math/fp25519"
+import "github.com/WyntersN/SunnyNet/src/tlsClient/circl/math/fp25519"
 
 // tableGenerator contains the set of points:
 //

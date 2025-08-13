@@ -14,7 +14,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/sign/dilithium/internal/common/params"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/sign/dilithium/internal/common/params"
 )
 
 type Mode struct {

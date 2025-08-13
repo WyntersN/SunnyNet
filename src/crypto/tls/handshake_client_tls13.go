@@ -16,7 +16,7 @@ import (
 	"hash"
 	"time"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/kem"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/kem"
 )
 
 // [uTLS SECTION START]

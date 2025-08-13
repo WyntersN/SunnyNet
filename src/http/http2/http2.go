@@ -26,9 +26,9 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/qtgolang/SunnyNet/src/crypto/tls"
+	"github.com/WyntersN/SunnyNet/src/crypto/tls"
 
-	 "github.com/qtgolang/SunnyNet/src/http"
+	 "github.com/WyntersN/SunnyNet/src/http"
 
 	"golang.org/x/net/http/httpguts"
 )

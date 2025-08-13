@@ -3,12 +3,13 @@ package httpClient
 import (
 	"context"
 	"fmt"
-	"github.com/qtgolang/SunnyNet/src/crypto/tls"
-	"github.com/qtgolang/SunnyNet/src/http"
-	"github.com/qtgolang/SunnyNet/src/http/http2"
 	"net"
 	"strings"
 	"time"
+
+	"github.com/WyntersN/SunnyNet/src/crypto/tls"
+	"github.com/WyntersN/SunnyNet/src/http"
+	"github.com/WyntersN/SunnyNet/src/http/http2"
 )
 
 type Transport struct {
@@ -27,10 +28,12 @@ func (rt *Transport) getDialTLSAddr(req *http.Request) string {
 	}
 	return net.JoinHostPort(req.URL.Host, "443")
 }
+
 func (rt *Transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	rt.fidCount = 0
 	return rt.RoundTripDo(req)
 }
+
 func (rt *Transport) RoundTripDo(req *http.Request) (*http.Response, error) {
 	addr := rt.getDialTLSAddr(req)
 	if rt.cachedTransports == nil {
@@ -69,8 +72,8 @@ func (rt *Transport) RoundTripDo(req *http.Request) (*http.Response, error) {
 
 	}
 	if res != nil {
-		//res.Request.SetContext("Encoding", res.Header.Get("Content-Encoding"))
-		//res.Header.Del("Content-Encoding")
+		// res.Request.SetContext("Encoding", res.Header.Get("Content-Encoding"))
+		// res.Header.Del("Content-Encoding")
 
 		/*
 			修改这个文件处理自动解压缩 已经修改为了不要自动解压缩
@@ -88,6 +91,7 @@ func (rt *Transport) RoundTripDo(req *http.Request) (*http.Response, error) {
 	}
 	return res, err
 }
+
 func (rt *Transport) getTransport(req *http.Request, addr string) error {
 	switch strings.ToLower(req.URL.Scheme) {
 	case "http":
@@ -108,6 +112,7 @@ func (rt *Transport) buildHttp1Transport() *http.Transport {
 	t.ResponseHeaderTimeout = rt.Timeout
 	return t
 }
+
 func (rt *Transport) dialTLS(ctx context.Context, network, addr string) (net.Conn, error) {
 	if rt.conn != nil {
 		return rt.conn, nil
@@ -118,7 +123,7 @@ func (rt *Transport) dialTLS(ctx context.Context, network, addr string) (net.Con
 	}
 	conn := tls.Client(rawConn, rt.config)
 	conn.SetDeadline(time.Now().Add(rt.Timeout))
-	//conn := tls.UClient(rawConn, rt.config, rt.Profile.clientHelloId, false, false)
+	// conn := tls.UClient(rawConn, rt.config, rt.Profile.clientHelloId, false, false)
 	if err = conn.HandshakeContext(ctx); err != nil {
 		_ = conn.Close()
 		return nil, err

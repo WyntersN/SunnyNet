@@ -6,7 +6,7 @@
 package base
 
 import (
-	"github.com/qtgolang/SunnyNet/src/http/httputil"
+	"github.com/WyntersN/SunnyNet/src/http/httputil"
 	"reflect"
 )
 

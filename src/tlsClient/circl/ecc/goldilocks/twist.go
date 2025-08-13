@@ -4,9 +4,9 @@ import (
 	"crypto/subtle"
 	"math/bits"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/internal/conv"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/math"
-	fp "github.com/qtgolang/SunnyNet/src/tlsClient/circl/math/fp448"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/internal/conv"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/math"
+	fp "github.com/WyntersN/SunnyNet/src/tlsClient/circl/math/fp448"
 )
 
 // twistCurve is -x^2+y^2=1-39082x^2y^2 and is 4-isogenous to Goldilocks.

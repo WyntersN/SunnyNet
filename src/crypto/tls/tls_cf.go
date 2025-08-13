@@ -4,9 +4,9 @@
 package tls
 
 import (
-	circlPki "github.com/qtgolang/SunnyNet/src/tlsClient/circl/pki"
-	circlSign "github.com/qtgolang/SunnyNet/src/tlsClient/circl/sign"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/sign/eddilithium3"
+	circlPki "github.com/WyntersN/SunnyNet/src/tlsClient/circl/pki"
+	circlSign "github.com/WyntersN/SunnyNet/src/tlsClient/circl/sign"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/sign/eddilithium3"
 )
 
 // To add a signature scheme from Circl

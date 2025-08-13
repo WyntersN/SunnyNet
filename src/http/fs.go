@@ -9,9 +9,6 @@ package http
 import (
 	"errors"
 	"fmt"
-	"github.com/qtgolang/SunnyNet/src/internal/multipart"
-	"github.com/qtgolang/SunnyNet/src/internal/safefilepath"
-	"github.com/qtgolang/SunnyNet/src/internal/textproto"
 	"io"
 	"io/fs"
 	"mime"
@@ -23,6 +20,10 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/WyntersN/SunnyNet/src/internal/multipart"
+	"github.com/WyntersN/SunnyNet/src/internal/safefilepath"
+	"github.com/WyntersN/SunnyNet/src/internal/textproto"
 )
 
 // A Dir implements FileSystem using the native file system restricted to a
@@ -786,8 +787,10 @@ func (f ioFile) Close() error               { return f.file.Close() }
 func (f ioFile) Read(b []byte) (int, error) { return f.file.Read(b) }
 func (f ioFile) Stat() (fs.FileInfo, error) { return f.file.Stat() }
 
-var errMissingSeek = errors.New("io.File missing Seek method")
-var errMissingReadDir = errors.New("io.File directory missing ReadDir method")
+var (
+	errMissingSeek    = errors.New("io.File missing Seek method")
+	errMissingReadDir = errors.New("io.File directory missing ReadDir method")
+)
 
 func (f ioFile) Seek(offset int64, whence int) (int64, error) {
 	s, ok := f.file.(io.Seeker)

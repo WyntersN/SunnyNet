@@ -22,7 +22,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/qtgolang/SunnyNet/src/crypto/tls/testenv"
+	"github.com/WyntersN/SunnyNet/src/crypto/tls/testenv"
 )
 
 var rsaCertPEM = `-----BEGIN CERTIFICATE-----
@@ -1608,7 +1608,7 @@ func TestVersionName(t *testing.T) {
 	}
 }
 
-// http2isBadCipher is copied from github.com/qtgolang/SunnyNet/src/http.
+// http2isBadCipher is copied from github.com/WyntersN/SunnyNet/src/http.
 // TODO: if it ends up exposed somewhere, use that instead.
 func http2isBadCipher(cipher uint16) bool {
 	switch cipher {

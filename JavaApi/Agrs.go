@@ -2,7 +2,7 @@ package JavaJni
 
 import (
 	"fmt"
-	"github.com/qtgolang/SunnyNet/JavaApi/sig"
+	"github.com/WyntersN/SunnyNet/JavaApi/sig"
 	"strconv"
 )
 

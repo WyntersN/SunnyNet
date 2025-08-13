@@ -8,7 +8,7 @@ package httputil
 
 import (
 	"io"
-	"github.com/qtgolang/SunnyNet/src/http/internal"
+	"github.com/WyntersN/SunnyNet/src/http/internal"
 )
 
 // NewChunkedReader returns a new chunkedReader that translates the data read from r

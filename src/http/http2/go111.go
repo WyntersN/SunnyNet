@@ -8,9 +8,9 @@
 package http2
 
 import (
-	"github.com/qtgolang/SunnyNet/src/internal/textproto"
+	"github.com/WyntersN/SunnyNet/src/internal/textproto"
 
-	"github.com/qtgolang/SunnyNet/src/http/httptrace"
+	"github.com/WyntersN/SunnyNet/src/http/httptrace"
 )
 
 func traceHasWroteHeaderField(trace *httptrace.ClientTrace) bool {

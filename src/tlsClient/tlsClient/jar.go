@@ -6,8 +6,8 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/qtgolang/SunnyNet/src/http"
-	"github.com/qtgolang/SunnyNet/src/http/cookiejar"
+	"github.com/WyntersN/SunnyNet/src/http"
+	"github.com/WyntersN/SunnyNet/src/http/cookiejar"
 )
 
 type CookieJarOption func(config *cookieJarConfig)

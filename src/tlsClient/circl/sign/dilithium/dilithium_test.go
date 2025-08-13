@@ -4,7 +4,7 @@ import (
 	"encoding/hex"
 	"testing"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/internal/sha3"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/internal/sha3"
 )
 
 func hexHash(in []byte) string {

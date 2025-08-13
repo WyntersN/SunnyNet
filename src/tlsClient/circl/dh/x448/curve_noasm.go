@@ -3,7 +3,7 @@
 
 package x448
 
-import fp "github.com/qtgolang/SunnyNet/src/tlsClient/circl/math/fp448"
+import fp "github.com/WyntersN/SunnyNet/src/tlsClient/circl/math/fp448"
 
 func double(x, z *fp.Elt)             { doubleGeneric(x, z) }
 func diffAdd(w *[5]fp.Elt, b uint)    { diffAddGeneric(w, b) }

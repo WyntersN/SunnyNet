@@ -8,11 +8,11 @@ package http
 
 import (
 	"bytes"
-	 "github.com/qtgolang/SunnyNet/src/crypto/tls"
+	 "github.com/WyntersN/SunnyNet/src/crypto/tls"
 	"errors"
 	"io"
 	"net"
-	"github.com/qtgolang/SunnyNet/src/http/internal/testcert"
+	"github.com/WyntersN/SunnyNet/src/http/internal/testcert"
 	"strings"
 	"testing"
 )

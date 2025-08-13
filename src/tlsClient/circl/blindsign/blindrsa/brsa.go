@@ -32,8 +32,8 @@ import (
 	"io"
 	"math/big"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/blindsign/blindrsa/internal/common"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/blindsign/blindrsa/internal/keys"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/blindsign/blindrsa/internal/common"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/blindsign/blindrsa/internal/keys"
 )
 
 // An randomBRSAVerifier represents a Verifier in the RSA blind signature protocol.

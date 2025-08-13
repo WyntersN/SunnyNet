@@ -11,8 +11,8 @@ import (
 	"log"
 	"testing"
 
-	 "github.com/qtgolang/SunnyNet/src/http"
-	"github.com/qtgolang/SunnyNet/src/http/http2"
+	 "github.com/WyntersN/SunnyNet/src/http"
+	"github.com/WyntersN/SunnyNet/src/http/http2"
 )
 
 func TestSettingsAckSwallowWriter(t *testing.T) {

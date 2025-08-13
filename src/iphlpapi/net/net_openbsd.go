@@ -6,7 +6,7 @@ package net
 import (
 	"context"
 	"fmt"
-	"github.com/qtgolang/SunnyNet/src/iphlpapi/common"
+	"github.com/WyntersN/SunnyNet/src/iphlpapi/common"
 	"os/exec"
 	"regexp"
 	"strconv"

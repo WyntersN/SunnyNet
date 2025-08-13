@@ -1,6 +1,6 @@
 package simot
 
-import "github.com/qtgolang/SunnyNet/src/tlsClient/circl/group"
+import "github.com/WyntersN/SunnyNet/src/tlsClient/circl/group"
 
 type Sender struct {
 	index   int           // Indicate which OT

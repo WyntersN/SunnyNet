@@ -1,6 +1,6 @@
 package dsl
 
-import "github.com/qtgolang/SunnyNet/src/tlsClient/circl/abe/cpabe/tkn20/internal/tkn"
+import "github.com/WyntersN/SunnyNet/src/tlsClient/circl/abe/cpabe/tkn20/internal/tkn"
 
 var AttrHashKey = []byte("attribute value hashing")
 

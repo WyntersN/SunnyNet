@@ -13,11 +13,6 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"github.com/qtgolang/SunnyNet/src/crypto/tls"
-	"github.com/qtgolang/SunnyNet/src/http/httptrace"
-	"github.com/qtgolang/SunnyNet/src/http/internal/ascii"
-	"github.com/qtgolang/SunnyNet/src/internal/multipart"
-	"github.com/qtgolang/SunnyNet/src/internal/textproto"
 	"io"
 	"mime"
 	"net"
@@ -26,6 +21,12 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+
+	"github.com/WyntersN/SunnyNet/src/crypto/tls"
+	"github.com/WyntersN/SunnyNet/src/http/httptrace"
+	"github.com/WyntersN/SunnyNet/src/http/internal/ascii"
+	"github.com/WyntersN/SunnyNet/src/internal/multipart"
+	"github.com/WyntersN/SunnyNet/src/internal/textproto"
 
 	"golang.org/x/net/idna"
 )
@@ -343,14 +344,17 @@ const (
 	SunnyNetRawBodySaveFilePath  = "SunnyNetRawBodySaveFilePath"
 )
 
-var MaxUploadMsg = []byte("[Sunny:请求提交的数据太长:无法查看,仅提供转发服务,请使用 SaveRawData(储存原始提交数据)命令")
-var ProvideForwardingServiceOnly = errors.New("[Sunny:由于响应数据太长：无法查看,仅提供转发服务]")
+var (
+	MaxUploadMsg                 = []byte("[Sunny:请求提交的数据太长:无法查看,仅提供转发服务,请使用 SaveRawData(储存原始提交数据)命令")
+	ProvideForwardingServiceOnly = errors.New("[Sunny:由于响应数据太长：无法查看,仅提供转发服务]")
+)
 
 func CopyBytes(src []byte) []byte {
 	dst := make([]byte, len(src))
 	copy(dst, src)
 	return dst
 }
+
 func (r *Request) SetData(data []byte) {
 	if r.IsRawBody {
 		return
@@ -385,12 +389,14 @@ func (r *Request) GetData() []byte {
 	}
 	return nil
 }
+
 func (r *Request) Context() context.Context {
 	if r.ctx != nil {
 		return r.ctx
 	}
 	return context.Background()
 }
+
 func (r *Request) GetDomain() string {
 	if r == nil {
 		return ""
@@ -418,6 +424,7 @@ func (r *Request) GetDomain() string {
 	}
 	return ""
 }
+
 func (r *Request) SetContext(key string, value any) {
 	if r.ctx == nil {
 		r.ctx = context.Background()
@@ -436,9 +443,11 @@ func (r *Request) WithCancel() context.CancelFunc {
 		return cancel
 	}
 }
+
 func (r *Request) SetHTTP2Config(config *H2Config) {
 	r.SetContext(h2ConfigKey, config)
 }
+
 func (r *Request) IsSetHTTP2Config() bool {
 	return r.Context().Value(h2ConfigKey) != nil
 }
@@ -553,9 +562,10 @@ func (r *Request) AddCookie(c *Cookie) {
 func (r *Request) Referer() string {
 	return r.Header.Get("Referer")
 }
+
 func (r *Request) SetHeaderLength(i int64) {
 	ok := false
-	for k, _ := range r.Header {
+	for k := range r.Header {
 		if strings.EqualFold(k, "Content-Length") {
 			r.Header[k] = []string{fmt.Sprintf("%d", i)}
 			ok = true
@@ -607,6 +617,7 @@ func (r *Request) multipartReader(allowMixed bool) (*multipart.Reader, error) {
 	}
 	return multipart.NewReader(r.Body, boundary), nil
 }
+
 func (r *Request) GetBodyLength() int64 {
 	if r.IsRawBody {
 		return int64(len(MaxUploadMsg))
@@ -621,6 +632,7 @@ func (r *Request) GetBodyLength() int64 {
 	i, _ := strconv.ParseInt(v, 10, 64)
 	return i
 }
+
 func (r *Request) GetIsNullBody() bool {
 	if r.ContentLength > 0 {
 		return false
@@ -739,7 +751,7 @@ func (r *Request) write(w io.Writer, usingProxy bool, extraHeaders Header, waitF
 		}
 	}
 	if stringContainsCTLByte(ruri) {
-		return errors.New("github.com/qtgolang/SunnyNet/src/http: can't write control character in Request.URL")
+		return errors.New("github.com/WyntersN/SunnyNet/src/http: can't write control character in Request.URL")
 	}
 	// TODO: validate r.Method too? At least it's less likely to
 	// come from an attacker (more likely to be a constant in
@@ -988,10 +1000,10 @@ func NewRequestWithContext(ctx context.Context, method, url string, body io.Read
 		method = "GET"
 	}
 	if !validMethod(method) {
-		return nil, fmt.Errorf("github.com/qtgolang/SunnyNet/src/http: invalid method %q", method)
+		return nil, fmt.Errorf("github.com/WyntersN/SunnyNet/src/http: invalid method %q", method)
 	}
 	if ctx == nil {
-		return nil, errors.New("github.com/qtgolang/SunnyNet/src/http: nil Context")
+		return nil, errors.New("github.com/WyntersN/SunnyNet/src/http: nil Context")
 	}
 	u, err := urlpkg.Parse(url)
 	if err != nil {

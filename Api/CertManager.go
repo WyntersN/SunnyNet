@@ -2,7 +2,7 @@ package Api
 
 import "C"
 import (
-	"github.com/qtgolang/SunnyNet/src/Certificate"
+	"github.com/WyntersN/SunnyNet/src/Certificate"
 )
 
 // CreateCertificate 创建 证书管理器 对象

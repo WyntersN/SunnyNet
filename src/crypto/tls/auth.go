@@ -16,8 +16,8 @@ import (
 	"hash"
 	"io"
 
-	circlPki "github.com/qtgolang/SunnyNet/src/tlsClient/circl/pki"
-	circlSign "github.com/qtgolang/SunnyNet/src/tlsClient/circl/sign"
+	circlPki "github.com/WyntersN/SunnyNet/src/tlsClient/circl/pki"
+	circlSign "github.com/WyntersN/SunnyNet/src/tlsClient/circl/sign"
 )
 
 // verifyHandshakeSignature verifies a signature against pre-hashed

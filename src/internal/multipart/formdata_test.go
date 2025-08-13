@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"io"
 	"math"
-	 "github.com/qtgolang/SunnyNet/src/internal/textproto"
+	 "github.com/WyntersN/SunnyNet/src/internal/textproto"
 	"os"
 	"strings"
 	"testing"

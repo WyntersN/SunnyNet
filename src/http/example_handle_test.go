@@ -7,7 +7,7 @@ package http_test
 import (
 	"fmt"
 	"log"
-	"github.com/qtgolang/SunnyNet/src/http"
+	"github.com/WyntersN/SunnyNet/src/http"
 	"sync"
 )
 

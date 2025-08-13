@@ -13,9 +13,9 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/expander"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/internal/test"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/xof"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/expander"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/internal/test"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/xof"
 )
 
 func TestExpander(t *testing.T) {

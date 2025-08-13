@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 
-	pairing "github.com/qtgolang/SunnyNet/src/tlsClient/circl/ecc/bls12381"
+	pairing "github.com/WyntersN/SunnyNet/src/tlsClient/circl/ecc/bls12381"
 )
 
 // matrixG2 represents a matrix of G2 elements. They are stored in row-major order.

@@ -4,7 +4,7 @@
 package SunnyNet
 
 import (
-	"github.com/qtgolang/SunnyNet/src/http"
+	"github.com/WyntersN/SunnyNet/src/http"
 )
 
 // 是否是用户自定义脚本编辑请求

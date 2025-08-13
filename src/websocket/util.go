@@ -8,7 +8,7 @@ import (
 	"crypto/rand"
 	"crypto/sha1"
 	"encoding/base64"
-	"github.com/qtgolang/SunnyNet/src/http"
+	"github.com/WyntersN/SunnyNet/src/http"
 	"io"
 	"strings"
 	"unicode/utf8"

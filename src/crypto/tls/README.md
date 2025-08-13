@@ -2,7 +2,7 @@
 [![Build Status](https://github.com/refraction-networking/utls/actions/workflows/go.yml/badge.svg?branch=master)](https://github.com/refraction-networking/utls/actions/workflows/go.yml) 
 [![godoc](https://img.shields.io/badge/godoc-reference-blue.svg)](https://godoc.org/github.com/refraction-networking/utls#UConn)
 ---
-uTLS is a fork of  "github.com/qtgolang/SunnyNet/src/crypto/tls", which provides ClientHello fingerprinting resistance, low-level access to handshake, fake session tickets and some other features. Handshake is still performed by  "github.com/qtgolang/SunnyNet/src/crypto/tls", this library merely changes ClientHello part of it and provides low-level access.  
+uTLS is a fork of  "github.com/WyntersN/SunnyNet/src/crypto/tls", which provides ClientHello fingerprinting resistance, low-level access to handshake, fake session tickets and some other features. Handshake is still performed by  "github.com/WyntersN/SunnyNet/src/crypto/tls", this library merely changes ClientHello part of it and provides low-level access.  
 
 Golang 1.20+ is required.  
 
@@ -111,7 +111,7 @@ It is possible to create custom handshake by
 If you need to manually control all the bytes on the wire(certainly not recommended!),
 you can set UConn.HandshakeStateBuilt = true, and marshal clientHello into UConn.HandshakeState.Hello.raw yourself.
 In this case you will be responsible for modifying other parts of Config and ClientHelloMsg to reflect your setup
-and not confuse  "github.com/qtgolang/SunnyNet/src/crypto/tls", which will be processing response from server.
+and not confuse  "github.com/WyntersN/SunnyNet/src/crypto/tls", which will be processing response from server.
 
 ### Fingerprinting Captured Client Hello
 You can use a captured client hello to generate new ones that mimic/have the same properties as the original.
@@ -246,7 +246,7 @@ There are different behaviors you can get, depending  on your `clientHelloID`:
 `HelloRandomized` adds ALPN in a percentage of cases, you may want to use `HelloRandomizedALPN` or
 `HelloRandomizedNoALPN` to choose specific behavior explicitly, as ALPN might affect application layer.
 2. ```utls.HelloGolang```
-    HelloGolang will use default  "github.com/qtgolang/SunnyNet/src/crypto/tls" handshake marshaling codepath, which WILL
+    HelloGolang will use default  "github.com/WyntersN/SunnyNet/src/crypto/tls" handshake marshaling codepath, which WILL
     overwrite your changes to Hello(Config, Session are fine).
     You might want to call BuildHandshakeState() before applying any changes.
     UConn.Extensions will be completely ignored.
@@ -262,8 +262,8 @@ will prepare ClientHello with empty uconn.Extensions so you can fill it with TLS
 ## Examples
 Find basic examples [here](examples/examples.go).  
 Here's a more [advanced example](https://github.com/sergeyfrolov/gotapdance/blob//9a777f35a04b0c4c5dacd30bca0e9224eb737b5e/tapdance/conn_raw.go#L275-L292) showing how to generate randomized ClientHello, modify generated ciphersuites a bit, and proceed with the handshake.
-### Migrating from  "github.com/qtgolang/SunnyNet/src/crypto/tls"
-Here's how default  "github.com/qtgolang/SunnyNet/src/crypto/tls" is typically used:
+### Migrating from  "github.com/WyntersN/SunnyNet/src/crypto/tls"
+Here's how default  "github.com/WyntersN/SunnyNet/src/crypto/tls" is typically used:
 ```Golang
     dialConn, err := net.Dial("tcp", "172.217.11.46:443")
     if err != nil {

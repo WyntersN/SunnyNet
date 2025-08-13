@@ -8,7 +8,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/internal/nist"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/internal/nist"
 )
 
 func TestPQCgenKATSign(t *testing.T) {

@@ -5,14 +5,15 @@
 package http
 
 import (
-	"github.com/qtgolang/SunnyNet/src/http/httptrace"
-	"github.com/qtgolang/SunnyNet/src/http/internal/ascii"
-	"github.com/qtgolang/SunnyNet/src/internal/textproto"
 	"io"
 	"sort"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/WyntersN/SunnyNet/src/http/httptrace"
+	"github.com/WyntersN/SunnyNet/src/http/internal/ascii"
+	"github.com/WyntersN/SunnyNet/src/internal/textproto"
 
 	"golang.org/x/net/http/httpguts"
 )
@@ -28,7 +29,7 @@ type Header map[string][]string
 // The key is case insensitive; it is canonicalized by
 // CanonicalHeaderKey.
 func (h Header) Add(key, value string) {
-	for k, _ := range h {
+	for k := range h {
 		if strings.EqualFold(k, key) {
 			textproto.MIMEHeader(h).Add(k, value)
 			return
@@ -43,14 +44,13 @@ func (h Header) Add(key, value string) {
 // canonicalized by textproto.CanonicalMIMEHeaderKey.
 // To use non-canonical keys, assign to the map directly.
 func (h Header) Set(key, value string) {
-	for k, _ := range h {
+	for k := range h {
 		if strings.EqualFold(k, key) {
 			textproto.MIMEHeader(h).Set(k, value)
 			return
 		}
 	}
 	textproto.MIMEHeader(h).Set(key, value)
-
 }
 
 // Get gets the first value associated with the given key. If
@@ -69,6 +69,7 @@ func (h Header) Get(key string) string {
 	}
 	return ""
 }
+
 func (h Header) GetArray(key string) []string {
 	for k, v := range h {
 		if strings.EqualFold(k, key) {
@@ -77,8 +78,9 @@ func (h Header) GetArray(key string) []string {
 	}
 	return nil
 }
+
 func (h Header) SetArray(key string, val []string) {
-	for k, _ := range h {
+	for k := range h {
 		if strings.EqualFold(k, key) {
 			h[k] = val
 			return
@@ -105,7 +107,7 @@ func (h Header) get(key string) string {
 // has reports whether h has the provided key defined, even if it's
 // set to 0-length slice.
 func (h Header) has(key string) bool {
-	for k, _ := range h {
+	for k := range h {
 		if strings.EqualFold(k, key) {
 			return true
 		}
@@ -117,7 +119,7 @@ func (h Header) has(key string) bool {
 // The key is case insensitive; it is canonicalized by
 // CanonicalHeaderKey.
 func (h Header) Del(key string) {
-	for k, _ := range h {
+	for k := range h {
 		if strings.EqualFold(k, key) {
 			delete(h, k)
 			return

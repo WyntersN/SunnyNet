@@ -8,7 +8,7 @@ import (
 	"errors"
 	"io"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/group"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/group"
 	"golang.org/x/crypto/sha3"
 )
 

@@ -5,7 +5,7 @@ package net
 
 import (
 	"context"
-	"github.com/qtgolang/SunnyNet/src/iphlpapi/common"
+	"github.com/WyntersN/SunnyNet/src/iphlpapi/common"
 )
 
 func IOCounters(pernic bool) ([]IOCountersStat, error) {

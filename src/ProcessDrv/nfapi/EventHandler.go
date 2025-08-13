@@ -6,8 +6,8 @@ package NFapi
 import "C"
 import (
 	"fmt"
-	. "github.com/qtgolang/SunnyNet/src/ProcessDrv/Info"
-	net2 "github.com/qtgolang/SunnyNet/src/iphlpapi/net"
+	. "github.com/WyntersN/SunnyNet/src/ProcessDrv/Info"
+	net2 "github.com/WyntersN/SunnyNet/src/iphlpapi/net"
 	"github.com/WyntersN/SunnyNet/src/public"
 	"github.com/shirou/gopsutil/process"
 	"net"

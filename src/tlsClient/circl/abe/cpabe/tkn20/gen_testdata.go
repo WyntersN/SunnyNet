@@ -10,7 +10,7 @@ import (
 	"os"
 	"path/filepath"
 
-	cpabe "github.com/qtgolang/SunnyNet/src/tlsClient/circl/abe/cpabe/tkn20"
+	cpabe "github.com/WyntersN/SunnyNet/src/tlsClient/circl/abe/cpabe/tkn20"
 )
 
 func writeToFile(name string, data []byte) {

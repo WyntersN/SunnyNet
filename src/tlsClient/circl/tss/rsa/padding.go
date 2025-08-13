@@ -5,8 +5,8 @@ import (
 	"crypto/rsa"
 	"io"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/tss/rsa/internal"
-	pss2 "github.com/qtgolang/SunnyNet/src/tlsClient/circl/tss/rsa/internal/pss"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/tss/rsa/internal"
+	pss2 "github.com/WyntersN/SunnyNet/src/tlsClient/circl/tss/rsa/internal/pss"
 )
 
 type Padder interface {

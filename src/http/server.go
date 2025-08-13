@@ -12,9 +12,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/qtgolang/SunnyNet/src/crypto/tls"
-	"github.com/qtgolang/SunnyNet/src/internal/godebug"
-	"github.com/qtgolang/SunnyNet/src/internal/textproto"
 	"io"
 	"log"
 	"math/rand"
@@ -29,6 +26,10 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
+
+	"github.com/WyntersN/SunnyNet/src/crypto/tls"
+	"github.com/WyntersN/SunnyNet/src/internal/godebug"
+	"github.com/WyntersN/SunnyNet/src/internal/textproto"
 
 	"golang.org/x/net/http/httpguts"
 )
@@ -306,7 +307,6 @@ type conn struct {
 	hijackedv bool
 
 	Handler func(ResponseWriter, *Request) // handler to invoke, http.DefaultServeMux if nil
-
 }
 
 func (c *conn) hijacked() bool {
@@ -1125,7 +1125,7 @@ func relevantCaller() runtime.Frame {
 	var frame runtime.Frame
 	for {
 		frame, more := frames.Next()
-		if !strings.HasPrefix(frame.Function, "github.com/qtgolang/SunnyNet/src/http.") {
+		if !strings.HasPrefix(frame.Function, "github.com/WyntersN/SunnyNet/src/http.") {
 			return frame
 		}
 		if !more {
@@ -1137,13 +1137,13 @@ func relevantCaller() runtime.Frame {
 
 func (w *response) WriteHeader(code int) {
 	if w.conn.hijacked() {
-		//caller := relevantCaller()
-		//w.conn.server.logf("http: response.WriteHeader on hijacked connection from %s (%s:%d)", caller.Function, path.Base(caller.File), caller.Line)
+		// caller := relevantCaller()
+		// w.conn.server.logf("http: response.WriteHeader on hijacked connection from %s (%s:%d)", caller.Function, path.Base(caller.File), caller.Line)
 		return
 	}
 	if w.wroteHeader {
-		//caller := relevantCaller()
-		//w.conn.server.logf("http: superfluous response.WriteHeader call from %s (%s:%d)", caller.Function, path.Base(caller.File), caller.Line)
+		// caller := relevantCaller()
+		// w.conn.server.logf("http: superfluous response.WriteHeader call from %s (%s:%d)", caller.Function, path.Base(caller.File), caller.Line)
 		return
 	}
 	checkWriteHeaderCode(code)
@@ -1233,7 +1233,6 @@ func (h extraHeader) Write(w *bufio.Writer) {
 			w.Write(crlf)
 		}
 	}
-
 }
 
 // writeHeader finalizes the header sent to the client and writes it
@@ -1834,7 +1833,7 @@ func (e statusError) Error() string { return StatusText(e.code) + ": " + e.text 
 // While any panic from ServeHTTP aborts the response to the client,
 // panicking with ErrAbortHandler also suppresses logging of a stack
 // trace to the server's error log.
-var ErrAbortHandler = errors.New("github.com/qtgolang/SunnyNet/src/http: abort Handler")
+var ErrAbortHandler = errors.New("github.com/WyntersN/SunnyNet/src/http: abort Handler")
 
 // isCommonNetReadError reports whether err is a common error
 // encountered during reading a request off the network when the
@@ -2076,7 +2075,7 @@ func (w *response) sendExpectationFailed() {
 // and a Hijacker.
 func (w *response) Hijack() (rwc net.Conn, buf *bufio.ReadWriter, err error) {
 	if w.handlerDone.Load() {
-		panic("github.com/qtgolang/SunnyNet/src/http: Hijack called after ServeHTTP finished")
+		panic("github.com/WyntersN/SunnyNet/src/http: Hijack called after ServeHTTP finished")
 	}
 	if w.wroteHeader {
 		w.cw.flush()
@@ -2098,7 +2097,7 @@ func (w *response) Hijack() (rwc net.Conn, buf *bufio.ReadWriter, err error) {
 
 func (w *response) CloseNotify() <-chan bool {
 	if w.handlerDone.Load() {
-		panic("github.com/qtgolang/SunnyNet/src/http: CloseNotify called after ServeHTTP finished")
+		panic("github.com/WyntersN/SunnyNet/src/http: CloseNotify called after ServeHTTP finished")
 	}
 	return w.closeNotifyCh
 }
@@ -2455,7 +2454,6 @@ func (mux *ServeMux) shouldRedirectRLocked(host, path string) bool {
 // If there is no registered handler that applies to the request,
 // Handler returns a “page not found” handler and an empty pattern.
 func (mux *ServeMux) Handler(r *Request) (h Handler, pattern string) {
-
 	// CONNECT requests are not canonicalized.
 	if r.Method == "CONNECT" {
 		// If r.URL.Path is /tree and its handler is not registered,
@@ -2612,6 +2610,7 @@ func init() {
 		NewWriteScheduler: func() http2WriteScheduler { return http2NewPriorityWriteScheduler(nil) },
 	}
 }
+
 func H1NewConn(rwc net.Conn, rw func(ResponseWriter, *Request)) {
 	c := &conn{
 		server:  h1s,
@@ -3636,7 +3635,6 @@ func numLeadingCRorLF(v []byte) (n int) {
 		break
 	}
 	return
-
 }
 
 func strSliceContains(ss []string, s string) bool {

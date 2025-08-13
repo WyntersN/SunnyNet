@@ -20,7 +20,7 @@ import (
 	"runtime"
 	"unsafe"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/internal/sha3"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/internal/sha3"
 	"golang.org/x/sys/cpu"
 )
 

@@ -1,7 +1,7 @@
 package x25519
 
 import (
-	fp "github.com/qtgolang/SunnyNet/src/tlsClient/circl/math/fp25519"
+	fp "github.com/WyntersN/SunnyNet/src/tlsClient/circl/math/fp25519"
 )
 
 // ladderJoye calculates a fixed-point multiplication with the generator point.

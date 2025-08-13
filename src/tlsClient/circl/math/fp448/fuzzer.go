@@ -15,7 +15,7 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/internal/conv"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/internal/conv"
 )
 
 // FuzzReduction is a fuzzer target for red64 function, which reduces t

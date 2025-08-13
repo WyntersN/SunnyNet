@@ -3,7 +3,7 @@
 
 package x25519
 
-import fp "github.com/qtgolang/SunnyNet/src/tlsClient/circl/math/fp25519"
+import fp "github.com/WyntersN/SunnyNet/src/tlsClient/circl/math/fp25519"
 
 func double(x, z *fp.Elt)             { doubleGeneric(x, z) }
 func diffAdd(w *[5]fp.Elt, b uint)    { diffAddGeneric(w, b) }

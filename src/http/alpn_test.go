@@ -7,12 +7,12 @@ package http_test
 import (
 	"bufio"
 	"bytes"
-	 "github.com/qtgolang/SunnyNet/src/crypto/tls"
+	 "github.com/WyntersN/SunnyNet/src/crypto/tls"
 	"crypto/x509"
 	"fmt"
 	"io"
-	. "github.com/qtgolang/SunnyNet/src/http"
-	"github.com/qtgolang/SunnyNet/src/http/httptest"
+	. "github.com/WyntersN/SunnyNet/src/http"
+	"github.com/WyntersN/SunnyNet/src/http/httptest"
 	"strings"
 	"testing"
 )

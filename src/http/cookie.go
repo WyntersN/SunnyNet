@@ -9,8 +9,8 @@ import (
 	"fmt"
 	"log"
 	"net"
-	"github.com/qtgolang/SunnyNet/src/http/internal/ascii"
-	 "github.com/qtgolang/SunnyNet/src/internal/textproto"
+	"github.com/WyntersN/SunnyNet/src/http/internal/ascii"
+	 "github.com/WyntersN/SunnyNet/src/internal/textproto"
 	"strconv"
 	"strings"
 	"time"
@@ -206,7 +206,7 @@ func (c *Cookie) String() string {
 			b.WriteString("; Domain=")
 			b.WriteString(d)
 		} else {
-			log.Printf("github.com/qtgolang/SunnyNet/src/http: invalid Cookie.Domain %q; dropping domain attribute", c.Domain)
+			log.Printf("github.com/WyntersN/SunnyNet/src/http: invalid Cookie.Domain %q; dropping domain attribute", c.Domain)
 		}
 	}
 	var buf [len(TimeFormat)]byte
@@ -431,7 +431,7 @@ func sanitizeOrWarn(fieldName string, valid func(byte) bool, v string) string {
 		if valid(v[i]) {
 			continue
 		}
-		log.Printf("github.com/qtgolang/SunnyNet/src/http: invalid byte %q in %s; dropping invalid bytes", v[i], fieldName)
+		log.Printf("github.com/WyntersN/SunnyNet/src/http: invalid byte %q in %s; dropping invalid bytes", v[i], fieldName)
 		ok = false
 		break
 	}

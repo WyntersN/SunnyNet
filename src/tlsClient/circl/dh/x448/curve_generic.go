@@ -4,7 +4,7 @@ import (
 	"encoding/binary"
 	"math/bits"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/math/fp448"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/math/fp448"
 )
 
 func doubleGeneric(x, z *fp448.Elt) {

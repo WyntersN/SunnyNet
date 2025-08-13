@@ -4,7 +4,7 @@ package p503
 import (
 	"testing/quick"
 
-	. "github.com/qtgolang/SunnyNet/src/tlsClient/circl/dh/sidh/internal/common"
+	. "github.com/WyntersN/SunnyNet/src/tlsClient/circl/dh/sidh/internal/common"
 )
 
 // Values computed using Sage

@@ -7,7 +7,7 @@ package http_test
 import (
 	"io/fs"
 	"log"
-	"github.com/qtgolang/SunnyNet/src/http"
+	"github.com/WyntersN/SunnyNet/src/http"
 	"strings"
 )
 

@@ -18,7 +18,7 @@ import (
 	"io"
 	"time"
 
-	circlSign "github.com/qtgolang/SunnyNet/src/tlsClient/circl/sign"
+	circlSign "github.com/WyntersN/SunnyNet/src/tlsClient/circl/sign"
 )
 
 // serverHandshakeState contains details of a server handshake in progress.

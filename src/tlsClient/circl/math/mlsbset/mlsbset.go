@@ -11,7 +11,7 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/internal/conv"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/internal/conv"
 )
 
 // EltG is a group element.

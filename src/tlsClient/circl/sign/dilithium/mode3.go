@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/sign/dilithium/internal/common"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/sign/dilithium/mode3"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/sign/dilithium/internal/common"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/sign/dilithium/mode3"
 )
 
 // implMode3 implements the mode.Mode interface for Dilithium3.

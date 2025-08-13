@@ -11,8 +11,8 @@ import (
 	"errors"
 	"io"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/sign/dilithium/internal/common"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/sign/dilithium/mode2aes/internal"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/sign/dilithium/internal/common"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/sign/dilithium/mode2aes/internal"
 )
 
 const (

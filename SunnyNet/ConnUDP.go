@@ -1,18 +1,18 @@
 package SunnyNet
 
 import (
-	"github.com/qtgolang/SunnyNet/src/CrossCompiled"
-	"github.com/qtgolang/SunnyNet/src/Interface"
-	"github.com/qtgolang/SunnyNet/src/ProcessDrv/nfapi"
+	"github.com/WyntersN/SunnyNet/src/Interface"
+	NFapi "github.com/WyntersN/SunnyNet/src/ProcessDrv/nfapi"
+	"github.com/WyntersN/SunnyNet/src/CrossCompiled"
 )
 
 type ConnUDP Interface.ConnUDPCall
 
 type udpConn struct {
 	sunnyContext  int
-	theology      int64 //唯一ID
-	messageId     int   //消息ID
-	_type         int   //请求类型 例如 public.SunnyNetUDPType...
+	theology      int64 // 唯一ID
+	messageId     int   // 消息ID
+	_type         int   // 请求类型 例如 public.SunnyNetUDPType...
 	pid           int
 	localAddress  string
 	remoteAddress string
@@ -28,6 +28,10 @@ func (U udpConn) GetSocket5User() string {
 	return ""
 }
 
+func (U udpConn) GetSocket5AuthUser() Interface.AuthUser {
+	return Interface.AuthUser{}
+}
+
 func (U udpConn) GetProcessName() string {
 	if U.pid == 0 {
 		return "代理连接"
@@ -40,6 +44,7 @@ func (U udpConn) SetBody(i []byte) bool {
 	U.data = i
 	return true
 }
+
 func (U udpConn) BodyLen() int {
 	return len(U.data)
 }
@@ -47,12 +52,15 @@ func (U udpConn) BodyLen() int {
 func (U udpConn) Context() int {
 	return U.sunnyContext
 }
+
 func (U udpConn) Type() int {
 	return U._type
 }
+
 func (U udpConn) MessageId() int {
 	return U.messageId
 }
+
 func (U udpConn) Theology() int {
 	return int(U.theology)
 }

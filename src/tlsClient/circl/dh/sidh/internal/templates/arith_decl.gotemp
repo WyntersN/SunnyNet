@@ -7,7 +7,7 @@
 package {{.PACKAGE}}
 
 import (
-	. "github.com/qtgolang/SunnyNet/src/tlsClient/circl/dh/sidh/internal/common"
+	. "github.com/WyntersN/SunnyNet/src/tlsClient/circl/dh/sidh/internal/common"
 )
 
 // If choice = 0, leave x unchanged. If choice = 1, sets x to y.

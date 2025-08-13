@@ -5,7 +5,7 @@ import (
 	"bytes"
 	"flag"
 	"fmt"
-	"github.com/qtgolang/SunnyNet/src/GoScriptCode/yaegi/extract"
+	"github.com/WyntersN/SunnyNet/src/GoScriptCode/yaegi/extract"
 	"io"
 	"os"
 	"path/filepath"

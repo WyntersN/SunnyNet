@@ -9,7 +9,7 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/internal/test"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/internal/test"
 )
 
 func TestFpCmov(t *testing.T) {

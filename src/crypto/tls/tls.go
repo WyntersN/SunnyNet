@@ -26,7 +26,7 @@ import (
 	"os"
 	"strings"
 
-	circlSign "github.com/qtgolang/SunnyNet/src/tlsClient/circl/sign"
+	circlSign "github.com/WyntersN/SunnyNet/src/tlsClient/circl/sign"
 )
 
 // Server returns a new TLS server side connection

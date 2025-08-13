@@ -6,7 +6,7 @@ import (
 	"math"
 	"math/big"
 
-	"github.com/qtgolang/SunnyNet/src/quicvarint"
+	"github.com/WyntersN/SunnyNet/src/quicvarint"
 )
 
 const (

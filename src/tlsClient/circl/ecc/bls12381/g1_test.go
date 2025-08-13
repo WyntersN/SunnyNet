@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/ecc/bls12381/ff"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/internal/test"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/ecc/bls12381/ff"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/internal/test"
 )
 
 func randomScalar(t testing.TB) *Scalar {

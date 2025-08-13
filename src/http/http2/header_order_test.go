@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	 "github.com/qtgolang/SunnyNet/src/http"
-	"github.com/qtgolang/SunnyNet/src/http/httptrace"
+	 "github.com/WyntersN/SunnyNet/src/http"
+	"github.com/WyntersN/SunnyNet/src/http/httptrace"
 )
 
 func TestHeaderOrder(t *testing.T) {

@@ -3,9 +3,9 @@
 # CIRCL
 
 [![GitHub release](https://img.shields.io/github/release/cloudflare/circl.svg)](https://GitHub.com/cloudflare/circl/releases/)
-[![CIRCL](https://github.com/qtgolang/SunnyNet/src/tlsClient/circl/workflows/CIRCL/badge.svg)](https://github.com/qtgolang/SunnyNet/src/tlsClient/circl/actions)
-[![GoDoc](https://godoc.org/github.com/qtgolang/SunnyNet/src/tlsClient/circl?status.svg)](https://pkg.go.dev/github.com/qtgolang/SunnyNet/src/tlsClient/circl?tab=overview)
-[![Go Report Card](https://goreportcard.com/badge/github.com/qtgolang/SunnyNet/src/tlsClient/circl)](https://goreportcard.com/report/github.com/qtgolang/SunnyNet/src/tlsClient/circl)
+[![CIRCL](https://github.com/WyntersN/SunnyNet/src/tlsClient/circl/workflows/CIRCL/badge.svg)](https://github.com/WyntersN/SunnyNet/src/tlsClient/circl/actions)
+[![GoDoc](https://godoc.org/github.com/WyntersN/SunnyNet/src/tlsClient/circl?status.svg)](https://pkg.go.dev/github.com/WyntersN/SunnyNet/src/tlsClient/circl?tab=overview)
+[![Go Report Card](https://goreportcard.com/badge/github.com/WyntersN/SunnyNet/src/tlsClient/circl)](https://goreportcard.com/report/github.com/WyntersN/SunnyNet/src/tlsClient/circl)
 [![codecov](https://codecov.io/gh/cloudflare/circl/branch/main/graph/badge.svg)](https://codecov.io/gh/cloudflare/circl)
 
 **CIRCL** (Cloudflare Interoperable, Reusable Cryptographic Library) is a collection
@@ -15,14 +15,14 @@ Curve Cryptography (ECC).
 
 ## Security Disclaimer
 
-🚨 This library is offered as-is, and without a guarantee. Therefore, it is expected that changes in the code, repository, and API occur in the future. We recommend to take caution before using this library in a production application since part of its content is experimental. All security issues must be reported, please notify us immediately following the instructions given in our [Security Policy](https://github.com/qtgolang/SunnyNet/src/tlsClient/circl/security/policy).
+🚨 This library is offered as-is, and without a guarantee. Therefore, it is expected that changes in the code, repository, and API occur in the future. We recommend to take caution before using this library in a production application since part of its content is experimental. All security issues must be reported, please notify us immediately following the instructions given in our [Security Policy](https://github.com/WyntersN/SunnyNet/src/tlsClient/circl/security/policy).
 
 ## Installation
 
 You can get CIRCL by fetching:
 
 ```sh
-go get -u github.com/qtgolang/SunnyNet/src/tlsClient/circl
+go get -u github.com/WyntersN/SunnyNet/src/tlsClient/circl
 ```
 
 Alternatively, look at the [Cloudflare Go](https://github.com/cloudflare/go/tree/cf) fork to see how to integrate CIRCL natively in Go.
@@ -159,7 +159,7 @@ APA Style
 ```
 Faz-Hernández, A. and Kwiatkowski, K. (2019). Introducing CIRCL:
 An Advanced Cryptographic Library. Cloudflare. Available at
-https://github.com/qtgolang/SunnyNet/src/tlsClient/circl. v1.3.6 Accessed Oct, 2023.
+https://github.com/WyntersN/SunnyNet/src/tlsClient/circl. v1.3.6 Accessed Oct, 2023.
 ```
 
 Bibtex Source
@@ -174,7 +174,7 @@ Bibtex Source
                    of this library is to be used as a tool for experimental
                    deployment of cryptographic algorithms targeting Post-Quantum (PQ)
                    and Elliptic Curve Cryptography (ECC).}},
-  note         = {Available at \url{https://github.com/qtgolang/SunnyNet/src/tlsClient/circl}. v1.3.6 Accessed Oct, 2023},
+  note         = {Available at \url{https://github.com/WyntersN/SunnyNet/src/tlsClient/circl}. v1.3.6 Accessed Oct, 2023},
   month        = jun,
   year         = {2019}
 }

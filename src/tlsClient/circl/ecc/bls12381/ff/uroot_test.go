@@ -3,7 +3,7 @@ package ff
 import (
 	"testing"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/internal/test"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/internal/test"
 )
 
 func randomURoot(t testing.TB) *URoot {

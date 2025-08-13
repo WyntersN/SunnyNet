@@ -2,7 +2,7 @@
 // of a group.
 package polynomial
 
-import "github.com/qtgolang/SunnyNet/src/tlsClient/circl/group"
+import "github.com/WyntersN/SunnyNet/src/tlsClient/circl/group"
 
 // Polynomial stores a polynomial over the set of scalars of a group.
 type Polynomial struct {

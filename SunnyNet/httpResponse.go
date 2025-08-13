@@ -1,7 +1,7 @@
 package SunnyNet
 
 import (
-	"github.com/qtgolang/SunnyNet/src/http"
+	"github.com/WyntersN/SunnyNet/src/http"
 	"io"
 	"net"
 	"strings"

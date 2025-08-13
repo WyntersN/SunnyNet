@@ -8,8 +8,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/internal/test"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/sign/ed448"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/internal/test"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/sign/ed448"
 )
 
 type zeroReader struct{}
@@ -283,7 +283,7 @@ func BenchmarkEd448Ph(b *testing.B) {
 }
 
 func Example_ed448() {
-	// import "github.com/qtgolang/SunnyNet/src/tlsClient/circl/sign/ed448"
+	// import "github.com/WyntersN/SunnyNet/src/tlsClient/circl/sign/ed448"
 	// import "crypto/rand"
 
 	// Generating Alice's key pair
@@ -304,7 +304,7 @@ func Example_ed448() {
 }
 
 func ExampleSignPh() {
-	// import "github.com/qtgolang/SunnyNet/src/tlsClient/circl/sign/ed448"
+	// import "github.com/WyntersN/SunnyNet/src/tlsClient/circl/sign/ed448"
 	// import "crypto/rand"
 
 	// Generating Alice's key pair

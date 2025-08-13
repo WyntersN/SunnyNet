@@ -1,7 +1,7 @@
 package frodo640shake
 
 import (
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/internal/sha3"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/internal/sha3"
 )
 
 func expandSeedIntoA(A *nByNU16, seed *[seedASize]byte, xof *sha3.State) {

@@ -1,3 +1,11 @@
+/*
+ * @Descripttion:
+ * @version:
+ * @Author: Wynters
+ * @Date: 2025-08-13 16:08:30
+ * @LastEditTime: 2025-08-13 18:48:29
+ * @FilePath: \SunnyNet\src\http\clone.go
+ */
 // Copyright 2019 The Go Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
@@ -5,9 +13,10 @@
 package http
 
 import (
-	"github.com/qtgolang/SunnyNet/src/internal/multipart"
-	"github.com/qtgolang/SunnyNet/src/internal/textproto"
 	"net/url"
+
+	"github.com/WyntersN/SunnyNet/src/internal/multipart"
+	"github.com/WyntersN/SunnyNet/src/internal/textproto"
 )
 
 func cloneURLValues(v url.Values) url.Values {

@@ -12,12 +12,12 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/qtgolang/SunnyNet/src/http"
-	"github.com/qtgolang/SunnyNet/src/websocket"
+	"github.com/WyntersN/SunnyNet/src/http"
+	"github.com/WyntersN/SunnyNet/src/websocket"
 )
 
 const (
-	SunnyVersion = "2025-07-26"
+	SunnyVersion = "2025-08-13"
 )
 
 // TCP请求相关

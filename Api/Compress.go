@@ -2,7 +2,7 @@ package Api
 
 import "C"
 import (
-	"github.com/qtgolang/SunnyNet/src/Compress"
+	"github.com/WyntersN/SunnyNet/src/Compress"
 	"github.com/WyntersN/SunnyNet/src/public"
 )
 

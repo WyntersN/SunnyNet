@@ -5,7 +5,7 @@ package p751
 
 import (
 	crand "crypto/rand"
-	. "github.com/qtgolang/SunnyNet/src/tlsClient/circl/dh/sidh/internal/common"
+	. "github.com/WyntersN/SunnyNet/src/tlsClient/circl/dh/sidh/internal/common"
 )
 
 // -----------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 // Package goldilocks provides elliptic curve operations over the goldilocks curve.
 package goldilocks
 
-import fp "github.com/qtgolang/SunnyNet/src/tlsClient/circl/math/fp448"
+import fp "github.com/WyntersN/SunnyNet/src/tlsClient/circl/math/fp448"
 
 // Curve is the Goldilocks curve x^2+y^2=z^2-39081x^2y^2.
 type Curve struct{}

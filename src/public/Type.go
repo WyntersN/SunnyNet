@@ -11,8 +11,8 @@ package public
 import (
 	"bufio"
 	"bytes"
-	"github.com/qtgolang/SunnyNet/src/SunnyProxy"
-	"github.com/qtgolang/SunnyNet/src/websocket"
+	"github.com/WyntersN/SunnyNet/src/SunnyProxy"
+	"github.com/WyntersN/SunnyNet/src/websocket"
 	"net"
 	"sync"
 )

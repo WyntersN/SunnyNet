@@ -26,8 +26,8 @@ import (
 	"strings"
 	"time"
 
-	circlSign "github.com/qtgolang/SunnyNet/src/tlsClient/circl/sign"
-	circlSchemes "github.com/qtgolang/SunnyNet/src/tlsClient/circl/sign/schemes"
+	circlSign "github.com/WyntersN/SunnyNet/src/tlsClient/circl/sign"
+	circlSchemes "github.com/WyntersN/SunnyNet/src/tlsClient/circl/sign/schemes"
 )
 
 var (

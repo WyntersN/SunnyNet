@@ -4,7 +4,7 @@ package fp25519
 import (
 	"errors"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/internal/conv"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/internal/conv"
 )
 
 // Size in bytes of an element.

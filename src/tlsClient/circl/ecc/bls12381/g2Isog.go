@@ -3,7 +3,7 @@ package bls12381
 import (
 	"fmt"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/ecc/bls12381/ff"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/ecc/bls12381/ff"
 )
 
 type isogG2Point struct{ x, y, z ff.Fp2 }

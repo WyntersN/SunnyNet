@@ -8,7 +8,7 @@ import (
 	"crypto"
 	"testing"
 
-	circlPki "github.com/qtgolang/SunnyNet/src/tlsClient/circl/pki"
+	circlPki "github.com/WyntersN/SunnyNet/src/tlsClient/circl/pki"
 )
 
 func TestSignatureSelection(t *testing.T) {

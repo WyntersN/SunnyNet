@@ -4,10 +4,10 @@ import (
 	"errors"
 	"io"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/dh/sidh/internal/common"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/dh/sidh/internal/p434"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/dh/sidh/internal/p503"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/dh/sidh/internal/p751"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/dh/sidh/internal/common"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/dh/sidh/internal/p434"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/dh/sidh/internal/p503"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/dh/sidh/internal/p751"
 )
 
 // I keep it bool in order to be able to apply logical NOT.

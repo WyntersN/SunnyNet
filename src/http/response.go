@@ -11,12 +11,13 @@ import (
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/qtgolang/SunnyNet/src/crypto/tls"
-	"github.com/qtgolang/SunnyNet/src/internal/textproto"
 	"io"
 	"net/url"
 	"strconv"
 	"strings"
+
+	"github.com/WyntersN/SunnyNet/src/crypto/tls"
+	"github.com/WyntersN/SunnyNet/src/internal/textproto"
 
 	"golang.org/x/net/http/httpguts"
 )

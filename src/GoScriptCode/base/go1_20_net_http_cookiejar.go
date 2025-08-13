@@ -6,7 +6,7 @@
 package base
 
 import (
-	"github.com/qtgolang/SunnyNet/src/http/cookiejar"
+	"github.com/WyntersN/SunnyNet/src/http/cookiejar"
 	"reflect"
 )
 

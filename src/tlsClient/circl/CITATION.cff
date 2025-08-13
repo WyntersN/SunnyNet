@@ -23,8 +23,8 @@ keywords:
   - crypto
   - post-quantum
   - golang
-repository-code: "https://github.com/qtgolang/SunnyNet/src/tlsClient/circl/"
+repository-code: "https://github.com/WyntersN/SunnyNet/src/tlsClient/circl/"
 type: software
-message: "Available at https://github.com/qtgolang/SunnyNet/src/tlsClient/circl. v1.3.6 Accessed Oct, 2023."
+message: "Available at https://github.com/WyntersN/SunnyNet/src/tlsClient/circl. v1.3.6 Accessed Oct, 2023."
 contact:
   - name: "Cloudflare, Inc."

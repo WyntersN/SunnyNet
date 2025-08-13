@@ -1,7 +1,7 @@
 package x448
 
 import (
-	fp "github.com/qtgolang/SunnyNet/src/tlsClient/circl/math/fp448"
+	fp "github.com/WyntersN/SunnyNet/src/tlsClient/circl/math/fp448"
 )
 
 // ladderJoye calculates a fixed-point multiplication with the generator point.

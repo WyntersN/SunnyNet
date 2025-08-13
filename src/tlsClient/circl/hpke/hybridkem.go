@@ -10,7 +10,7 @@ package hpke
 import (
 	"crypto/rand"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/kem"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/kem"
 )
 
 type hybridKEM struct {

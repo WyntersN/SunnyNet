@@ -5,9 +5,9 @@ import (
 	"encoding/binary"
 	"math/bits"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/internal/conv"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/math"
-	fp "github.com/qtgolang/SunnyNet/src/tlsClient/circl/math/fp25519"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/internal/conv"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/math"
+	fp "github.com/WyntersN/SunnyNet/src/tlsClient/circl/math/fp25519"
 )
 
 var paramD = fp.Elt{

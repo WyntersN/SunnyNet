@@ -1,4 +1,4 @@
-#include "Proxifier.hpp"
+#include "proxifier.hpp"
 
 #include <iostream>
 #include <string>

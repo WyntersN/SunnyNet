@@ -1,6 +1,6 @@
 package bls12381
 
-import "github.com/qtgolang/SunnyNet/src/tlsClient/circl/ecc/bls12381/ff"
+import "github.com/WyntersN/SunnyNet/src/tlsClient/circl/ecc/bls12381/ff"
 
 func doubleAndLine(P *G2, l *line) {
 	// Reference:

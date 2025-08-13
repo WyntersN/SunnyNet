@@ -9,7 +9,7 @@ import (
 	"crypto/rand"
 	"testing"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/group"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/group"
 )
 
 const testSimOTCount = 100

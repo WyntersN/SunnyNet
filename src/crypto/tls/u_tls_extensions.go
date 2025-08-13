@@ -11,7 +11,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/qtgolang/SunnyNet/src/crypto/tls/dicttls"
+	"github.com/WyntersN/SunnyNet/src/crypto/tls/dicttls"
 	"golang.org/x/crypto/cryptobyte"
 )
 

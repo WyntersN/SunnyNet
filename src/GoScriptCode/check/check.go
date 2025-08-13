@@ -7,7 +7,7 @@ package check
 import "C"
 import (
 	_ "embed"
-	"github.com/qtgolang/SunnyNet/src/GoScriptCode/yaegi/interp"
+	"github.com/WyntersN/SunnyNet/src/GoScriptCode/yaegi/interp"
 	"golang.org/x/sys/windows"
 	"reflect"
 	"syscall"

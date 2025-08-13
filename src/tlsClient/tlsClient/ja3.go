@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/qtgolang/SunnyNet/src/crypto/tls"
+	"github.com/WyntersN/SunnyNet/src/crypto/tls"
 )
 
 type CandidateCipherSuites struct {

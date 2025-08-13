@@ -6,7 +6,7 @@
 package base
 
 import (
-	"github.com/qtgolang/SunnyNet/src/http/pprof"
+	"github.com/WyntersN/SunnyNet/src/http/pprof"
 	"reflect"
 )
 var Symbols = map[string]map[string]reflect.Value{}

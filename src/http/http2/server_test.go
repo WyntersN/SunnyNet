@@ -27,10 +27,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/qtgolang/SunnyNet/src/crypto/tls"
+	"github.com/WyntersN/SunnyNet/src/crypto/tls"
 
-	 "github.com/qtgolang/SunnyNet/src/http"
-	"github.com/qtgolang/SunnyNet/src/http/httptest"
+	 "github.com/WyntersN/SunnyNet/src/http"
+	"github.com/WyntersN/SunnyNet/src/http/httptest"
 
 	"golang.org/x/net/http2/hpack"
 )

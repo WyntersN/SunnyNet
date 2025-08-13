@@ -18,7 +18,7 @@ import (
 	"math"
 	"math/big"
 
-	cmath "github.com/qtgolang/SunnyNet/src/tlsClient/circl/math"
+	cmath "github.com/WyntersN/SunnyNet/src/tlsClient/circl/math"
 )
 
 // GenerateKey generates a RSA keypair for its use in RSA threshold signatures.

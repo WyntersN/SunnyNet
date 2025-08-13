@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sort"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/sign/dilithium"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/sign/dilithium"
 )
 
 func Example() {

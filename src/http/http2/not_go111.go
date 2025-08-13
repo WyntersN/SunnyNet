@@ -10,7 +10,7 @@ package http2
 import (
 	"net/textproto"
 
-	"github.com/qtgolang/SunnyNet/src/http/httptrace"
+	"github.com/WyntersN/SunnyNet/src/http/httptrace"
 )
 
 func traceHasWroteHeaderField(trace *httptrace.ClientTrace) bool { return false }

@@ -15,9 +15,9 @@ import (
 	"testing"
 	"time"
 
-	 "github.com/qtgolang/SunnyNet/src/http"
+	 "github.com/WyntersN/SunnyNet/src/http"
 
-	"github.com/qtgolang/SunnyNet/src/http/http2/hpack"
+	"github.com/WyntersN/SunnyNet/src/http/http2/hpack"
 )
 
 var knownFailing = flag.Bool("known_failing", false, "Run known-failing tests.")

@@ -28,9 +28,6 @@ import (
 	"encoding/binary"
 	"errors"
 	"fmt"
-	"github.com/qtgolang/SunnyNet/src/crypto/tls"
-	"github.com/qtgolang/SunnyNet/src/http/httptrace"
-	"github.com/qtgolang/SunnyNet/src/internal/textproto"
 	"io"
 	"io/fs"
 	"log"
@@ -47,6 +44,10 @@ import (
 	"sync"
 	"sync/atomic"
 	"time"
+
+	"github.com/WyntersN/SunnyNet/src/crypto/tls"
+	"github.com/WyntersN/SunnyNet/src/http/httptrace"
+	"github.com/WyntersN/SunnyNet/src/internal/textproto"
 
 	"golang.org/x/net/http/httpguts"
 	"golang.org/x/net/http2/hpack"
@@ -2857,7 +2858,7 @@ func (fr *http2Framer) readMetaFrame(hf *http2HeadersFrame) (*http2MetaHeadersFr
 	mh := &http2MetaHeadersFrame{
 		http2HeadersFrame: hf,
 	}
-	var remainSize = fr.maxHeaderListSize()
+	remainSize := fr.maxHeaderListSize()
 	var sawRegular bool
 
 	var invalid error // pseudo header field errors
@@ -3307,9 +3308,7 @@ const (
 	http2defaultMaxReadFrameSize = 1 << 20
 )
 
-var (
-	http2clientPreface = []byte(http2ClientPreface)
-)
+var http2clientPreface = []byte(http2ClientPreface)
 
 type http2streamState int
 
@@ -3720,7 +3719,8 @@ func (p *http2pipe) Write(d []byte) (n int, err error) {
 //
 // The error must be non-nil.
 func (p *http2pipe) CloseWithError(err error) {
-	p.closeWithError(&p.err, err, nil) }
+	p.closeWithError(&p.err, err, nil)
+}
 
 // BreakWithError causes the next Read (waking up a current blocked
 // Read if needed) to return the provided err immediately, without
@@ -4280,6 +4280,7 @@ func H2NewConn(rwc net.Conn, rw func(ResponseWriter, *Request)) {
 		BaseConfig: h1s,
 	})
 }
+
 func http2serverConnBaseContext(c net.Conn, opts *http2ServeConnOpts) (ctx context.Context, cancel func()) {
 	ctx, cancel = context.WithCancel(opts.context())
 	ctx = context.WithValue(ctx, LocalAddrContextKey, c.LocalAddr())
@@ -5601,9 +5602,9 @@ func (sc *http2serverConn) processData(f *http2DataFrame) error {
 func (sc *http2serverConn) processGoAway(f *http2GoAwayFrame) error {
 	sc.serveG.check()
 	if f.ErrCode != http2ErrCodeNo {
-		//sc.logf("http2: received GOAWAY %+v, starting graceful shutdown", f)
+		// sc.logf("http2: received GOAWAY %+v, starting graceful shutdown", f)
 	} else {
-		//sc.vlogf("http2: received GOAWAY %+v, starting graceful shutdown", f)
+		// sc.vlogf("http2: received GOAWAY %+v, starting graceful shutdown", f)
 	}
 	sc.startGracefulShutdownInternal()
 	// http://tools.ietf.org/html/rfc7540#section-6.8
@@ -5760,7 +5761,7 @@ func (sc *http2serverConn) processHeaders(f *http2MetaHeadersFrame) error {
 	if sc.hs.ReadTimeout != 0 {
 		sc.conn.SetReadDeadline(time.Time{})
 		if st.body != nil {
-			//st.readDeadline = time.AfterFunc(sc.hs.ReadTimeout, st.onReadTimeout)
+			// st.readDeadline = time.AfterFunc(sc.hs.ReadTimeout, st.onReadTimeout)
 		}
 	}
 	handler := sc.handler.ServeHTTP
@@ -7197,7 +7198,6 @@ func (t *http2Transport) pingTimeout() time.Duration {
 		return 15 * time.Second
 	}
 	return t.PingTimeout
-
 }
 
 // ConfigureTransport configures a net/http HTTP/1 Transport to use HTTP/2.
@@ -7219,6 +7219,7 @@ func http2ConfigureTransports(t1 *Transport) (*http2Transport, error) {
 func HTTP2configureTransport(t1 *Transport) (*http2Transport, error) {
 	return http2configureTransports(t1)
 }
+
 func http2configureTransports(t1 *Transport) (*http2Transport, error) {
 	connPool := new(http2clientConnPool)
 	t2 := &http2Transport{
@@ -7235,10 +7236,10 @@ func http2configureTransports(t1 *Transport) (*http2Transport, error) {
 	if !http2strSliceContains(t1.TLSClientConfig.NextProtos, "h2") {
 		t1.TLSClientConfig.NextProtos = append([]string{"h2"}, t1.TLSClientConfig.NextProtos...)
 	}
- 	/*
-	if !http2strSliceContains(t1.TLSClientConfig.NextProtos, "http/1.1") {
-		t1.TLSClientConfig.NextProtos = append(t1.TLSClientConfig.NextProtos, "http/1.1")
-	}
+	/*
+		if !http2strSliceContains(t1.TLSClientConfig.NextProtos, "http/1.1") {
+			t1.TLSClientConfig.NextProtos = append(t1.TLSClientConfig.NextProtos, "http/1.1")
+		}
 	*/
 
 	upgradeFn := func(authority string, c *tls.Conn) RoundTripper {
@@ -8156,7 +8157,7 @@ func (cc *http2ClientConn) closeForLostPing() {
 
 // errRequestCanceled is a copy of net/http's errRequestCanceled because it's not
 // exported. At least they'll be DeepEqual for h1-vs-h2 comparisons tests.
-var http2errRequestCanceled = errors.New("github.com/qtgolang/SunnyNet/src/http: request canceled")
+var http2errRequestCanceled = errors.New("github.com/WyntersN/SunnyNet/src/http: request canceled")
 
 func http2commaSeparatedTrailers(req *Request) (string, error) {
 	keys := make([]string, 0, len(req.Trailer))
@@ -8196,12 +8197,12 @@ func http2checkConnHeaders(req *Request) error {
 	req.Header.Del("Transfer-Encoding")
 	req.Header.Del("Connection")
 	/*
-	if vv := req.Header["Transfer-Encoding"]; len(vv) > 0 && (len(vv) > 1 || vv[0] != "" && vv[0] != "chunked") {
-		return fmt.Errorf("http2: invalid Transfer-Encoding request header: %q", vv)
-	}
-	if vv := req.Header["Connection"]; len(vv) > 0 && (len(vv) > 1 || vv[0] != "" && !http2asciiEqualFold(vv[0], "close") && !http2asciiEqualFold(vv[0], "keep-alive")) {
-		return fmt.Errorf("http2: invalid Connection request header: %q", vv)
-	}
+		if vv := req.Header["Transfer-Encoding"]; len(vv) > 0 && (len(vv) > 1 || vv[0] != "" && vv[0] != "chunked") {
+			return fmt.Errorf("http2: invalid Transfer-Encoding request header: %q", vv)
+		}
+		if vv := req.Header["Connection"]; len(vv) > 0 && (len(vv) > 1 || vv[0] != "" && !http2asciiEqualFold(vv[0], "close") && !http2asciiEqualFold(vv[0], "keep-alive")) {
+			return fmt.Errorf("http2: invalid Connection request header: %q", vv)
+		}
 	*/
 	return nil
 }
@@ -8430,7 +8431,7 @@ func (cs *http2clientStream) writeRequest(req *Request) (err error) {
 				return err
 			}
 		}
-		err = cs.writeRequestBody(req);
+		err = cs.writeRequestBody(req)
 		if err != nil {
 			if err != http2errStopReqBodyWrite {
 				http2traceWroteRequest(cs.trace, err)
@@ -8835,7 +8836,6 @@ func (cs *http2clientStream) awaitFlowControl(maxBytes int) (taken int32, err er
 		if a := cs.flow.available(); a > 0 {
 			take := a
 			if int(take) > maxBytes {
-
 				take = int32(maxBytes) // can't truncate int; take is int32
 			}
 			if take > int32(cc.maxFrameSize) {
@@ -8897,12 +8897,12 @@ func (cc *http2ClientConn) encodeHeaders(req *Request, addGzipHeader bool, trail
 		}
 	}
 	var h2C *H2Config
-	obj:=req.Context().Value(h2ConfigKey)
-	if obj != nil{
-		h2C  = obj.(*H2Config)
+	obj := req.Context().Value(h2ConfigKey)
+	if obj != nil {
+		h2C = obj.(*H2Config)
 	}
 	var pHeaderOrder []string
-	if  h2C != nil{
+	if h2C != nil {
 		pHeaderOrder = h2C.pseudoHeaderOrder
 	}
 	enumerateHeaders := func(f func(name, value string)) {
@@ -9571,7 +9571,7 @@ func (b http2transportResponseBody) Read(p []byte) (n int, err error) {
 		if int64(n) > cs.bytesRemain {
 			n = int(cs.bytesRemain)
 			if err == nil {
-				err = errors.New("github.com/qtgolang/SunnyNet/src/http: server replied with more than declared Content-Length; truncated")
+				err = errors.New("github.com/WyntersN/SunnyNet/src/http: server replied with more than declared Content-Length; truncated")
 				cs.abortStream(err)
 			}
 			cs.readErr = err
@@ -10285,7 +10285,6 @@ type http2writeSettings []http2Setting
 func (s http2writeSettings) staysWithinBuffer(max int) bool {
 	const settingSize = 6 // uint16 + uint32
 	return http2frameHeaderLen+settingSize*len(s) <= max
-
 }
 
 func (s http2writeSettings) writeFrame(ctx http2writeContext) error {

@@ -21,21 +21,22 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/qtgolang/SunnyNet/src/Certificate"
-	"github.com/qtgolang/SunnyNet/src/CrossCompiled"
-	"github.com/qtgolang/SunnyNet/src/GoScriptCode"
-	"github.com/qtgolang/SunnyNet/src/HttpCertificate"
-	"github.com/qtgolang/SunnyNet/src/Interface"
-	"github.com/qtgolang/SunnyNet/src/ProcessDrv/Info"
-	"github.com/qtgolang/SunnyNet/src/ReadWriteObject"
-	"github.com/qtgolang/SunnyNet/src/Resource"
-	"github.com/qtgolang/SunnyNet/src/SunnyProxy"
-	"github.com/qtgolang/SunnyNet/src/crypto/tls"
-	"github.com/qtgolang/SunnyNet/src/dns"
-	"github.com/qtgolang/SunnyNet/src/http"
-	"github.com/qtgolang/SunnyNet/src/httpClient"
+	"github.com/WyntersN/SunnyNet/src/Interface"
+	"github.com/WyntersN/SunnyNet/src/httpClient"
 	"github.com/WyntersN/SunnyNet/src/public"
-	"github.com/qtgolang/SunnyNet/src/websocket"
+	"github.com/WyntersN/SunnyNet/src/Certificate"
+	"github.com/WyntersN/SunnyNet/src/CrossCompiled"
+	"github.com/WyntersN/SunnyNet/src/GoScriptCode"
+	"github.com/WyntersN/SunnyNet/src/HttpCertificate"
+
+	"github.com/WyntersN/SunnyNet/src/ProcessDrv/Info"
+	"github.com/WyntersN/SunnyNet/src/ReadWriteObject"
+	"github.com/WyntersN/SunnyNet/src/Resource"
+	"github.com/WyntersN/SunnyNet/src/SunnyProxy"
+	"github.com/WyntersN/SunnyNet/src/crypto/tls"
+	"github.com/WyntersN/SunnyNet/src/dns"
+	"github.com/WyntersN/SunnyNet/src/http"
+	"github.com/WyntersN/SunnyNet/src/websocket"
 )
 
 func init() {
@@ -43,6 +44,8 @@ func init() {
 	runtime.GOMAXPROCS(runtime.NumCPU() - 1)
 	CrossCompiled.SetNetworkConnectNumber()
 }
+
+
 
 // TargetInfo 请求连接信息
 type TargetInfo struct {
@@ -216,15 +219,9 @@ type proxyRequest struct {
 	rawTarget             uint32
 }
 
-type AuthUser struct {
-	Id       uint
-	Username string
-	Passwd   string
-}
-
 var (
 	sUser     = make(map[int]string)
-	sAuthUser = make(map[int]AuthUser)
+	sAuthUser = make(map[int]Interface.AuthUser)
 
 	sL sync.Mutex
 )
@@ -237,7 +234,7 @@ func (s *proxyRequest) setSocket5User(user string) {
 }
 
 // 设置s5连接账号
-func (s *proxyRequest) setSocket5AuthUser(user AuthUser) {
+func (s *proxyRequest) setSocket5AuthUser(user Interface.AuthUser) {
 	sL.Lock()
 	sAuthUser[s.Theology] = user
 	sL.Unlock()
@@ -271,7 +268,7 @@ func GetSocket5User(TheologyId int) string {
 	return user
 }
 
-func GetSocket5AuthUser(TheologyId int) AuthUser {
+func GetSocket5AuthUser(TheologyId int) Interface.AuthUser {
 	sL.Lock()
 	defer sL.Unlock()
 	return sAuthUser[TheologyId]
@@ -2247,26 +2244,26 @@ type Sunny struct {
 	tcpSocket             *net.Listener     // TcpSocket服务器
 	udpSocket             *net.UDPConn      // UdpSocket服务器
 	outRouterIP           *net.TCPAddr
-	connList              map[int64]net.Conn                     // 会话连接客户端、停止服务器时可以全部关闭
-	lock                  sync.Mutex                             // 会话连接互斥锁
-	socket5VerifyUser     bool                                   // S5代理是否需要验证账号密码
-	socket5VerifyUserList map[string]string                      // S5代理需要验证的账号密码列表
-	socket5VerifyUserLock sync.Mutex                             // S5代理验证时的锁
-	isMustTcp             bool                                   // 强制走TCP
-	httpCallback          int                                    // http 请求回调地址
-	tcpCallback           int                                    // TCP请求回调地址
-	websocketCallback     int                                    // ws请求回调地址
-	udpCallback           int                                    // udp请求回调地址
-	goHttpCallback        func(ConnHTTP)                         // http请求GO回调地址
-	goTcpCallback         func(ConnTCP)                          // TCP请求GO回调地址
-	goWebsocketCallback   func(ConnWebSocket)                    // ws请求GO回调地址
-	goUdpCallback         func(ConnUDP)                          // UDP请求GO回调地址
-	goAuthCallback        func(string, string) (bool, *AuthUser) // 身份认证GO回调地址
-	proxy                 *SunnyProxy.Proxy                      // 全局上游代理
-	proxyRegexp           *regexp.Regexp                         // 上游代理使用规则
-	mustTcpRegexp         *regexp.Regexp                         // 强制走TCP规则,如果 isMustTcp 打开状态,本功能则无效
-	mustTcpRulesAllow     bool                                   // true 表示 mustTcpRegexp 规则内的强制走TCP，反之不在规则内的强制都TCP
-	isRun                 bool                                   // 是否在运行中
+	connList              map[int64]net.Conn                               // 会话连接客户端、停止服务器时可以全部关闭
+	lock                  sync.Mutex                                       // 会话连接互斥锁
+	socket5VerifyUser     bool                                             // S5代理是否需要验证账号密码
+	socket5VerifyUserList map[string]string                                // S5代理需要验证的账号密码列表
+	socket5VerifyUserLock sync.Mutex                                       // S5代理验证时的锁
+	isMustTcp             bool                                             // 强制走TCP
+	httpCallback          int                                              // http 请求回调地址
+	tcpCallback           int                                              // TCP请求回调地址
+	websocketCallback     int                                              // ws请求回调地址
+	udpCallback           int                                              // udp请求回调地址
+	goHttpCallback        func(ConnHTTP)                                   // http请求GO回调地址
+	goTcpCallback         func(ConnTCP)                                    // TCP请求GO回调地址
+	goWebsocketCallback   func(ConnWebSocket)                              // ws请求GO回调地址
+	goUdpCallback         func(ConnUDP)                                    // UDP请求GO回调地址
+	goAuthCallback        func(string, string) (bool, *Interface.AuthUser) // 身份认证GO回调地址
+	proxy                 *SunnyProxy.Proxy                                // 全局上游代理
+	proxyRegexp           *regexp.Regexp                                   // 上游代理使用规则
+	mustTcpRegexp         *regexp.Regexp                                   // 强制走TCP规则,如果 isMustTcp 打开状态,本功能则无效
+	mustTcpRulesAllow     bool                                             // true 表示 mustTcpRegexp 规则内的强制走TCP，反之不在规则内的强制都TCP
+	isRun                 bool                                             // 是否在运行中
 	SunnyContext          int
 	isRandomTLS           bool   // 是否随机使用TLS指纹
 	userScriptCode        []byte // 用户脚本代码
@@ -2617,7 +2614,7 @@ func (s *Sunny) SetGoCallback(httpCall func(ConnHTTP), tcpCall func(ConnTCP), ws
 }
 
 // SetAuthCallback 设置身份认证回调
-func (s *Sunny) SetAuthCallback(authCall func(username, password string) (bool, *AuthUser)) *Sunny {
+func (s *Sunny) SetAuthCallback(authCall func(username, password string) (bool, *Interface.AuthUser)) *Sunny {
 	s.lock.Lock()
 	defer s.lock.Unlock()
 	s.goAuthCallback = authCall

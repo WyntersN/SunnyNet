@@ -13,7 +13,7 @@ import (
 	"hash"
 	"log"
 
-	"github.com/qtgolang/SunnyNet/src/crypto/tls/internal/helper"
+	"github.com/WyntersN/SunnyNet/src/crypto/tls/internal/helper"
 	"golang.org/x/crypto/cryptobyte"
 )
 
@@ -589,7 +589,7 @@ func (chs *ClientHelloSpec) UnmarshalJSON(jsonB []byte) error {
 }
 
 var (
-	// HelloGolang will use default  "github.com/qtgolang/SunnyNet/src/crypto/tls" handshake marshaling codepath, which WILL
+	// HelloGolang will use default  "github.com/WyntersN/SunnyNet/src/crypto/tls" handshake marshaling codepath, which WILL
 	// overwrite your changes to Hello(Config, Session are fine).
 	// You might want to call BuildHandshakeState() before applying any changes.
 	// UConn.Extensions will be completely ignored.

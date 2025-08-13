@@ -11,7 +11,7 @@ import (
 	"testing"
 	"testing/quick"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/dh/sidh/internal/common"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/dh/sidh/internal/common"
 	"golang.org/x/sys/cpu"
 )
 

@@ -8,8 +8,8 @@ import (
 	"bytes"
 	"fmt"
 	"io"
-	"github.com/qtgolang/SunnyNet/src/http"
-	 "github.com/qtgolang/SunnyNet/src/internal/textproto"
+	"github.com/WyntersN/SunnyNet/src/http"
+	 "github.com/WyntersN/SunnyNet/src/internal/textproto"
 	"strconv"
 	"strings"
 

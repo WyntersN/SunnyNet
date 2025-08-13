@@ -8,8 +8,8 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/dh/sidh/internal/common"
-	. "github.com/qtgolang/SunnyNet/src/tlsClient/circl/internal/test"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/dh/sidh/internal/common"
+	. "github.com/WyntersN/SunnyNet/src/tlsClient/circl/internal/test"
 )
 
 /* -------------------------------------------------------------------------
@@ -580,7 +580,7 @@ func BenchmarkSharedSecretBobP434(b *testing.B) {
 // Examples
 
 func ExamplePrivateKey() {
-	// import "github.com/qtgolang/SunnyNet/src/tlsClient/circl/dh/sidh"
+	// import "github.com/WyntersN/SunnyNet/src/tlsClient/circl/dh/sidh"
 
 	// Alice's key pair
 	prvA := NewPrivateKey(Fp503, KeyVariantSidhA)

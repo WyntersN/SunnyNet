@@ -15,7 +15,7 @@ import (
 	cryptoRand "crypto/rand"
 	"io"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/pke/kyber/{{.Pkg}}/internal"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/pke/kyber/{{.Pkg}}/internal"
 )
 
 const (

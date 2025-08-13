@@ -1,6 +1,6 @@
 package curve4q
 
-import "github.com/qtgolang/SunnyNet/src/tlsClient/circl/ecc/fourq"
+import "github.com/WyntersN/SunnyNet/src/tlsClient/circl/ecc/fourq"
 
 // Size is the size in bytes of keys.
 const Size = 32

@@ -5,10 +5,10 @@ import (
 	cryptoRand "crypto/rand"
 	"crypto/subtle"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/dh/x25519"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/dh/x448"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/internal/sha3"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/kem"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/dh/x25519"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/dh/x448"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/internal/sha3"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/kem"
 )
 
 type xPublicKey struct {

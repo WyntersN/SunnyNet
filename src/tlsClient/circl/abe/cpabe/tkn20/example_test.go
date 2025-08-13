@@ -7,7 +7,7 @@ import (
 	"log"
 	"strconv"
 
-	cpabe "github.com/qtgolang/SunnyNet/src/tlsClient/circl/abe/cpabe/tkn20"
+	cpabe "github.com/WyntersN/SunnyNet/src/tlsClient/circl/abe/cpabe/tkn20"
 )
 
 func checkPolicy(in map[string][]string) bool {

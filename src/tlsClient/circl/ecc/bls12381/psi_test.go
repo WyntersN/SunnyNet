@@ -3,7 +3,7 @@ package bls12381
 import (
 	"testing"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/ecc/bls12381/ff"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/ecc/bls12381/ff"
 )
 
 func checkE(t *testing.T, x *ff.Fp12, y *ff.Fp12) {

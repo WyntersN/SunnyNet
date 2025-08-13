@@ -35,10 +35,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/qtgolang/SunnyNet/src/crypto/tls"
+	"github.com/WyntersN/SunnyNet/src/crypto/tls"
 
-	"github.com/qtgolang/SunnyNet/src/http/http2"
-	"github.com/qtgolang/SunnyNet/src/http/http2/hpack"
+	"github.com/WyntersN/SunnyNet/src/http/http2"
+	"github.com/WyntersN/SunnyNet/src/http/http2/hpack"
 	"golang.org/x/term"
 )
 

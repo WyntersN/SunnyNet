@@ -2,31 +2,32 @@ package SunnyNet
 
 import (
 	"bytes"
-	"github.com/qtgolang/SunnyNet/src/CrossCompiled"
-	"github.com/qtgolang/SunnyNet/src/Interface"
-	"github.com/qtgolang/SunnyNet/src/SunnyProxy"
-	"github.com/qtgolang/SunnyNet/src/crypto/tls"
-	"github.com/qtgolang/SunnyNet/src/http"
-	"github.com/WyntersN/SunnyNet/src/public"
 	"io"
 	"net/url"
 	"strconv"
 	"strings"
+
+	"github.com/WyntersN/SunnyNet/src/Interface"
+	"github.com/WyntersN/SunnyNet/src/public"
+	"github.com/WyntersN/SunnyNet/src/CrossCompiled"
+	"github.com/WyntersN/SunnyNet/src/SunnyProxy"
+	"github.com/WyntersN/SunnyNet/src/crypto/tls"
+	"github.com/WyntersN/SunnyNet/src/http"
 )
 
 type ConnHTTP Interface.ConnHTTPCall
 
 type httpConn struct {
 	_Context              int
-	_Theology             int               //唯一ID
-	_MessageId            int               //消息ID,仅标识消息ID,不能用于API函数
-	_PID                  int               //请求进程PID， 为0 表示 非本机设备通过代理连接
-	_Type                 int               //请求类型 例如 public.HttpSendRequest  public.Http....
-	_ClientIP             string            //来源IP地址,请求从哪里来
-	_request              *http.Request     //请求体
-	_response             *http.Response    //响应体
-	_err                  string            //错误信息
-	_proxy                *SunnyProxy.Proxy //代理信息
+	_Theology             int               // 唯一ID
+	_MessageId            int               // 消息ID,仅标识消息ID,不能用于API函数
+	_PID                  int               // 请求进程PID， 为0 表示 非本机设备通过代理连接
+	_Type                 int               // 请求类型 例如 public.HttpSendRequest  public.Http....
+	_ClientIP             string            // 来源IP地址,请求从哪里来
+	_request              *http.Request     // 请求体
+	_response             *http.Response    // 响应体
+	_err                  string            // 错误信息
+	_proxy                *SunnyProxy.Proxy // 代理信息
 	_getRawBody           func(path string) bool
 	_Display              bool
 	_Break                bool
@@ -44,12 +45,17 @@ func (k *httpConn) SetOutRouterIP(way string) bool {
 	}
 	return false
 }
+
 func (h *httpConn) LocalAddress() string {
 	return h._localAddress
 }
 
 func (h *httpConn) GetSocket5User() string {
 	return GetSocket5User(h._Theology)
+}
+
+func (h *httpConn) GetSocket5AuthUser() Interface.AuthUser {
+	return GetSocket5AuthUser(h._Theology)
 }
 
 func (h *httpConn) ServerAddress() string {
@@ -132,6 +138,7 @@ func (h *httpConn) GetProcessName() string {
 	}
 	return CrossCompiled.GetPidName(int32(h._PID))
 }
+
 func (h *httpConn) GetResponseProto() string {
 	if h == nil {
 		return ""
@@ -163,9 +170,11 @@ SetDisplay
 func (h *httpConn) SetDisplay(Display bool) {
 	h._Display = Display
 }
+
 func (h *httpConn) Context() int {
 	return h._Context
 }
+
 func (h *httpConn) MessageId() int {
 	return h._MessageId
 }

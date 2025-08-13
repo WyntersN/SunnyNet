@@ -5,7 +5,7 @@ package NFapi
 
 import "C"
 import (
-	"github.com/qtgolang/SunnyNet/src/ProcessDrv/nfapi/Driver"
+	"github.com/WyntersN/SunnyNet/src/ProcessDrv/nfapi/Driver"
 	"github.com/WyntersN/SunnyNet/src/public"
 	"unsafe"
 )

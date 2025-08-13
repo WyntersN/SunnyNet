@@ -7,14 +7,14 @@
 package httptest
 
 import (
-	 "github.com/qtgolang/SunnyNet/src/crypto/tls"
+	 "github.com/WyntersN/SunnyNet/src/crypto/tls"
 	"crypto/x509"
 	"flag"
 	"fmt"
 	"log"
 	"net"
-	"github.com/qtgolang/SunnyNet/src/http"
-	"github.com/qtgolang/SunnyNet/src/http/internal/testcert"
+	"github.com/WyntersN/SunnyNet/src/http"
+	"github.com/WyntersN/SunnyNet/src/http/internal/testcert"
 	"os"
 	"strings"
 	"sync"

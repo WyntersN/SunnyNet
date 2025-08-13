@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/qtgolang/SunnyNet/src/crypto/tls/dicttls"
+	"github.com/WyntersN/SunnyNet/src/crypto/tls/dicttls"
 )
 
 var ErrUnknownExtension = errors.New("extension name is unknown to the dictionary")

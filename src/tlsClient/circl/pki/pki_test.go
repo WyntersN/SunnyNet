@@ -3,8 +3,8 @@ package pki_test
 import (
 	"testing"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/pki"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/sign/schemes"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/pki"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/sign/schemes"
 )
 
 func TestPEM(t *testing.T) {

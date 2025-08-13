@@ -7,12 +7,13 @@ package multipart
 import (
 	"bytes"
 	"errors"
-	"github.com/qtgolang/SunnyNet/src/internal/godebug"
-	"github.com/qtgolang/SunnyNet/src/internal/textproto"
 	"io"
 	"math"
 	"os"
 	"strconv"
+
+	"github.com/WyntersN/SunnyNet/src/internal/godebug"
+	"github.com/WyntersN/SunnyNet/src/internal/textproto"
 )
 
 // ErrMessageTooLarge is returned by ReadForm if the message form

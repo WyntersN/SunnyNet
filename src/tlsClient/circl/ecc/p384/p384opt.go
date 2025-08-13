@@ -7,7 +7,7 @@ import (
 	"crypto/subtle"
 	"math/big"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/math"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/math"
 )
 
 type curve struct{}

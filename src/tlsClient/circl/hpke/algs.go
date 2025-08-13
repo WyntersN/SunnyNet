@@ -11,11 +11,11 @@ import (
 	"hash"
 	"io"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/dh/x25519"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/dh/x448"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/ecc/p384"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/kem"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/kem/kyber/kyber768"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/dh/x25519"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/dh/x448"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/ecc/p384"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/kem"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/kem/kyber/kyber768"
 	"golang.org/x/crypto/chacha20poly1305"
 	"golang.org/x/crypto/hkdf"
 )

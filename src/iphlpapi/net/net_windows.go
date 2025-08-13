@@ -11,7 +11,7 @@ import (
 	"syscall"
 	"unsafe"
 
-	"github.com/qtgolang/SunnyNet/src/iphlpapi/common"
+	"github.com/WyntersN/SunnyNet/src/iphlpapi/common"
 	"golang.org/x/sys/windows"
 )
 

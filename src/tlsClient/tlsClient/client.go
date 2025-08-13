@@ -10,10 +10,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/qtgolang/SunnyNet/src/http"
-	"github.com/qtgolang/SunnyNet/src/http/httputil"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/tlsClient/bandwidth"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/tlsClient/profiles"
+	"github.com/WyntersN/SunnyNet/src/http"
+	"github.com/WyntersN/SunnyNet/src/http/httputil"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/tlsClient/bandwidth"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/tlsClient/profiles"
 	"golang.org/x/net/proxy"
 )
 

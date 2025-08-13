@@ -1,9 +1,18 @@
+/*
+ * @Descripttion:
+ * @version:
+ * @Author: Wynters
+ * @Date: 2025-08-13 16:08:29
+ * @LastEditTime: 2025-08-13 19:10:05
+ * @FilePath: \SunnyNet\Api\httpcertificate.go
+ */
 package Api
 
 import (
 	"crypto/x509"
-	"github.com/qtgolang/SunnyNet/src/Certificate"
-	"github.com/qtgolang/SunnyNet/src/HttpCertificate"
+
+	"github.com/WyntersN/SunnyNet/src/Certificate"
+	HttpCertificate "github.com/WyntersN/SunnyNet/src/HttpCertificate"
 )
 
 // AddHttpCertificate 创建 Http证书管理器 对象 实现指定Host使用指定证书

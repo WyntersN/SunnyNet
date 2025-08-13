@@ -4,8 +4,8 @@ import (
 	"crypto/rand"
 	"testing"
 
-	pairing "github.com/qtgolang/SunnyNet/src/tlsClient/circl/ecc/bls12381"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/ecc/bls12381/ff"
+	pairing "github.com/WyntersN/SunnyNet/src/tlsClient/circl/ecc/bls12381"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/ecc/bls12381/ff"
 )
 
 func TestSampleDlin(t *testing.T) {

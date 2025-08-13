@@ -8,8 +8,8 @@ import (
 	"math/big"
 
 	r255 "github.com/bwesterb/go-ristretto"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/expander"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/internal/conv"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/expander"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/internal/conv"
 )
 
 // Ristretto255 is a quotient group generated from the edwards25519 curve.

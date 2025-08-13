@@ -14,7 +14,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/qtgolang/SunnyNet/src/http/http2/hpack"
+	"github.com/WyntersN/SunnyNet/src/http/http2/hpack"
 	"golang.org/x/net/http/httpguts"
 )
 

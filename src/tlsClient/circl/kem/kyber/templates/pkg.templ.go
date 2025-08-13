@@ -16,9 +16,9 @@ import (
 	"crypto/subtle"
 	"io"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/internal/sha3"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/kem"
-	cpapke "github.com/qtgolang/SunnyNet/src/tlsClient/circl/pke/kyber/{{.Pkg}}"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/internal/sha3"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/kem"
+	cpapke "github.com/WyntersN/SunnyNet/src/tlsClient/circl/pke/kyber/{{.Pkg}}"
 	cryptoRand "crypto/rand"
 )
 

@@ -11,7 +11,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/qtgolang/SunnyNet/src/crypto/tls/testenv"
+	"github.com/WyntersN/SunnyNet/src/crypto/tls/testenv"
 )
 
 // Tests that the linker is able to remove references to the Client or Server if unused.
@@ -32,7 +32,7 @@ func TestLinkerGC(t *testing.T) {
 		{
 			name: "empty_import",
 			program: `package main
-import _  "github.com/qtgolang/SunnyNet/src/crypto/tls"
+import _  "github.com/WyntersN/SunnyNet/src/crypto/tls"
 func main() {}
 `,
 			bad: []string{
@@ -44,7 +44,7 @@ func main() {}
 		{
 			name: "client_and_server",
 			program: `package main
-import  "github.com/qtgolang/SunnyNet/src/crypto/tls"
+import  "github.com/WyntersN/SunnyNet/src/crypto/tls"
 func main() {
   tls.Dial("", "", nil)
   tls.Server(nil, nil)
@@ -58,7 +58,7 @@ func main() {
 		{
 			name: "only_client",
 			program: `package main
-import  "github.com/qtgolang/SunnyNet/src/crypto/tls"
+import  "github.com/WyntersN/SunnyNet/src/crypto/tls"
 func main() { tls.Dial("", "", nil) }
 `,
 			want: []string{

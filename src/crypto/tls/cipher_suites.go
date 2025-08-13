@@ -14,7 +14,7 @@ import (
 	"crypto/sha1"
 	"crypto/sha256"
 	"fmt"
-	"github.com/qtgolang/SunnyNet/src/crypto/tls/internal/boring"
+	"github.com/WyntersN/SunnyNet/src/crypto/tls/internal/boring"
 	"golang.org/x/crypto/chacha20poly1305"
 	"golang.org/x/sys/cpu"
 	"hash"

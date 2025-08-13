@@ -13,13 +13,13 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/qtgolang/SunnyNet/src/http/cookiejar"
-	"github.com/qtgolang/SunnyNet/src/http/httptest"
-	"github.com/qtgolang/SunnyNet/src/crypto/tls"
+	"github.com/WyntersN/SunnyNet/src/http/cookiejar"
+	"github.com/WyntersN/SunnyNet/src/http/httptest"
+	"github.com/WyntersN/SunnyNet/src/crypto/tls"
 	"golang.org/x/net/publicsuffix"
 
-	 "github.com/qtgolang/SunnyNet/src/http"
-	"github.com/qtgolang/SunnyNet/src/http/http2"
+	 "github.com/WyntersN/SunnyNet/src/http"
+	"github.com/WyntersN/SunnyNet/src/http/http2"
 )
 
 // Tests if connection settings are written correctly

@@ -9,7 +9,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"fmt"
-	"github.com/qtgolang/SunnyNet/src/iphlpapi/common"
+	"github.com/WyntersN/SunnyNet/src/iphlpapi/common"
 	"io"
 	"io/ioutil"
 	"net"

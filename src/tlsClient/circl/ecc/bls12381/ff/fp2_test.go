@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/internal/test"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/internal/test"
 )
 
 func randomFp2(t testing.TB) *Fp2 { return &Fp2{*randomFp(t), *randomFp(t)} }

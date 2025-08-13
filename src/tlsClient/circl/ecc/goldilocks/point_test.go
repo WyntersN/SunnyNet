@@ -5,8 +5,8 @@ import (
 	"encoding"
 	"testing"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/ecc/goldilocks"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/internal/test"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/ecc/goldilocks"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/internal/test"
 )
 
 func randomPoint() *goldilocks.Point {

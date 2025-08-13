@@ -3,26 +3,30 @@ package Proxifier
 /*
 #cgo CXXFLAGS: -std=c++11
 #cgo LDFLAGS: -lws2_32
-#include "Proxifier.hpp"
+#include "proxifier.hpp"
 #include <stdio.h>
 #include <stdlib.h>
 */
 import "C"
+
 import (
 	"context"
 	"encoding/binary"
 	"fmt"
-	"github.com/qtgolang/SunnyNet/src/ProcessDrv/Info"
 	"net"
 	"os"
 	"path/filepath"
 	"strings"
 	"time"
 	"unsafe"
+
+	"github.com/WyntersN/SunnyNet/src/ProcessDrv/Info"
 )
 
-var HandleClientConn func(net.Conn)
-var myPid = os.Getpid()
+var (
+	HandleClientConn func(net.Conn)
+	myPid            = os.Getpid()
+)
 
 func Write(hPipe C.HANDLE, bs []byte) {
 	l := len(bs)
@@ -67,7 +71,7 @@ func Call(hPipe C.HANDLE, raw uintptr) {
 		WriteData[4] = 0x1
 		WriteData[0x3f8] = 0x1
 		Write(hPipe, WriteData)
-		//fmt.Println(hex.Dump(CStringToBytes(raw, 0x534)))
+		// fmt.Println(hex.Dump(CStringToBytes(raw, 0x534)))
 		return
 	}
 	if family != 2 && family != 23 {
@@ -98,7 +102,7 @@ func Call(hPipe C.HANDLE, raw uintptr) {
 	var listener net.Listener
 	var err error
 	WriteData := make([]byte, 1020)
-	//固定标志
+	// 固定标志
 	WriteData[0] = 0xfc
 	WriteData[1] = 0x03
 	WriteData[9] = 0x00
@@ -138,7 +142,7 @@ func Call(hPipe C.HANDLE, raw uintptr) {
 				if p4 == nil && p6 != nil {
 					_ISV6 = true
 				}
-				var obj = &proxyProcessInfo{listener: listener, RemoteAddress: domain, RemotePort: uint16(port), V6: _ISV6, Pid: fmt.Sprintf("%d", __pid)}
+				obj := &proxyProcessInfo{listener: listener, RemoteAddress: domain, RemotePort: uint16(port), V6: _ISV6, Pid: fmt.Sprintf("%d", __pid)}
 
 				connLocalAddr := conn.RemoteAddr().(*net.TCPAddr)
 				connPort := uint16(connLocalAddr.Port)
@@ -163,18 +167,17 @@ func Call(hPipe C.HANDLE, raw uintptr) {
 
 		WriteData[0x3f0] = 0x17
 	} else {
-		//127.0.0.1
+		// 127.0.0.1
 		WriteData[12] = 0x7f
 		WriteData[13] = 0x00
 		WriteData[14] = 0x00
 		WriteData[15] = 0x01
 		WriteData[0x3f0] = 0x02
 	}
-	//不知道什么玩意
+	// 不知道什么玩意
 	WriteData[1012] = 0x06
 	WriteData[1016] = 0x02
 	Write(hPipe, WriteData)
-
 }
 
 type proxyProcessInfo struct {
@@ -189,18 +192,23 @@ type proxyProcessInfo struct {
 func (p *proxyProcessInfo) GetRemoteAddress() string {
 	return p.RemoteAddress
 }
+
 func (p *proxyProcessInfo) GetRemotePort() uint16 {
 	return p.RemotePort
 }
+
 func (p *proxyProcessInfo) GetPid() string {
 	return p.Pid
 }
+
 func (p *proxyProcessInfo) IsV6() bool {
 	return p.V6
 }
+
 func (p *proxyProcessInfo) ID() uint64 {
 	return p.Id
 }
+
 func (p *proxyProcessInfo) Close() {
 	Info.Lock.Lock()
 	if p.listener != nil {
@@ -209,6 +217,7 @@ func (p *proxyProcessInfo) Close() {
 	p.listener = nil
 	Info.Lock.Unlock()
 }
+
 func wcharPtrToString(ptr uintptr) string {
 	var length int
 	// 计算宽字符的长度
@@ -240,9 +249,11 @@ func CStringToBytes(r uintptr, dataLen int) []byte {
 	}
 	return data
 }
+
 func IsInit() bool {
 	return int(C.ProxifierIsInit()) == 1 || HandleClientConn != nil
 }
+
 func SetHandle(Handle func(conn net.Conn)) bool {
 	res := 0
 	Info.Lock.Lock()

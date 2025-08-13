@@ -7,7 +7,7 @@
 
 package websocket
 
-import "github.com/qtgolang/SunnyNet/src/crypto/tls"
+import "github.com/WyntersN/SunnyNet/src/crypto/tls"
 
 // cloneTLSConfig clones all public fields except the fields
 // SessionTicketsDisabled and SessionTicketKey. This avoids copying the

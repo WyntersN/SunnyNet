@@ -50,7 +50,7 @@
 package main
 
 import (
-	"github.com/qtgolang/SunnyNet/SunnyNet"
+	"github.com/WyntersN/SunnyNet/SunnyNet"
 	"github.com/WyntersN/SunnyNet/src/public"
 	"time"
 	"log"

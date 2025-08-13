@@ -9,7 +9,7 @@ import (
 	"fmt"
 	"io"
 	"log"
-	. "github.com/qtgolang/SunnyNet/src/http"
+	. "github.com/WyntersN/SunnyNet/src/http"
 	"reflect"
 	"strconv"
 	"strings"

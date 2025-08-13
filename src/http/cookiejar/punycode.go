@@ -8,7 +8,7 @@ package cookiejar
 
 import (
 	"fmt"
-	"github.com/qtgolang/SunnyNet/src/http/internal/ascii"
+	"github.com/WyntersN/SunnyNet/src/http/internal/ascii"
 	"strings"
 	"unicode/utf8"
 )

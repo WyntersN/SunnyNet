@@ -2,7 +2,7 @@
 //
 // A register of schemes is available in the package
 //
-//	github.com/qtgolang/SunnyNet/src/tlsClient/circl/sign/schemes
+//	github.com/WyntersN/SunnyNet/src/tlsClient/circl/sign/schemes
 package sign
 
 import (

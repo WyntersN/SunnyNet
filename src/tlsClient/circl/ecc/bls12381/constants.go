@@ -3,7 +3,7 @@ package bls12381
 import (
 	"errors"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/ecc/bls12381/ff"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/ecc/bls12381/ff"
 )
 
 // Scalar represents positive integers in the range 0 <= x < Order.

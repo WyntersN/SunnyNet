@@ -9,7 +9,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	 "github.com/qtgolang/SunnyNet/src/internal/textproto"
+	 "github.com/WyntersN/SunnyNet/src/internal/textproto"
 	"os"
 	"reflect"
 	"strings"

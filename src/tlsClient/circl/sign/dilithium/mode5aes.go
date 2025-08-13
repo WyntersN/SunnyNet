@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/sign/dilithium/internal/common"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/sign/dilithium/mode5aes"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/sign/dilithium/internal/common"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/sign/dilithium/mode5aes"
 )
 
 // implMode5AES implements the mode.Mode interface for Dilithium5-AES.

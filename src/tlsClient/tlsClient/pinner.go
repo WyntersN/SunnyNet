@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/qtgolang/SunnyNet/src/crypto/tls"
-	"github.com/qtgolang/SunnyNet/src/http"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/hpkp"
+	"github.com/WyntersN/SunnyNet/src/crypto/tls"
+	"github.com/WyntersN/SunnyNet/src/http"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/hpkp"
 )
 
 var DefaultBadPinHandler = func(req *http.Request) {

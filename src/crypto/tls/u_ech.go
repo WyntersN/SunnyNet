@@ -8,8 +8,8 @@ import (
 	"math/big"
 	"sync"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/hpke"
-	"github.com/qtgolang/SunnyNet/src/crypto/tls/dicttls"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/hpke"
+	"github.com/WyntersN/SunnyNet/src/crypto/tls/dicttls"
 )
 
 // Unstable API: This is a work in progress and may change in the future. Using

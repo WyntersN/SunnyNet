@@ -3,7 +3,7 @@ package dsl
 import (
 	"fmt"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/abe/cpabe/tkn20/internal/tkn"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/abe/cpabe/tkn20/internal/tkn"
 )
 
 var operators = map[string]int{

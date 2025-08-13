@@ -9,10 +9,11 @@ import (
 	"crypto/rand"
 	"errors"
 	"fmt"
-	"github.com/qtgolang/SunnyNet/src/internal/textproto"
 	"io"
 	"sort"
 	"strings"
+
+	"github.com/WyntersN/SunnyNet/src/internal/textproto"
 )
 
 // A Writer generates multipart messages.

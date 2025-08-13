@@ -143,13 +143,13 @@ func (t *Transport) RoundTrip(req *Request) (*Response, error) {
 		case clHeader != "":
 			cl, err := strconv.ParseInt(clHeader, 10, 64)
 			if err != nil {
-				errCh <- fmt.Errorf("github.com/qtgolang/SunnyNet/src/http: ill-formed Content-Length header: %v", err)
+				errCh <- fmt.Errorf("github.com/WyntersN/SunnyNet/src/http: ill-formed Content-Length header: %v", err)
 				return nil
 			}
 			if cl < 0 {
 				// Content-Length values less than 0 are invalid.
 				// See: https://datatracker.ietf.org/doc/html/rfc2616/#section-14.13
-				errCh <- fmt.Errorf("github.com/qtgolang/SunnyNet/src/http: invalid Content-Length header: %q", clHeader)
+				errCh <- fmt.Errorf("github.com/WyntersN/SunnyNet/src/http: invalid Content-Length header: %q", clHeader)
 				return nil
 			}
 			contentLength = cl
@@ -185,7 +185,7 @@ func (t *Transport) RoundTrip(req *Request) (*Response, error) {
 	failure = js.FuncOf(func(this js.Value, args []js.Value) any {
 		success.Release()
 		failure.Release()
-		errCh <- fmt.Errorf("github.com/qtgolang/SunnyNet/src/http: fetch() failed: %s", args[0].Get("message").String())
+		errCh <- fmt.Errorf("github.com/WyntersN/SunnyNet/src/http: fetch() failed: %s", args[0].Get("message").String())
 		return nil
 	})
 
@@ -204,7 +204,7 @@ func (t *Transport) RoundTrip(req *Request) (*Response, error) {
 	}
 }
 
-var errClosed = errors.New("github.com/qtgolang/SunnyNet/src/http: reader is closed")
+var errClosed = errors.New("github.com/WyntersN/SunnyNet/src/http: reader is closed")
 
 // streamReader implements an io.ReadCloser wrapper for ReadableStream.
 // See https://fetch.spec.whatwg.org/#readablestream for more information.

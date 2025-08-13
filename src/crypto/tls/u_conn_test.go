@@ -6,7 +6,7 @@ package tls
 
 import (
 	"bytes"
-	 "github.com/qtgolang/SunnyNet/src/crypto/tls"
+	 "github.com/WyntersN/SunnyNet/src/crypto/tls"
 	"fmt"
 	"io"
 	"net"

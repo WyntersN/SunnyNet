@@ -10,8 +10,8 @@ import (
 	"io"
 	"math/big"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/ecc/p384"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/expander"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/ecc/p384"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/expander"
 )
 
 var (

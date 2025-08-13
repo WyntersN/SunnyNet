@@ -7,12 +7,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/qtgolang/SunnyNet/src/GoScriptCode"
-	"github.com/qtgolang/SunnyNet/src/Interface"
-	"github.com/qtgolang/SunnyNet/src/Resource"
-	"github.com/qtgolang/SunnyNet/src/http"
-	"github.com/WyntersN/SunnyNet/src/public"
 	"strings"
+
+	"github.com/WyntersN/SunnyNet/src/public"
+	"github.com/WyntersN/SunnyNet/src/GoScriptCode"
+	"github.com/WyntersN/SunnyNet/src/Interface"
+	"github.com/WyntersN/SunnyNet/src/Resource"
+	"github.com/WyntersN/SunnyNet/src/http"
 )
 
 // SetScriptPage 设置脚本页面

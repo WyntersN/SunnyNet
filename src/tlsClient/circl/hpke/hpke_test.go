@@ -6,11 +6,11 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/hpke"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/hpke"
 )
 
 func Example() {
-	// import "github.com/qtgolang/SunnyNet/src/tlsClient/circl/hpke"
+	// import "github.com/WyntersN/SunnyNet/src/tlsClient/circl/hpke"
 	// import "crypto/rand"
 
 	// HPKE suite is a domain parameter.

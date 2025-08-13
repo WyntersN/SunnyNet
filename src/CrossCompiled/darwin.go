@@ -5,7 +5,7 @@ package CrossCompiled
 
 import (
 	"fmt"
-	"github.com/qtgolang/SunnyNet/src/ProcessDrv/Info"
+	"github.com/WyntersN/SunnyNet/src/ProcessDrv/Info"
 	"os"
 	"os/exec"
 	"strings"

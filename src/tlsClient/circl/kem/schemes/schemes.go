@@ -19,13 +19,13 @@ package schemes
 import (
 	"strings"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/hpke"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/kem"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/kem/frodo/frodo640shake"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/kem/hybrid"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/kem/kyber/kyber1024"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/kem/kyber/kyber512"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/kem/kyber/kyber768"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/hpke"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/kem"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/kem/frodo/frodo640shake"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/kem/hybrid"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/kem/kyber/kyber1024"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/kem/kyber/kyber512"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/kem/kyber/kyber768"
 )
 
 var allSchemes = [...]kem.Scheme{

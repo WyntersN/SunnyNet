@@ -9,8 +9,8 @@ import (
 	"reflect"
 	"testing"
 
-	 "github.com/qtgolang/SunnyNet/src/http"
-	"github.com/qtgolang/SunnyNet/src/http/http2/hpack"
+	 "github.com/WyntersN/SunnyNet/src/http"
+	"github.com/WyntersN/SunnyNet/src/http/http2/hpack"
 )
 
 func TestPushPromiseHeadersToHTTPRequest(t *testing.T) {

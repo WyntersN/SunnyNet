@@ -19,7 +19,7 @@ import (
 	"errors"
 	"io"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/kem"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/kem"
 )
 
 const versionLabel = "HPKE-v1"

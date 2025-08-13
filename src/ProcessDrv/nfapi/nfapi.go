@@ -6,7 +6,7 @@ package NFapi
 import (
 	"bytes"
 	"errors"
-	. "github.com/qtgolang/SunnyNet/src/ProcessDrv/Info"
+	. "github.com/WyntersN/SunnyNet/src/ProcessDrv/Info"
 	"strings"
 	"syscall"
 	"unsafe"

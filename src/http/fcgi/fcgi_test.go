@@ -8,7 +8,7 @@ import (
 	"bytes"
 	"errors"
 	"io"
-	"github.com/qtgolang/SunnyNet/src/http"
+	"github.com/WyntersN/SunnyNet/src/http"
 	"strings"
 	"testing"
 	"time"

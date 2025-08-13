@@ -6,7 +6,7 @@ package cookiejar
 
 import (
 	"fmt"
-	"github.com/qtgolang/SunnyNet/src/http"
+	"github.com/WyntersN/SunnyNet/src/http"
 	"net/url"
 	"sort"
 	"strings"

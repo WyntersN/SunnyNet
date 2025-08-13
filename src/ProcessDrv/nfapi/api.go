@@ -33,7 +33,7 @@ int CGOMessageBox(char* text,char* caption,int style) {
 import "C"
 import (
 	"fmt"
-	. "github.com/qtgolang/SunnyNet/src/ProcessDrv/Info"
+	. "github.com/WyntersN/SunnyNet/src/ProcessDrv/Info"
 	"net"
 	"strings"
 	"unsafe"

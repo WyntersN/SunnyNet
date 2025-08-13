@@ -15,7 +15,7 @@ import (
 	"crypto/x509/pkix"
 	"encoding/asn1"
 	"errors"
-	"github.com/qtgolang/SunnyNet/src/crypto/pkcs/internal/rc2"
+	"github.com/WyntersN/SunnyNet/src/crypto/pkcs/internal/rc2"
 	"golang.org/x/crypto/pbkdf2"
 	"hash"
 )

@@ -5,7 +5,7 @@
 package godebug_test
 
 import (
-	. "github.com/qtgolang/SunnyNet/src/internal/godebug"
+	. "github.com/WyntersN/SunnyNet/src/internal/godebug"
 	"testing"
 )
 

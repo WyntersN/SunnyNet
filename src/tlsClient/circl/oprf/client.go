@@ -3,8 +3,8 @@ package oprf
 import (
 	"crypto/rand"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/group"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/zk/dleq"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/group"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/zk/dleq"
 )
 
 type client struct{ params }

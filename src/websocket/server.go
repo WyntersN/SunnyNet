@@ -5,19 +5,21 @@
 package websocket
 
 import "C"
+
 import (
 	"bufio"
 	"bytes"
 	"errors"
 	"fmt"
-	"github.com/qtgolang/SunnyNet/src/ReadWriteObject"
-	"github.com/qtgolang/SunnyNet/src/http"
-	"github.com/qtgolang/SunnyNet/src/internal/textproto"
 	"io"
 	"net"
 	"net/url"
 	"strings"
 	"time"
+
+	"github.com/WyntersN/SunnyNet/src/ReadWriteObject"
+	"github.com/WyntersN/SunnyNet/src/http"
+	"github.com/WyntersN/SunnyNet/src/internal/textproto"
 )
 
 // HandshakeError describes an error with the handshake from the peer.

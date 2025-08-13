@@ -1,27 +1,29 @@
 package SunnyNet
 
 import (
-	"github.com/qtgolang/SunnyNet/src/CrossCompiled"
-	"github.com/qtgolang/SunnyNet/src/Interface"
-	"github.com/qtgolang/SunnyNet/src/http"
+	"github.com/WyntersN/SunnyNet/src/Interface"
 	"github.com/WyntersN/SunnyNet/src/public"
+	"github.com/WyntersN/SunnyNet/src/CrossCompiled"
+	"github.com/WyntersN/SunnyNet/src/http"
 )
 
-type ConnWebSocket Interface.ConnWebSocketCall
-type wsConn struct {
-	c             *public.WebsocketMsg
-	SunnyContext  int
-	_MessageId    int           //仅标识消息ID,不能用于API函数
-	Pid           int           //Pid
-	_Type         int           //消息类型 	public.Websocket...
-	Url           string        //连接请求地址
-	_Method       string        //连接时的Method
-	_Theology     int           //请求唯一ID
-	_ClientIP     string        //来源IP地址,请求从哪里来
-	Request       *http.Request //请求体
-	_Display      bool
-	_localAddress string
-}
+type (
+	ConnWebSocket Interface.ConnWebSocketCall
+	wsConn        struct {
+		c             *public.WebsocketMsg
+		SunnyContext  int
+		_MessageId    int           // 仅标识消息ID,不能用于API函数
+		Pid           int           // Pid
+		_Type         int           // 消息类型 	public.Websocket...
+		Url           string        // 连接请求地址
+		_Method       string        // 连接时的Method
+		_Theology     int           // 请求唯一ID
+		_ClientIP     string        // 来源IP地址,请求从哪里来
+		Request       *http.Request // 请求体
+		_Display      bool
+		_localAddress string
+	}
+)
 
 func (k *wsConn) LocalAddress() string {
 	return k._localAddress
@@ -39,24 +41,33 @@ func (k *wsConn) GetSocket5User() string {
 	return GetSocket5User(k._Theology)
 }
 
+func (k *wsConn) GetSocket5AuthUser() Interface.AuthUser {
+	return GetSocket5AuthUser(k._Theology)
+}
+
 func (k *wsConn) GetProcessName() string {
 	if k.Pid == 0 {
 		return "代理连接"
 	}
 	return CrossCompiled.GetPidName(int32(k.Pid))
 }
+
 func (k *wsConn) Context() int {
 	return k.SunnyContext
 }
+
 func (k *wsConn) MessageId() int {
 	return k._MessageId
 }
+
 func (k *wsConn) Theology() int {
 	return k._Theology
 }
+
 func (k *wsConn) PID() int {
 	return k.Pid
 }
+
 func (k *wsConn) URL() string {
 	return k.Url
 }
@@ -68,6 +79,7 @@ func (k *wsConn) Type() int {
 func (k *wsConn) ClientIP() string {
 	return k._ClientIP
 }
+
 func (k *wsConn) Body() []byte {
 	k.c.Sync.Lock()
 	defer k.c.Sync.Unlock()

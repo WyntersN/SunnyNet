@@ -9,8 +9,8 @@ package xof
 import (
 	"io"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/internal/sha3"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/xof/k12"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/internal/sha3"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/xof/k12"
 
 	"golang.org/x/crypto/blake2b"
 	"golang.org/x/crypto/blake2s"

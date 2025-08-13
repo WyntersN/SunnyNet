@@ -3,7 +3,7 @@ package fourq
 import (
 	"math/big"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/internal/conv"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/internal/conv"
 )
 
 // Size of scalars used for point multiplication.

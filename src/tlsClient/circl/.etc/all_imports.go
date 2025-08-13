@@ -25,7 +25,7 @@ func main() {
 	defer f.Close()
 
 	skipDirs := []string{".", "testdata", "internal", "templates"}
-	circl := "github.com/qtgolang/SunnyNet/src/tlsClient/circl/"
+	circl := "github.com/WyntersN/SunnyNet/src/tlsClient/circl/"
 
 	fmt.Fprintln(f, "package main")
 	err = fs.WalkDir(os.DirFS("."), ".", func(path string, d fs.DirEntry, err error) error {

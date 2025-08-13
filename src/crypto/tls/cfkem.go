@@ -6,7 +6,7 @@
 // To enable set CurvePreferences with the desired scheme as the first element:
 //
 //   import (
-//       "github.com/qtgolang/SunnyNet/src/crypto/tls"
+//       "github.com/WyntersN/SunnyNet/src/crypto/tls"
 //
 //          [...]
 //
@@ -24,8 +24,8 @@ import (
 
 	"crypto/ecdh"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/kem"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/kem/hybrid"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/kem"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/kem/hybrid"
 )
 
 // Either *ecdh.PrivateKey or *kemPrivateKey

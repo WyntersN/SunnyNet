@@ -585,7 +585,7 @@ var reqWriteTests = []reqWriteTest{
 				RawQuery: "new\nline", // or any CTL
 			},
 		},
-		WantError: errors.New("github.com/qtgolang/SunnyNet/src/http: can't write control character in Request.URL"),
+		WantError: errors.New("github.com/WyntersN/SunnyNet/src/http: can't write control character in Request.URL"),
 	},
 
 	26: { // Request with nil body and PATCH method. Issue #40978

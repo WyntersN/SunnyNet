@@ -3,7 +3,7 @@ package Api
 import "C"
 import (
 	"encoding/json"
-	"github.com/qtgolang/SunnyNet/src/protobuf"
+	"github.com/WyntersN/SunnyNet/src/protobuf"
 	"strings"
 )
 

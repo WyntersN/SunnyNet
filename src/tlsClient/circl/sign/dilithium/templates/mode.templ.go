@@ -10,8 +10,8 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/sign/dilithium/internal/common"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/sign/dilithium/{{.Pkg}}"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/sign/dilithium/internal/common"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/sign/dilithium/{{.Pkg}}"
 )
 
 // {{.Impl}} implements the mode.Mode interface for {{.Name}}.

@@ -1,7 +1,7 @@
 package internal
 
 import (
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/sign/dilithium/internal/common"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/sign/dilithium/internal/common"
 )
 
 // Writes p with norm less than or equal η into buf, which must be of

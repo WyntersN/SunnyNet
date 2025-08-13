@@ -1,6 +1,6 @@
 package bls12381
 
-import "github.com/qtgolang/SunnyNet/src/tlsClient/circl/ecc/bls12381/ff"
+import "github.com/WyntersN/SunnyNet/src/tlsClient/circl/ecc/bls12381/ff"
 
 // Pair calculates the ate-pairing of P and Q.
 func Pair(P *G1, Q *G2) *Gt {

@@ -8,16 +8,17 @@ import (
 	"bytes"
 	"context"
 	"errors"
-	"github.com/qtgolang/SunnyNet/src/SunnyProxy"
-	"github.com/qtgolang/SunnyNet/src/crypto/tls"
-	"github.com/qtgolang/SunnyNet/src/http"
-	"github.com/qtgolang/SunnyNet/src/http/httptrace"
 	"io"
 	"io/ioutil"
 	"net"
 	"net/url"
 	"strings"
 	"time"
+
+	"github.com/WyntersN/SunnyNet/src/SunnyProxy"
+	"github.com/WyntersN/SunnyNet/src/crypto/tls"
+	"github.com/WyntersN/SunnyNet/src/http"
+	"github.com/WyntersN/SunnyNet/src/http/httptrace"
 )
 
 // ErrBadHandshake is returned when the server response to opening handshake is
@@ -264,17 +265,13 @@ func (d *Dialer) DialContext(ctx context.Context, urlStr string, requestHeader h
 
 		var err error
 		if trace != nil {
-
 			err = doHandshakeWithTrace(trace, tlsConn, cfg)
-
 		} else {
-
 			err = doHandshake(tlsConn, cfg)
-
 		}
 
 		if err != nil {
-			//fmt.Println("err1:=", err)
+			// fmt.Println("err1:=", err)
 			return nil, nil, "", err
 		}
 	}
@@ -282,7 +279,7 @@ func (d *Dialer) DialContext(ctx context.Context, urlStr string, requestHeader h
 	conn := newConn(netConn, false, d.ReadBufferSize, d.WriteBufferSize, d.WriteBufferPool, nil, nil)
 
 	if err = req.Write(netConn); err != nil {
-		//fmt.Println("err2:=", err)
+		// fmt.Println("err2:=", err)
 		return nil, nil, "", err
 	}
 
@@ -303,7 +300,7 @@ func (d *Dialer) DialContext(ctx context.Context, urlStr string, requestHeader h
 
 	resp, err := http.ReadResponse(conn.br, req)
 	if err != nil {
-		//fmt.Println("err3:=", err)
+		// fmt.Println("err3:=", err)
 		return nil, nil, "", err
 	}
 
@@ -330,7 +327,7 @@ func (d *Dialer) DialContext(ctx context.Context, urlStr string, requestHeader h
 		if ext[""] != "permessage-deflate" {
 			continue
 		}
-		//conn.newCompressionWriter = compressNoContextTakeover
+		// conn.newCompressionWriter = compressNoContextTakeover
 		conn.newDecompressionReader = decompressNoContextTakeover
 		conn.WindowReader.Window_Size_Max = 1 << 15
 		break
@@ -481,7 +478,6 @@ func (d *Dialer) ConnDialContext(request *http.Request, ProxyUrl *SunnyProxy.Pro
 		if strings.EqualFold(k, "Upgrade") {
 			if len(v) > 0 {
 				_Upgrade = v[0]
-
 			}
 			continue
 		}
@@ -537,6 +533,7 @@ func (d *Dialer) ConnDialContext(request *http.Request, ProxyUrl *SunnyProxy.Pro
 	netConn = nil // to avoid close in defer.
 	return conn, resp, nil
 }
+
 func doHandshake(tlsConn *tls.Conn, cfg *tls.Config) error {
 	if err := tlsConn.Handshake(); err != nil {
 		return err

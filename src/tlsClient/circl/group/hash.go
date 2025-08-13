@@ -3,7 +3,7 @@ package group
 import (
 	"math/big"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/expander"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/expander"
 )
 
 // HashToField generates a set of elements {u1,..., uN} = Hash(b) where each

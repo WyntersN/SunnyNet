@@ -52,9 +52,9 @@ import (
 	"io"
 	"log"
 
-	"github.com/qtgolang/SunnyNet/src/http"
+	"github.com/WyntersN/SunnyNet/src/http"
 	tls_client "github.com/bogdanfinn/tls-client"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/tlsClient/profiles"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/tlsClient/profiles"
 )
 
 func main() {

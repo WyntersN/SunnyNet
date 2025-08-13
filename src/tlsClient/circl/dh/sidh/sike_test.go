@@ -11,8 +11,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/dh/sidh/internal/common"
-	. "github.com/qtgolang/SunnyNet/src/tlsClient/circl/internal/test"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/dh/sidh/internal/common"
+	. "github.com/WyntersN/SunnyNet/src/tlsClient/circl/internal/test"
 )
 
 type sikeVec struct {

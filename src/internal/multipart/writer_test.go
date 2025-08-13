@@ -8,7 +8,7 @@ import (
 	"bytes"
 	"io"
 	"mime"
-	 "github.com/qtgolang/SunnyNet/src/internal/textproto"
+	 "github.com/WyntersN/SunnyNet/src/internal/textproto"
 	"strings"
 	"testing"
 )

@@ -1,7 +1,7 @@
 package Api
 
 import (
-	"github.com/qtgolang/SunnyNet/src/ProcessDrv/nfapi"
+	"github.com/WyntersN/SunnyNet/src/ProcessDrv/nfapi"
 )
 
 func SetUdpData(MessageId int, data []byte) bool {

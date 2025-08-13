@@ -3,7 +3,7 @@ package ff
 import (
 	"io"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/internal/conv"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/internal/conv"
 )
 
 // ScalarSize is the length in bytes of a Scalar.

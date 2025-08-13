@@ -6,8 +6,8 @@ import (
 	"io"
 	"testing"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/internal/test"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/xof"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/internal/test"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/xof"
 )
 
 type vector struct {

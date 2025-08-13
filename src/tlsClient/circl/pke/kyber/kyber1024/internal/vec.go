@@ -3,7 +3,7 @@
 package internal
 
 import (
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/pke/kyber/internal/common"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/pke/kyber/internal/common"
 )
 
 // A vector of K polynomials

@@ -1,23 +1,23 @@
 package SunnyNet
 
 import (
-	"github.com/qtgolang/SunnyNet/src/CrossCompiled"
-	"github.com/qtgolang/SunnyNet/src/Interface"
-	"github.com/qtgolang/SunnyNet/src/SunnyProxy"
+	"github.com/WyntersN/SunnyNet/src/Interface"
 	"github.com/WyntersN/SunnyNet/src/public"
+	"github.com/WyntersN/SunnyNet/src/CrossCompiled"
+	"github.com/WyntersN/SunnyNet/src/SunnyProxy"
 )
 
 type ConnTCP Interface.ConnTCPCall
 
 type tcpConn struct {
 	sunnyContext     int
-	theology         int //唯一ID
+	theology         int // 唯一ID
 	messageId        int
-	c                *public.TcpMsg //事件消息
-	_type            int            //事件类型_ 例如  public.SunnyNetMsgTypeTCP.....
-	localAddr        string         //本地地址
-	remoteAddr       string         //远程地址
-	pid              int            //Pid
+	c                *public.TcpMsg // 事件消息
+	_type            int            // 事件类型_ 例如  public.SunnyNetMsgTypeTCP.....
+	localAddr        string         // 本地地址
+	remoteAddr       string         // 远程地址
+	pid              int            // Pid
 	_Display         bool
 	_OutRouterIPFunc func(string) bool
 }
@@ -40,12 +40,17 @@ func (k *tcpConn) GetSocket5User() string {
 	return GetSocket5User(k.theology)
 }
 
+func (k *tcpConn) GetSocket5AuthUser() Interface.AuthUser {
+	return GetSocket5AuthUser(k.theology)
+}
+
 func (k *tcpConn) GetProcessName() string {
 	if k.pid == 0 {
 		return "代理连接"
 	}
 	return CrossCompiled.GetPidName(int32(k.pid))
 }
+
 func (k *tcpConn) Context() int {
 	return k.sunnyContext
 }

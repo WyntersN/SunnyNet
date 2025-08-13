@@ -13,9 +13,9 @@ import (
 	"io"
 
 	cryptoRand "crypto/rand"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/internal/sha3"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/kem"
-	cpapke "github.com/qtgolang/SunnyNet/src/tlsClient/circl/pke/kyber/kyber1024"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/internal/sha3"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/kem"
+	cpapke "github.com/WyntersN/SunnyNet/src/tlsClient/circl/pke/kyber/kyber1024"
 )
 
 const (

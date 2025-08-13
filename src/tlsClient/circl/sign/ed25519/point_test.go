@@ -5,7 +5,7 @@ import (
 	"flag"
 	"testing"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/internal/test"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/internal/test"
 )
 
 func randomPoint(P *pointR1) {

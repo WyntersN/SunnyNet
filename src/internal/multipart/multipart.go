@@ -31,14 +31,15 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"github.com/qtgolang/SunnyNet/src/internal/godebug"
-	"github.com/qtgolang/SunnyNet/src/internal/textproto"
 	"io"
 	"mime"
 	"mime/quotedprintable"
 	"path/filepath"
 	"strconv"
 	"strings"
+
+	"github.com/WyntersN/SunnyNet/src/internal/godebug"
+	"github.com/WyntersN/SunnyNet/src/internal/textproto"
 )
 
 var emptyParams = make(map[string]string)

@@ -1,8 +1,9 @@
 package Interface
 
 import (
-	"github.com/qtgolang/SunnyNet/src/http"
 	"io"
+
+	"github.com/WyntersN/SunnyNet/src/http"
 )
 
 /* =============================== 脚本 中 使用的接口 ================================================ */
@@ -426,7 +427,6 @@ type proxy interface {
 	SetAgent(ProxyUrl string, timeout ...int) bool
 }
 type address interface {
-
 	/*
 		RemoteAddress
 		获取远程地址
@@ -447,7 +447,6 @@ type address interface {
 	SendToClient(data []byte) bool
 }
 type general interface {
-
 	/*
 		Context
 
@@ -495,12 +494,22 @@ type general interface {
 	*/
 	GetSocket5User() string
 
+	GetSocket5AuthUser() AuthUser
+
 	/*
 		LocalAddress
 		获取本地地址
 	*/
 	LocalAddress() string
 }
+
+// AuthUser Socket5认证用户信息
+type AuthUser struct {
+	Id       uint
+	Username string
+	Passwd   string
+}
+
 type router interface {
 	/*
 		SetOutRouterIP

@@ -3,8 +3,8 @@ package Certificate
 import (
 	"encoding/pem"
 	"errors"
-	"github.com/qtgolang/SunnyNet/src/crypto/pkcs"
-	"github.com/qtgolang/SunnyNet/src/crypto/tls"
+	"github.com/WyntersN/SunnyNet/src/crypto/pkcs"
+	"github.com/WyntersN/SunnyNet/src/crypto/tls"
 	"github.com/WyntersN/SunnyNet/src/public"
 	"io/ioutil"
 	"os"

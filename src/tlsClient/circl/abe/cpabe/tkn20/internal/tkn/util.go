@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"sort"
 
-	pairing "github.com/qtgolang/SunnyNet/src/tlsClient/circl/ecc/bls12381"
+	pairing "github.com/WyntersN/SunnyNet/src/tlsClient/circl/ecc/bls12381"
 	"golang.org/x/crypto/blake2b"
 )
 

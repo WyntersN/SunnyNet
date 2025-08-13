@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/hpke"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/kem"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/hpke"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/kem"
 )
 
 type HPKERawPublicKey = []byte

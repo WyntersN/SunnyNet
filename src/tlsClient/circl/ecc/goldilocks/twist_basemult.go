@@ -3,7 +3,7 @@ package goldilocks
 import (
 	"crypto/subtle"
 
-	mlsb "github.com/qtgolang/SunnyNet/src/tlsClient/circl/math/mlsbset"
+	mlsb "github.com/WyntersN/SunnyNet/src/tlsClient/circl/math/mlsbset"
 )
 
 const (

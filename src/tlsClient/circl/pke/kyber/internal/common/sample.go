@@ -3,8 +3,8 @@ package common
 import (
 	"encoding/binary"
 
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/internal/sha3"
-	"github.com/qtgolang/SunnyNet/src/tlsClient/circl/simd/keccakf1600"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/internal/sha3"
+	"github.com/WyntersN/SunnyNet/src/tlsClient/circl/simd/keccakf1600"
 )
 
 // DeriveX4Available indicates whether the system supports the quick fourway

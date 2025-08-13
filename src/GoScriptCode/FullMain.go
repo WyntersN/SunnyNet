@@ -5,21 +5,22 @@ package GoScriptCode
 
 import (
 	"fmt"
-	"github.com/qtgolang/SunnyNet/src/Call"
-	"github.com/qtgolang/SunnyNet/src/Compress"
-	"github.com/qtgolang/SunnyNet/src/GoScriptCode/base"
-	"github.com/qtgolang/SunnyNet/src/GoScriptCode/check"
-	"github.com/qtgolang/SunnyNet/src/GoScriptCode/yaegi/interp"
-	"github.com/qtgolang/SunnyNet/src/GoScriptCode/yaegi/stdlib"
-	"github.com/qtgolang/SunnyNet/src/Interface"
-	"github.com/qtgolang/SunnyNet/src/RSA"
-	"github.com/qtgolang/SunnyNet/src/http"
-	_ "github.com/qtgolang/SunnyNet/src/http/pprof"
-	"github.com/qtgolang/SunnyNet/src/protobuf"
-	"github.com/WyntersN/SunnyNet/src/public"
 	"reflect"
 	"strconv"
 	"strings"
+
+	"github.com/WyntersN/SunnyNet/src/Call"
+	"github.com/WyntersN/SunnyNet/src/Compress"
+	"github.com/WyntersN/SunnyNet/src/GoScriptCode/base"
+	"github.com/WyntersN/SunnyNet/src/GoScriptCode/check"
+	"github.com/WyntersN/SunnyNet/src/GoScriptCode/yaegi/interp"
+	"github.com/WyntersN/SunnyNet/src/GoScriptCode/yaegi/stdlib"
+	"github.com/WyntersN/SunnyNet/src/Interface"
+	"github.com/WyntersN/SunnyNet/src/RSA"
+	"github.com/WyntersN/SunnyNet/src/http"
+	_ "github.com/WyntersN/SunnyNet/src/http/pprof"
+	"github.com/WyntersN/SunnyNet/src/protobuf"
+	"github.com/WyntersN/SunnyNet/src/public"
 )
 
 func init() {
@@ -28,10 +29,12 @@ func init() {
 	}()
 }
 
-type GoScriptTypeHTTP func(Interface.ConnHTTPScriptCall)
-type GoScriptTypeWS func(Interface.ConnWebSocketScriptCall)
-type GoScriptTypeTCP func(Interface.ConnTCPScriptCall)
-type GoScriptTypeUDP func(Interface.ConnUDPScriptCall)
+type (
+	GoScriptTypeHTTP func(Interface.ConnHTTPScriptCall)
+	GoScriptTypeWS   func(Interface.ConnWebSocketScriptCall)
+	GoScriptTypeTCP  func(Interface.ConnTCPScriptCall)
+	GoScriptTypeUDP  func(Interface.ConnUDPScriptCall)
+)
 
 func extractImport(s string) map[string]bool {
 	arrayMap := make(map[string]bool)
@@ -165,7 +168,7 @@ func init() {
 		"JsonToPB":  reflect.ValueOf(protobuf.JsonToPB),
 		"JsonParse": reflect.ValueOf(protobuf.JsonParse),
 	}
-	Symbols["github.com/WyntersN/SunnyNet/src/public/public"] = map[string]reflect.Value{
+	Symbols["github.com/qtgolang/SunnyNet/src/public/public"] = map[string]reflect.Value{
 		"Free": reflect.ValueOf(public.Free),
 	}
 	Symbols["github.com/qtgolang/SunnyNet/src/RSA/RSA"] = map[string]reflect.Value{
@@ -178,8 +181,10 @@ func init() {
 	check.Check(Symbols)
 }
 
-type LogFuncInterface func(SunnyNetContext int, info ...any)
-type SaveFuncInterface func(SunnyNetContext int, code []byte)
+type (
+	LogFuncInterface  func(SunnyNetContext int, info ...any)
+	SaveFuncInterface func(SunnyNetContext int, code []byte)
+)
 
 func RunCode(SunnyNetContext int, UserScriptCode []byte, log LogFuncInterface) (resError string, h GoScriptTypeHTTP, w GoScriptTypeWS, t GoScriptTypeTCP, u GoScriptTypeUDP) {
 	defer func() {
@@ -193,10 +198,10 @@ func RunCode(SunnyNetContext int, UserScriptCode []byte, log LogFuncInterface) (
 				errorLine = "出现了异常:" + errorSrc
 			}
 			resError = errorLine
-			//fmt.Println(resError)
+			// fmt.Println(resError)
 		}
 	}()
-	var iEval = interp.New(interp.Options{})
+	iEval := interp.New(interp.Options{})
 	iEval.Use(Symbols)
 	ca := ""
 	if len(UserScriptCode) < 100 {
@@ -204,7 +209,7 @@ func RunCode(SunnyNetContext int, UserScriptCode []byte, log LogFuncInterface) (
 	} else {
 		ca = string(UserScriptCode) + string(GoFunc)
 	}
-	//检查默认入口
+	// 检查默认入口
 	{
 		if !strings.Contains(ca, "func Event_HTTP(Conn HTTPEvent)") {
 			return "错误: 默认结构体已被更改,请检查代码", nil, nil, nil, nil
@@ -219,12 +224,12 @@ func RunCode(SunnyNetContext int, UserScriptCode []byte, log LogFuncInterface) (
 			return "错误: 默认结构体已被更改,请检查代码", nil, nil, nil, nil
 		}
 	}
-	//分析出用户编写的脚本中引用的包
+	// 分析出用户编写的脚本中引用的包
 	UserImport := extractImport(ca)
 	src := string(GoBuiltFuncCode)
-	//分析内置函数引用的包
+	// 分析内置函数引用的包
 	SystemPort := extractImport(src)
-	for k, _ := range SystemPort {
+	for k := range SystemPort {
 		if UserImport[k] == false {
 			_, _ = iEval.Eval("import " + k)
 		}
@@ -309,7 +314,7 @@ func RunCode(SunnyNetContext int, UserScriptCode []byte, log LogFuncInterface) (
 			return errorLine + "[ 参数太多 ]", nil, nil, nil, nil
 		}
 
-		//invalid operation: mismatched types func() int and untyped int
+		// invalid operation: mismatched types func() int and untyped int
 		ar = strings.Split(errorSrc, ": illegal character ")
 		if len(ar) >= 2 {
 			ar1 := strings.Split(errorSrc, " ")

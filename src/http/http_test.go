@@ -90,14 +90,14 @@ func TestCmdGoNoHTTPServer(t *testing.T) {
 	}
 	wantSym := map[string]bool{
 		// Verify these exist: (sanity checking this test)
-		"github.com/qtgolang/SunnyNet/src/http.(*Client).do":           true,
-		"github.com/qtgolang/SunnyNet/src/http.(*Transport).RoundTrip": true,
+		"github.com/WyntersN/SunnyNet/src/http.(*Client).do":           true,
+		"github.com/WyntersN/SunnyNet/src/http.(*Transport).RoundTrip": true,
 
 		// Verify these don't exist:
-		"github.com/qtgolang/SunnyNet/src/http.http2Server":           false,
-		"github.com/qtgolang/SunnyNet/src/http.(*Server).Serve":       false,
-		"github.com/qtgolang/SunnyNet/src/http.(*ServeMux).ServeHTTP": false,
-		"github.com/qtgolang/SunnyNet/src/http.DefaultServeMux":       false,
+		"github.com/WyntersN/SunnyNet/src/http.http2Server":           false,
+		"github.com/WyntersN/SunnyNet/src/http.(*Server).Serve":       false,
+		"github.com/WyntersN/SunnyNet/src/http.(*ServeMux).ServeHTTP": false,
+		"github.com/WyntersN/SunnyNet/src/http.DefaultServeMux":       false,
 	}
 	for sym, want := range wantSym {
 		got := bytes.Contains(out, []byte(sym))
@@ -118,7 +118,7 @@ func TestOmitHTTP2(t *testing.T) {
 	}
 	t.Parallel()
 	goTool := testenv.GoToolPath(t)
-	out, err := exec.Command(goTool, "test", "-short", "-tags=nethttpomithttp2", "github.com/qtgolang/SunnyNet/src/http").CombinedOutput()
+	out, err := exec.Command(goTool, "test", "-short", "-tags=nethttpomithttp2", "github.com/WyntersN/SunnyNet/src/http").CombinedOutput()
 	if err != nil {
 		t.Fatalf("go test -short failed: %v, %s", err, out)
 	}
@@ -130,7 +130,7 @@ func TestOmitHTTP2(t *testing.T) {
 func TestOmitHTTP2Vet(t *testing.T) {
 	t.Parallel()
 	goTool := testenv.GoToolPath(t)
-	out, err := exec.Command(goTool, "vet", "-tags=nethttpomithttp2", "github.com/qtgolang/SunnyNet/src/http").CombinedOutput()
+	out, err := exec.Command(goTool, "vet", "-tags=nethttpomithttp2", "github.com/WyntersN/SunnyNet/src/http").CombinedOutput()
 	if err != nil {
 		t.Fatalf("go vet failed: %v, %s", err, out)
 	}
