@@ -101,7 +101,7 @@ func updateLog() {
 	// 2025-07-26 优化 脚本编辑
 }
 
-func authCallback(username, password string) (bool, SunnyNet.AuthUser) {
+func authCallback(username, password string) (bool, *SunnyNet.AuthUser) {
 	// 这里可以实现自定义的身份认证逻辑
 	// 例如：查询数据库、调用外部API等
 	fmt.Printf("身份认证请求: 用户名=%s, 密码=%s\n", username, password)
@@ -117,18 +117,17 @@ func authCallback(username, password string) (bool, SunnyNet.AuthUser) {
 		if validPassword == password {
 			fmt.Printf("身份认证成功: %s\n", username)
 			// 返回认证成功和用户信息
-			authUser := SunnyNet.AuthUser{
+			return true, &SunnyNet.AuthUser{
 				Id:       1,
 				Username: username,
 				Passwd:   password,
 			}
-			return true, authUser
 		}
 	}
 
 	fmt.Printf("身份认证失败: %s\n", username)
 	// 返回认证失败和空的用户信息
-	return false, SunnyNet.AuthUser{}
+	return false, nil
 }
 
 func HttpCallback(Conn SunnyNet.ConnHTTP) {
