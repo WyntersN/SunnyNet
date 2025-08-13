@@ -21,13 +21,13 @@ import (
 	"time"
 	"unsafe"
 
-	"github.com/WyntersN/SunnyNet/src/Interface"
-	"github.com/WyntersN/SunnyNet/src/httpClient"
-	"github.com/WyntersN/SunnyNet/src/public"
 	"github.com/WyntersN/SunnyNet/src/Certificate"
 	"github.com/WyntersN/SunnyNet/src/CrossCompiled"
 	"github.com/WyntersN/SunnyNet/src/GoScriptCode"
 	"github.com/WyntersN/SunnyNet/src/HttpCertificate"
+	"github.com/WyntersN/SunnyNet/src/Interface"
+	"github.com/WyntersN/SunnyNet/src/httpClient"
+	"github.com/WyntersN/SunnyNet/src/public"
 
 	"github.com/WyntersN/SunnyNet/src/ProcessDrv/Info"
 	"github.com/WyntersN/SunnyNet/src/ReadWriteObject"
@@ -44,8 +44,6 @@ func init() {
 	runtime.GOMAXPROCS(runtime.NumCPU() - 1)
 	CrossCompiled.SetNetworkConnectNumber()
 }
-
-
 
 // TargetInfo 请求连接信息
 type TargetInfo struct {
@@ -213,40 +211,38 @@ type proxyRequest struct {
 	TlsConfig             *tls.Config
 	_Display              bool // 是否允许显示到列表，也就是是否调用Call
 	_isRandomCipherSuites bool
-	_SocksUser            string
-	_isAuthenticated      bool // Socket5认证状态标记
+	_SocksUser            Interface.AuthUser
 	outRouterIP           *net.TCPAddr
 	rawTarget             uint32
 }
 
 var (
-	sUser     = make(map[int]string)
-	sAuthUser = make(map[int]Interface.AuthUser)
-
-	sL sync.Mutex
+	sUser = make(map[int]Interface.AuthUser)
+	sL    sync.Mutex
 )
 
 // 设置s5连接账号
-func (s *proxyRequest) setSocket5User(user string) {
+func (s *proxyRequest) setSocket5User(user Interface.AuthUser) {
 	sL.Lock()
 	sUser[s.Theology] = user
 	sL.Unlock()
 }
 
-// 设置s5连接账号
+/* // 设置s5连接账号
 func (s *proxyRequest) setSocket5AuthUser(user Interface.AuthUser) {
 	sL.Lock()
+	println(s.Theology, "----------------1")
 	sAuthUser[s.Theology] = user
 	sL.Unlock()
 }
-
+*/
 // 更新唯一ID以及s5连接账号
 func (s *proxyRequest) updateSocket5User() {
 	sL.Lock()
-	user := sUser[s.Theology]
+
 	delete(sUser, s.Theology)
 	s.Theology = int(atomic.AddInt64(&public.Theology, 1))
-	if user != "" {
+	if user := sUser[s.Theology]; user.Id > 0 {
 		sUser[s.Theology] = user
 		s._SocksUser = user
 	}
@@ -261,18 +257,20 @@ func (s *proxyRequest) delSocket5User() {
 }
 
 // GetSocket5User 获取唯一ID对应的s5连接账号
-func GetSocket5User(TheologyId int) string {
+func GetSocket5User(TheologyId int) Interface.AuthUser {
 	sL.Lock()
 	user := sUser[TheologyId]
 	sL.Unlock()
 	return user
 }
 
-func GetSocket5AuthUser(TheologyId int) Interface.AuthUser {
+/* func GetSocket5AuthUser(TheologyId int) Interface.AuthUser {
+	println(TheologyId, "----------------2")
 	sL.Lock()
-	defer sL.Unlock()
-	return sAuthUser[TheologyId]
-}
+	user := sAuthUser[TheologyId]
+	sL.Unlock()
+	return user
+} */
 
 // AuthMethod S5代理鉴权
 func (s *proxyRequest) AuthMethod() (bool, string) {
@@ -313,37 +311,19 @@ func (s *proxyRequest) AuthMethod() (bool, string) {
 	passwd := string(pBuf)
 
 	if s.Global.socket5VerifyUser {
-		// 检查是否已经认证过
-		if s._isAuthenticated {
-			_ = s.RwObj.WriteByte(0x01)
-			_ = s.RwObj.WriteByte(0x00)
-			return true, user
-		}
-
-		// 优先使用身份认证回调函数
-		if s.Global.goAuthCallback != nil {
-			s.Global.socket5VerifyUserLock.Lock()
-			if ok, user := s.Global.goAuthCallback(user, passwd); ok {
-				s.Global.socket5VerifyUserLock.Unlock()
-				_ = s.RwObj.WriteByte(0x01)
-				_ = s.RwObj.WriteByte(0x00)
-				s.setSocket5AuthUser(*user)
-				s._isAuthenticated = true // 标记为已认证
-				return true, passwd
-			}
-			s.Global.socket5VerifyUserLock.Unlock()
-		}
-
 		// 回退到原有的用户列表验证方式
 		if len(user) > 0 && len(passwd) > 0 {
 			s.Global.socket5VerifyUserLock.Lock()
-			if passwd == s.Global.socket5VerifyUserList[user] {
+			// 优先使用身份认证回调函数
+			if s.Global.goAuthCallback != nil {
+				if ok, user := s.Global.goAuthCallback(user, passwd); ok {
+					s.Global.socket5VerifyUserLock.Unlock()
+					_ = s.RwObj.WriteByte(0x01)
+					_ = s.RwObj.WriteByte(0x00)
+					s.setSocket5User(*user)
+					return true, passwd
+				}
 				s.Global.socket5VerifyUserLock.Unlock()
-				_ = s.RwObj.WriteByte(0x01)
-				_ = s.RwObj.WriteByte(0x00)
-				s.setSocket5User(user)
-				s._isAuthenticated = true // 标记为已认证
-				return true, passwd
 			}
 			s.Global.socket5VerifyUserLock.Unlock()
 		}
@@ -353,7 +333,6 @@ func (s *proxyRequest) AuthMethod() (bool, string) {
 			// fmt.Println(1, user, passwd)
 			_ = s.RwObj.WriteByte(0x01)
 			_ = s.RwObj.WriteByte(0x00)
-			s._isAuthenticated = true // 标记为已认证
 			return true, passwd
 		}
 	}
@@ -2459,14 +2438,15 @@ func (s *Sunny) Socket5VerifyUser(n bool) *Sunny {
 	return s
 }
 
-// Socket5AddUser S5代理添加需要验证的账号密码
+/* // Socket5AddUser S5代理添加需要验证的账号密码
 func (s *Sunny) Socket5AddUser(u, p string) *Sunny {
 	s.socket5VerifyUserLock.Lock()
 	s.socket5VerifyUserList[u] = p
 	s.socket5VerifyUserLock.Unlock()
 	return s
 }
-
+*/
+/*
 // Socket5DelUser S5代理删除需要验证的账号
 func (s *Sunny) Socket5DelUser(u string) *Sunny {
 	s.socket5VerifyUserLock.Lock()
@@ -2474,7 +2454,7 @@ func (s *Sunny) Socket5DelUser(u string) *Sunny {
 	s.socket5VerifyUserLock.Unlock()
 	return s
 }
-
+*/
 // ExportCert 获取证书原内容
 func (s *Sunny) ExportCert() []byte {
 	ar := strings.Split(strings.ReplaceAll(string(s.certificates), "\r", public.NULL), "\n")
@@ -2845,8 +2825,7 @@ func (s *proxyRequest) clone() *proxyRequest {
 
 	{
 		sL.Lock()
-		user := sUser[s.Theology]
-		if user == "" {
+		if user := sUser[s.Theology]; user.Id == 0 {
 			sUser[req.Theology] = s._SocksUser
 			req._SocksUser = s._SocksUser
 		}
@@ -2938,7 +2917,7 @@ func (s *Sunny) handleClientConn(conn net.Conn) {
 	req.Response = response{}
 	info, DrivePort := req.isDriveConn()
 	if info != nil {
-		req.setSocket5User("驱动程序")
+		// req.setSocket5User("驱动程序")
 		// 如果是 通过 NFapi 驱动进来的数据 对连接信息进行赋值
 		req.Pid = info.GetPid()
 		req.Target.Parse(info.GetRemoteAddress(), info.GetRemotePort(), info.IsV6())

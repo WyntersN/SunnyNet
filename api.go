@@ -95,14 +95,6 @@ func SunnyNetSetCallback(SunnyContext, httpCallback, tcpCallback, wsCallback, ud
 }
 
 /*
-SunnyNetSocket5AddUser 添加 S5代理需要验证的用户名
-*/
-//export SunnyNetSocket5AddUser
-func SunnyNetSocket5AddUser(SunnyContext int, User, Pass *C.char) bool {
-	return Api.SunnyNetSocket5AddUser(SunnyContext, C.GoString(User), C.GoString(Pass))
-}
-
-/*
 SunnyNetVerifyUser 开启身份验证模式
 */
 //export SunnyNetVerifyUser
@@ -114,9 +106,9 @@ func SunnyNetVerifyUser(SunnyContext int, open bool) bool {
 SunnyNetSocket5DelUser 删除 S5需要验证的用户名
 */
 //export SunnyNetSocket5DelUser
-func SunnyNetSocket5DelUser(SunnyContext int, User *C.char) bool {
+/* func SunnyNetSocket5DelUser(SunnyContext int, User *C.char) bool {
 	return Api.SunnyNetSocket5DelUser(SunnyContext, C.GoString(User))
-}
+} */
 
 /*
 SunnyNetGetSocket5User 开启身份验证模式后 获取授权的S5账号,注意UDP请求无法获取到授权的s5账号

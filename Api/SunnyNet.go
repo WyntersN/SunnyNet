@@ -4,17 +4,18 @@ import "C"
 import (
 	"bytes"
 	"fmt"
-	"github.com/WyntersN/SunnyNet/SunnyNet"
-	"github.com/WyntersN/SunnyNet/src/Call"
-	"github.com/WyntersN/SunnyNet/src/SunnyProxy"
-	"github.com/WyntersN/SunnyNet/src/http"
-	"github.com/WyntersN/SunnyNet/src/public"
 	"io/ioutil"
 	"net/url"
 	"sort"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/WyntersN/SunnyNet/SunnyNet"
+	"github.com/WyntersN/SunnyNet/src/Call"
+	"github.com/WyntersN/SunnyNet/src/SunnyProxy"
+	"github.com/WyntersN/SunnyNet/src/http"
+	"github.com/WyntersN/SunnyNet/src/public"
 )
 
 // GetSunnyVersion 获取SunnyNet版本
@@ -273,7 +274,6 @@ func SetRequestCipherSuites(MessageId int) bool {
 
 // SetRequestOutTime 请求设置超时-毫秒
 func SetRequestOutTime(MessageId int, times int) {
-
 	k, ok := SunnyNet.GetSceneProxyRequest(MessageId)
 	if ok == false {
 		return
@@ -284,7 +284,6 @@ func SetRequestOutTime(MessageId int, times int) {
 	k.Lock.Lock()
 	defer k.Lock.Unlock()
 	k.SendTimeout = time.Duration(times) * time.Millisecond
-
 }
 
 // SetRequestUrl 修改HTTP/S当前请求的URL
@@ -424,7 +423,6 @@ func GetRequestHeader(MessageId int, name string) string {
 
 // SetResponseHeader 修改、设置 HTTP/S当前返回数据中的指定协议头
 func SetResponseHeader(MessageId int, name string, val string) {
-
 	k, ok := SunnyNet.GetSceneProxyRequest(MessageId)
 	if ok == false {
 		return
@@ -747,7 +745,7 @@ func GetResponseAllHeader(MessageId int) string {
 	}
 	Head := public.NULL
 	var key []string
-	for value, _ := range k.Response.Header {
+	for value := range k.Response.Header {
 		key = append(key, value)
 	}
 	sort.Strings(key)
@@ -830,7 +828,7 @@ func GetRequestAllHeader(MessageId int) string {
 	}
 	Head := public.NULL
 	var key []string
-	for value, _ := range k.Request.Header {
+	for value := range k.Request.Header {
 		key = append(key, value)
 	}
 	sort.Strings(key)
@@ -1213,7 +1211,7 @@ func SunnyNetVerifyUser(SunnyContext int, open bool) bool {
 	return true
 }
 
-// SunnyNetSocket5AddUser 添加 S5代理需要验证的用户名
+/* // SunnyNetSocket5AddUser 添加 S5代理需要验证的用户名
 func SunnyNetSocket5AddUser(SunnyContext int, User, Pass string) bool {
 	SunnyNet.SunnyStorageLock.Lock()
 	w := SunnyNet.SunnyStorage[SunnyContext]
@@ -1224,8 +1222,8 @@ func SunnyNetSocket5AddUser(SunnyContext int, User, Pass string) bool {
 	w.Socket5AddUser(User, Pass)
 	return true
 }
-
-// SunnyNetSocket5DelUser 删除 S5需要验证的用户名
+*/
+/* // SunnyNetSocket5DelUser 删除 S5需要验证的用户名
 func SunnyNetSocket5DelUser(SunnyContext int, User string) bool {
 	SunnyNet.SunnyStorageLock.Lock()
 	w := SunnyNet.SunnyStorage[SunnyContext]
@@ -1235,7 +1233,7 @@ func SunnyNetSocket5DelUser(SunnyContext int, User string) bool {
 	}
 	w.Socket5DelUser(User)
 	return true
-}
+} */
 
 // SunnyNetGetSocket5User 开启身份验证模式后 获取授权的S5账号,注意UDP请求无法获取到授权的s5账号
 func SunnyNetGetSocket5User(Theology int) uintptr {

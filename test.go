@@ -75,7 +75,7 @@ func Test() {
 	//Sunny.SetOutRouterIP("192.168.31.154")
 	//Sunny.SetMustTcpRegexp("shopr-cnlive.mcoc-cdn.cn", false)
 	// 设置身份认证回调
-	Sunny.SetAuthCallback(authCallback).Socket5VerifyUser(true).DisableTCP(true)
+	Sunny.Socket5VerifyUser(true).SetAuthCallback(authCallback).DisableTCP(true)
 	// 设置回调地址
 	Sunny.SetGoCallback(HttpCallback, TcpCallback, WSCallback, UdpCallback)
 	Port := 2025
@@ -109,7 +109,7 @@ func authCallback(username, password string) (bool, *Interface.AuthUser) {
 
 	// 示例：简单的用户名密码验证
 	validUsers := map[string]string{
-		"admin":    "123456",
+		"Wynters":  "1",
 		"user1":    "password1",
 		"testuser": "testpass",
 	}
@@ -128,12 +128,12 @@ func authCallback(username, password string) (bool, *Interface.AuthUser) {
 
 	fmt.Printf("身份认证失败: %s\n", username)
 	// 返回认证失败和空的用户信息
-	return false, &Interface.AuthUser{}
+	return false, nil
 }
 
 func HttpCallback(Conn SunnyNet.ConnHTTP) {
-	fmt.Println("GetSocket5User", Conn.GetSocket5User())
-	fmt.Println("GetSocket5AuthUser", Conn.GetSocket5AuthUser())
+	d := Conn.GetSocket5User()
+	fmt.Println("GetSocket5AuthUser", d.Id, d.Username)
 
 	return
 	switch Conn.Type() {

@@ -1,10 +1,10 @@
 package SunnyNet
 
 import (
-	"github.com/WyntersN/SunnyNet/src/Interface"
-	"github.com/WyntersN/SunnyNet/src/public"
 	"github.com/WyntersN/SunnyNet/src/CrossCompiled"
+	"github.com/WyntersN/SunnyNet/src/Interface"
 	"github.com/WyntersN/SunnyNet/src/http"
+	"github.com/WyntersN/SunnyNet/src/public"
 )
 
 type (
@@ -37,12 +37,8 @@ func (k *wsConn) Method() string {
 	return k._Method
 }
 
-func (k *wsConn) GetSocket5User() string {
+func (k *wsConn) GetSocket5User() Interface.AuthUser {
 	return GetSocket5User(k._Theology)
-}
-
-func (k *wsConn) GetSocket5AuthUser() Interface.AuthUser {
-	return GetSocket5AuthUser(k._Theology)
 }
 
 func (k *wsConn) GetProcessName() string {

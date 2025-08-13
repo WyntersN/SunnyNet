@@ -492,9 +492,7 @@ type general interface {
 		并且
 		如果通过驱动传入的请求也无法获取到
 	*/
-	GetSocket5User() string
-
-	GetSocket5AuthUser() AuthUser
+	GetSocket5User() AuthUser
 
 	/*
 		LocalAddress

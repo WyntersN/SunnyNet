@@ -4,8 +4,13 @@
 package main
 
 import "C"
+
 import (
 	"fmt"
+	"sync"
+	"time"
+	"unsafe"
+
 	"github.com/WyntersN/SunnyNet/Api"
 	. "github.com/WyntersN/SunnyNet/JavaApi"
 	"github.com/WyntersN/SunnyNet/JavaApi/sig"
@@ -13,9 +18,6 @@ import (
 	"github.com/WyntersN/SunnyNet/src/Compress"
 	"github.com/WyntersN/SunnyNet/src/dns"
 	"github.com/WyntersN/SunnyNet/src/public"
-	"sync"
-	"time"
-	"unsafe"
 )
 
 /*
@@ -119,7 +121,6 @@ Java_com_SunnyNet_api_SunnyNetSetCallback 设置中间件回调地址 httpCallba
 */
 //export Java_com_SunnyNet_api_SunnyNetSetCallback
 func Java_com_SunnyNet_api_SunnyNetSetCallback(envObj uintptr, clazz uintptr, SunnyContext int64, Callback uintptr) bool {
-
 	SunnyNet.SunnyStorageLock.Lock()
 	s := SunnyNet.SunnyStorage[int(SunnyContext)]
 	SunnyNet.SunnyStorageLock.Unlock()
@@ -295,10 +296,10 @@ func Java_com_SunnyNet_api_SunnyNetSetCallback(envObj uintptr, clazz uintptr, Su
 Java_com_SunnyNet_api_SunnyNetSocket5AddUser 添加 S5代理需要验证的用户名
 */
 //export Java_com_SunnyNet_api_SunnyNetSocket5AddUser
-func Java_com_SunnyNet_api_SunnyNetSocket5AddUser(envObj uintptr, clazz uintptr, SunnyContext int64, User, Pass uintptr) bool {
+/* func Java_com_SunnyNet_api_SunnyNetSocket5AddUser(envObj uintptr, clazz uintptr, SunnyContext int64, User, Pass uintptr) bool {
 	env := Env(envObj)
 	return Api.SunnyNetSocket5AddUser(int(SunnyContext), env.GetString(User), env.GetString(Pass))
-}
+} */
 
 /*
 Java_com_SunnyNet_api_SunnyNetVerifyUser 开启身份验证模式
@@ -312,10 +313,10 @@ func Java_com_SunnyNet_api_SunnyNetVerifyUser(envObj uintptr, clazz uintptr, Sun
 Java_com_SunnyNet_api_SunnyNetSocket5DelUser 删除 S5需要验证的用户名
 */
 //export Java_com_SunnyNet_api_SunnyNetSocket5DelUser
-func Java_com_SunnyNet_api_SunnyNetSocket5DelUser(envObj uintptr, clazz uintptr, SunnyContext int64, User uintptr) bool {
+/* func Java_com_SunnyNet_api_SunnyNetSocket5DelUser(envObj uintptr, clazz uintptr, SunnyContext int64, User uintptr) bool {
 	env := Env(envObj)
 	return Api.SunnyNetSocket5DelUser(int(SunnyContext), env.GetString(User))
-}
+} */
 
 /*
 Java_com_SunnyNet_api_SunnyNetGetSocket5User 开启身份验证模式后 获取授权的S5账号,注意UDP请求无法获取到授权的s5账号
@@ -323,7 +324,7 @@ Java_com_SunnyNet_api_SunnyNetGetSocket5User 开启身份验证模式后 获取�
 //export Java_com_SunnyNet_api_SunnyNetGetSocket5User
 func Java_com_SunnyNet_api_SunnyNetGetSocket5User(envObj uintptr, clazz uintptr, Theology int64) uintptr {
 	env := Env(envObj)
-	return env.NewString(SunnyNet.GetSocket5User(int(Theology)))
+	return env.NewString(SunnyNet.GetSocket5User(int(Theology)).Username)
 }
 
 /*
@@ -357,7 +358,7 @@ Java_com_SunnyNet_api_SunnyNetError 获取中间件启动时的错误信息
 */
 //export Java_com_SunnyNet_api_SunnyNetError
 func Java_com_SunnyNet_api_SunnyNetError(envObj uintptr, clazz uintptr, SunnyContext int64) uintptr {
-	//return Api.SunnyNetError(int(SunnyContext))
+	// return Api.SunnyNetError(int(SunnyContext))
 	SunnyNet.SunnyStorageLock.Lock()
 	w := SunnyNet.SunnyStorage[int(SunnyContext)]
 	SunnyNet.SunnyStorageLock.Unlock()
@@ -369,7 +370,6 @@ func Java_com_SunnyNet_api_SunnyNetError(envObj uintptr, clazz uintptr, SunnyCon
 		return env.NewString("")
 	}
 	return env.NewString(w.Error.Error())
-
 }
 
 /*
@@ -387,7 +387,7 @@ Java_com_SunnyNet_api_GetRequestProto 获取 HTTPS 请求的协议版本
 */
 //export Java_com_SunnyNet_api_GetRequestProto
 func Java_com_SunnyNet_api_GetRequestProto(envObj uintptr, clazz uintptr, MessageId int64) uintptr {
-	//return Api.GetRequestProto(int(MessageId))
+	// return Api.GetRequestProto(int(MessageId))
 	env := Env(envObj)
 	k, ok := SunnyNet.GetSceneProxyRequest(int(MessageId))
 	if ok == false {
@@ -402,7 +402,6 @@ func Java_com_SunnyNet_api_GetRequestProto(envObj uintptr, clazz uintptr, Messag
 	k.Lock.Lock()
 	defer k.Lock.Unlock()
 	return env.NewString(k.Request.Proto)
-
 }
 
 /*
@@ -410,7 +409,7 @@ Java_com_SunnyNet_api_GetResponseProto 获取 HTTPS 响应的协议版本
 */
 //export Java_com_SunnyNet_api_GetResponseProto
 func Java_com_SunnyNet_api_GetResponseProto(envObj uintptr, clazz uintptr, MessageId int64) uintptr {
-	//return Api.GetResponseProto(int(MessageId))
+	// return Api.GetResponseProto(int(MessageId))
 	env := Env(envObj)
 	k, ok := SunnyNet.GetSceneProxyRequest(int(MessageId))
 	if ok == false {
@@ -971,7 +970,6 @@ Java_com_SunnyNet_api_UnDrive 卸载驱动，仅Windows 有效【需要管理权
 */
 //export Java_com_SunnyNet_api_UnDrive
 func Java_com_SunnyNet_api_UnDrive(envObj uintptr, clazz uintptr, SunnyContext int64) {
-
 	Api.UnDrive(int(SunnyContext))
 }
 
@@ -1006,7 +1004,6 @@ Java_com_SunnyNet_api_ProcessDelPid 进程代理 删除PID
 */
 //export Java_com_SunnyNet_api_ProcessDelPid
 func Java_com_SunnyNet_api_ProcessDelPid(envObj uintptr, clazz uintptr, SunnyContext, pid int64) {
-
 	Api.ProcessDelPid(int(SunnyContext), int(pid))
 }
 
@@ -1015,7 +1012,6 @@ Java_com_SunnyNet_api_ProcessCancelAll 进程代理 取消全部已设置的进�
 */
 //export Java_com_SunnyNet_api_ProcessCancelAll
 func Java_com_SunnyNet_api_ProcessCancelAll(envObj uintptr, clazz uintptr, SunnyContext int64) {
-
 	Api.ProcessCancelAll(int(SunnyContext))
 }
 
@@ -1024,7 +1020,6 @@ Java_com_SunnyNet_api_ProcessALLName 进程代理 设置是否全部进程通过
 */
 //export Java_com_SunnyNet_api_ProcessALLName
 func Java_com_SunnyNet_api_ProcessALLName(envObj uintptr, clazz uintptr, SunnyContext int64, open, StopNetwork bool) {
-
 	Api.ProcessALLName(int(SunnyContext), open, StopNetwork)
 }
 
@@ -1089,7 +1084,7 @@ Java_com_SunnyNet_api_AddClientAuth 证书管理器 设置ClientAuth
 */
 //export Java_com_SunnyNet_api_AddClientAuth
 func Java_com_SunnyNet_api_AddClientAuth(envObj uintptr, clazz uintptr, Context, val int64) bool {
-	//env := Env(envObj)
+	// env := Env(envObj)
 	return Api.AddClientAuth(int(Context), int(val))
 }
 
@@ -1143,7 +1138,7 @@ Java_com_SunnyNet_api_SetInsecureSkipVerify 证书管理器 设置跳过主机�
 */
 //export Java_com_SunnyNet_api_SetInsecureSkipVerify
 func Java_com_SunnyNet_api_SetInsecureSkipVerify(envObj uintptr, clazz uintptr, Context int64, b bool) bool {
-	//env := Env(envObj)
+	// env := Env(envObj)
 	return Api.SetInsecureSkipVerify(int(Context), b)
 }
 
@@ -1179,7 +1174,7 @@ Java_com_SunnyNet_api_RemoveCertificate 释放 证书管理器 对象
 */
 //export Java_com_SunnyNet_api_RemoveCertificate
 func Java_com_SunnyNet_api_RemoveCertificate(envObj uintptr, clazz uintptr, Context int64) {
-	//env := Env(envObj)
+	// env := Env(envObj)
 	Api.RemoveCertificate(int(Context))
 }
 
@@ -1188,7 +1183,7 @@ Java_com_SunnyNet_api_CreateCertificate 创建 证书管理器 对象
 */
 //export Java_com_SunnyNet_api_CreateCertificate
 func Java_com_SunnyNet_api_CreateCertificate(envObj uintptr, clazz uintptr) int64 {
-	//env := Env(envObj)
+	// env := Env(envObj)
 	return int64(Api.CreateCertificate())
 }
 
@@ -1208,7 +1203,7 @@ Java_com_SunnyNet_api_HTTPSetRandomTLS HTTP 客户端 设置随机使用TLS指�
 */
 //export Java_com_SunnyNet_api_HTTPSetRandomTLS
 func Java_com_SunnyNet_api_HTTPSetRandomTLS(envObj uintptr, clazz uintptr, Context int64, RandomTLS bool) bool {
-	//env := Env(envObj)
+	// env := Env(envObj)
 	return Api.HTTPSetRandomTLS(int(Context), RandomTLS)
 }
 
@@ -1217,7 +1212,7 @@ Java_com_SunnyNet_api_HTTPSetRedirect HTTP 客户端 设置重定向
 */
 //export Java_com_SunnyNet_api_HTTPSetRedirect
 func Java_com_SunnyNet_api_HTTPSetRedirect(envObj uintptr, clazz uintptr, Context int64, Redirect bool) bool {
-	//env := Env(envObj)
+	// env := Env(envObj)
 	return Api.HTTPSetRedirect(int(Context), Redirect)
 }
 
@@ -1226,7 +1221,7 @@ Java_com_SunnyNet_api_HTTPGetCode HTTP 客户端 返回响应状态码
 */
 //export Java_com_SunnyNet_api_HTTPGetCode
 func Java_com_SunnyNet_api_HTTPGetCode(envObj uintptr, clazz uintptr, Context int64) int64 {
-	//env := Env(envObj)
+	// env := Env(envObj)
 	return int64(Api.HTTPGetCode(int(Context)))
 }
 
@@ -1235,7 +1230,7 @@ Java_com_SunnyNet_api_HTTPSetCertManager HTTP 客户端 设置证书管理器
 */
 //export Java_com_SunnyNet_api_HTTPSetCertManager
 func Java_com_SunnyNet_api_HTTPSetCertManager(envObj uintptr, clazz uintptr, Context, CertManagerContext int64) bool {
-	//env := Env(envObj)
+	// env := Env(envObj)
 	return Api.HTTPSetCertManager(int(Context), int(CertManagerContext))
 }
 
@@ -1280,7 +1275,7 @@ Java_com_SunnyNet_api_HTTPGetBodyLen HTTP 客户端 返回响应长度
 */
 //export Java_com_SunnyNet_api_HTTPGetBodyLen
 func Java_com_SunnyNet_api_HTTPGetBodyLen(envObj uintptr, clazz uintptr, Context int64) int64 {
-	//env := Env(envObj)
+	// env := Env(envObj)
 	return int64(Api.HTTPGetBodyLen(int(Context)))
 }
 
@@ -1298,7 +1293,7 @@ Java_com_SunnyNet_api_HTTPSetTimeouts HTTP 客户端 设置超时 毫秒
 */
 //export Java_com_SunnyNet_api_HTTPSetTimeouts
 func Java_com_SunnyNet_api_HTTPSetTimeouts(envObj uintptr, clazz uintptr, Context int64, t1 int64) {
-	//env := Env(envObj)
+	// env := Env(envObj)
 	Api.HTTPSetTimeouts(int(Context), int(t1))
 }
 
@@ -1344,7 +1339,7 @@ Java_com_SunnyNet_api_RemoveHTTPClient 释放 HTTP客户端
 */
 //export Java_com_SunnyNet_api_RemoveHTTPClient
 func Java_com_SunnyNet_api_RemoveHTTPClient(envObj uintptr, clazz uintptr, Context int64) {
-	//env := Env(envObj)
+	// env := Env(envObj)
 	Api.RemoveHTTPClient(int(Context))
 }
 
@@ -1353,7 +1348,7 @@ Java_com_SunnyNet_api_CreateHTTPClient 创建 HTTP 客户端
 */
 //export Java_com_SunnyNet_api_CreateHTTPClient
 func Java_com_SunnyNet_api_CreateHTTPClient(envObj uintptr, clazz uintptr) int64 {
-	//env := Env(envObj)
+	// env := Env(envObj)
 	return int64(Api.CreateHTTPClient())
 }
 
@@ -1450,7 +1445,7 @@ Java_com_SunnyNet_api_SocketClientClose TCP客户端 断开连接
 */
 //export Java_com_SunnyNet_api_SocketClientClose
 func Java_com_SunnyNet_api_SocketClientClose(envObj uintptr, clazz uintptr, Context int64) {
-	//env := Env(envObj)
+	// env := Env(envObj)
 	Api.SocketClientClose(int(Context))
 }
 
@@ -1498,7 +1493,7 @@ Java_com_SunnyNet_api_SocketClientSetBufferSize TCP客户端 置缓冲区大小
 */
 //export Java_com_SunnyNet_api_SocketClientSetBufferSize
 func Java_com_SunnyNet_api_SocketClientSetBufferSize(envObj uintptr, clazz uintptr, Context, BufferSize int64) bool {
-	//env := Env(envObj)
+	// env := Env(envObj)
 	return Api.SocketClientSetBufferSize(int(Context), int(BufferSize))
 }
 
@@ -1507,7 +1502,7 @@ Java_com_SunnyNet_api_SocketClientGetErr TCP客户端 取错误
 */
 //export Java_com_SunnyNet_api_SocketClientGetErr
 func Java_com_SunnyNet_api_SocketClientGetErr(envObj uintptr, clazz uintptr, Context int64) uintptr {
-	//env := Env(envObj)
+	// env := Env(envObj)
 	return Api.SocketClientGetErr(int(Context))
 }
 
@@ -1516,7 +1511,7 @@ Java_com_SunnyNet_api_RemoveSocketClient 释放 TCP客户端
 */
 //export Java_com_SunnyNet_api_RemoveSocketClient
 func Java_com_SunnyNet_api_RemoveSocketClient(envObj uintptr, clazz uintptr, Context int64) {
-	//env := Env(envObj)
+	// env := Env(envObj)
 	Api.RemoveSocketClient(int(Context))
 }
 
@@ -1525,7 +1520,7 @@ Java_com_SunnyNet_api_CreateSocketClient 创建 TCP客户端
 */
 //export Java_com_SunnyNet_api_CreateSocketClient
 func Java_com_SunnyNet_api_CreateSocketClient(envObj uintptr, clazz uintptr) int64 {
-	//env := Env(envObj)
+	// env := Env(envObj)
 	return int64(Api.CreateSocketClient())
 }
 
@@ -1575,7 +1570,7 @@ Java_com_SunnyNet_api_WebsocketClose Websocket客户端 断开
 */
 //export Java_com_SunnyNet_api_WebsocketClose
 func Java_com_SunnyNet_api_WebsocketClose(envObj uintptr, clazz uintptr, Context int64) {
-	//env := Env(envObj)
+	// env := Env(envObj)
 	Api.WebsocketClose(int(Context))
 }
 
@@ -1646,7 +1641,7 @@ Java_com_SunnyNet_api_WebsocketGetErr Websocket客户端 获取错误
 */
 //export Java_com_SunnyNet_api_WebsocketGetErr
 func Java_com_SunnyNet_api_WebsocketGetErr(envObj uintptr, clazz uintptr, Context int64) uintptr {
-	//env := Env(envObj)
+	// env := Env(envObj)
 	return Api.WebsocketGetErr(int(Context))
 }
 
@@ -1655,7 +1650,7 @@ Java_com_SunnyNet_api_RemoveWebsocket 释放 Websocket客户端 对象
 */
 //export Java_com_SunnyNet_api_RemoveWebsocket
 func Java_com_SunnyNet_api_RemoveWebsocket(envObj uintptr, clazz uintptr, Context int64) {
-	//env := Env(envObj)
+	// env := Env(envObj)
 	Api.RemoveWebsocket(int(Context))
 }
 
@@ -1664,7 +1659,7 @@ Java_com_SunnyNet_api_CreateWebsocket 创建 Websocket客户端 对象
 */
 //export Java_com_SunnyNet_api_CreateWebsocket
 func Java_com_SunnyNet_api_CreateWebsocket(envObj uintptr, clazz uintptr) int64 {
-	//env := Env(envObj)
+	// env := Env(envObj)
 	return int64(Api.CreateWebsocket())
 }
 
@@ -1731,7 +1726,7 @@ Java_com_SunnyNet_api_RedisFlushDB Redis 清空当前数据库
 */
 //export Java_com_SunnyNet_api_RedisFlushDB
 func Java_com_SunnyNet_api_RedisFlushDB(envObj uintptr, clazz uintptr, Context int64) {
-	//env := Env(envObj)
+	// env := Env(envObj)
 	Api.RedisFlushDB(int(Context))
 }
 
@@ -1740,7 +1735,7 @@ Java_com_SunnyNet_api_RedisFlushAll Redis 清空redis服务器
 */
 //export Java_com_SunnyNet_api_RedisFlushAll
 func Java_com_SunnyNet_api_RedisFlushAll(envObj uintptr, clazz uintptr, Context int64) {
-	//env := Env(envObj)
+	// env := Env(envObj)
 	Api.RedisFlushAll(int(Context))
 }
 
@@ -1749,7 +1744,7 @@ Java_com_SunnyNet_api_RedisClose Redis 关闭
 */
 //export Java_com_SunnyNet_api_RedisClose
 func Java_com_SunnyNet_api_RedisClose(envObj uintptr, clazz uintptr, Context int64) {
-	//env := Env(envObj)
+	// env := Env(envObj)
 	Api.RedisClose(int(Context))
 }
 
@@ -1782,7 +1777,6 @@ func Java_com_SunnyNet_api_RedisDo(envObj uintptr, clazz uintptr, Context int64,
 		return javaNewRedisResultClass(env, "com/SunnyNet/RedisResult", "<init>", "(ZLjava/lang/String;Ljava/lang/String;)V", false, "", e.Error())
 	}
 	return javaNewRedisResultClass(env, "com/SunnyNet/RedisResult", "<init>", "(ZLjava/lang/String;Ljava/lang/String;)V", true, string(p), "")
-
 }
 
 /*
@@ -1888,7 +1882,7 @@ Java_com_SunnyNet_api_RemoveRedis 释放 Redis 对象
 */
 //export Java_com_SunnyNet_api_RemoveRedis
 func Java_com_SunnyNet_api_RemoveRedis(envObj uintptr, clazz uintptr, Context int64) {
-	//env := Env(envObj)
+	// env := Env(envObj)
 	Api.RemoveRedis(int(Context))
 }
 
@@ -1897,7 +1891,7 @@ Java_com_SunnyNet_api_CreateRedis 创建 Redis 对象
 */
 //export Java_com_SunnyNet_api_CreateRedis
 func Java_com_SunnyNet_api_CreateRedis(envObj uintptr, clazz uintptr) int64 {
-	//env := Env(envObj)
+	// env := Env(envObj)
 	return int64(Api.CreateRedis())
 }
 
@@ -1954,7 +1948,7 @@ Java_com_SunnyNet_api_SetScriptPage  设置脚本编辑器页面 需不少于8�
 //export Java_com_SunnyNet_api_SetScriptPage
 func Java_com_SunnyNet_api_SetScriptPage(envObj uintptr, clazz uintptr, SunnyContext int64, Page uintptr) uintptr {
 	env := Env(envObj)
-	//return Api.SetScriptPage(int(SunnyContext), env.GetString(Page))
+	// return Api.SetScriptPage(int(SunnyContext), env.GetString(Page))
 	SunnyNet.SunnyStorageLock.Lock()
 	w := SunnyNet.SunnyStorage[int(SunnyContext)]
 	SunnyNet.SunnyStorageLock.Unlock()
@@ -1969,7 +1963,7 @@ Java_com_SunnyNet_api_DisableTCP  禁用TCP 仅对当前SunnyContext有效
 */
 //export Java_com_SunnyNet_api_DisableTCP
 func Java_com_SunnyNet_api_DisableTCP(envObj uintptr, clazz uintptr, SunnyContext int64, Disable bool) bool {
-	//env := Env(envObj)
+	// env := Env(envObj)
 	return Api.DisableTCP(int(SunnyContext), Disable)
 }
 
@@ -1978,7 +1972,7 @@ Java_com_SunnyNet_api_DisableUDP  禁用TCP 仅对当前SunnyContext有效
 */
 //export Java_com_SunnyNet_api_DisableUDP
 func Java_com_SunnyNet_api_DisableUDP(envObj uintptr, clazz uintptr, SunnyContext int64, Disable bool) bool {
-	//env := Env(envObj)
+	// env := Env(envObj)
 	return Api.DisableUDP(int(SunnyContext), Disable)
 }
 
@@ -1987,7 +1981,7 @@ Java_com_SunnyNet_api_SetRandomTLS 是否使用随机TLS指纹 仅对当前Sunny
 */
 //export Java_com_SunnyNet_api_SetRandomTLS
 func Java_com_SunnyNet_api_SetRandomTLS(envObj uintptr, clazz uintptr, SunnyContext int64, open bool) bool {
-	//env := Env(envObj)
+	// env := Env(envObj)
 	return Api.SetRandomTLS(int(SunnyContext), open)
 }
 
@@ -2035,8 +2029,10 @@ type _GlobalRef struct {
 
 var ___Java_GlobalRef_lock sync.Mutex
 
-var ___Java_GlobalRef_map = make(map[int]_GlobalRef)
-var ___Java_GlobalRef_index int = 0
+var (
+	___Java_GlobalRef_map       = make(map[int]_GlobalRef)
+	___Java_GlobalRef_index int = 0
+)
 
 func Java_GlobalRef_Add(Type string, obj uintptr, Context int) {
 	___Java_GlobalRef_lock.Lock()
@@ -2044,6 +2040,7 @@ func Java_GlobalRef_Add(Type string, obj uintptr, Context int) {
 	___Java_GlobalRef_index++
 	___Java_GlobalRef_map[___Java_GlobalRef_index] = _GlobalRef{obj: obj, Type: Type, Context: Context}
 }
+
 func goJavaInit() {
 	for {
 		time.Sleep(10 * time.Second)

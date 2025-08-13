@@ -1,9 +1,9 @@
 package SunnyNet
 
 import (
+	"github.com/WyntersN/SunnyNet/src/CrossCompiled"
 	"github.com/WyntersN/SunnyNet/src/Interface"
 	NFapi "github.com/WyntersN/SunnyNet/src/ProcessDrv/nfapi"
-	"github.com/WyntersN/SunnyNet/src/CrossCompiled"
 )
 
 type ConnUDP Interface.ConnUDPCall
@@ -24,11 +24,7 @@ func (U udpConn) SetDisplay(Display bool) {
 	U._Display = Display
 }
 
-func (U udpConn) GetSocket5User() string {
-	return ""
-}
-
-func (U udpConn) GetSocket5AuthUser() Interface.AuthUser {
+func (U udpConn) GetSocket5User() Interface.AuthUser {
 	return Interface.AuthUser{}
 }
 

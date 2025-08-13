@@ -7,12 +7,12 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/WyntersN/SunnyNet/src/Interface"
-	"github.com/WyntersN/SunnyNet/src/public"
 	"github.com/WyntersN/SunnyNet/src/CrossCompiled"
+	"github.com/WyntersN/SunnyNet/src/Interface"
 	"github.com/WyntersN/SunnyNet/src/SunnyProxy"
 	"github.com/WyntersN/SunnyNet/src/crypto/tls"
 	"github.com/WyntersN/SunnyNet/src/http"
+	"github.com/WyntersN/SunnyNet/src/public"
 )
 
 type ConnHTTP Interface.ConnHTTPCall
@@ -50,12 +50,8 @@ func (h *httpConn) LocalAddress() string {
 	return h._localAddress
 }
 
-func (h *httpConn) GetSocket5User() string {
+func (h *httpConn) GetSocket5User() Interface.AuthUser {
 	return GetSocket5User(h._Theology)
-}
-
-func (h *httpConn) GetSocket5AuthUser() Interface.AuthUser {
-	return GetSocket5AuthUser(h._Theology)
 }
 
 func (h *httpConn) ServerAddress() string {

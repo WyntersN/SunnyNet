@@ -1,10 +1,10 @@
 package SunnyNet
 
 import (
-	"github.com/WyntersN/SunnyNet/src/Interface"
-	"github.com/WyntersN/SunnyNet/src/public"
 	"github.com/WyntersN/SunnyNet/src/CrossCompiled"
+	"github.com/WyntersN/SunnyNet/src/Interface"
 	"github.com/WyntersN/SunnyNet/src/SunnyProxy"
+	"github.com/WyntersN/SunnyNet/src/public"
 )
 
 type ConnTCP Interface.ConnTCPCall
@@ -36,12 +36,8 @@ func (k *tcpConn) SetDisplay(Display bool) {
 	k._Display = Display
 }
 
-func (k *tcpConn) GetSocket5User() string {
+func (k *tcpConn) GetSocket5User() Interface.AuthUser {
 	return GetSocket5User(k.theology)
-}
-
-func (k *tcpConn) GetSocket5AuthUser() Interface.AuthUser {
-	return GetSocket5AuthUser(k.theology)
 }
 
 func (k *tcpConn) GetProcessName() string {
