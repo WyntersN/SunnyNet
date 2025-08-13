@@ -7,7 +7,7 @@ import (
 	"github.com/qtgolang/SunnyNet/src/SunnyProxy"
 	"github.com/qtgolang/SunnyNet/src/crypto/tls"
 	"github.com/qtgolang/SunnyNet/src/http"
-	"github.com/qtgolang/SunnyNet/src/public"
+	"github.com/WyntersN/SunnyNet/src/public"
 	"io"
 	"net/url"
 	"strconv"

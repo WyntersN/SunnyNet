@@ -51,7 +51,7 @@ package main
 
 import (
 	"github.com/qtgolang/SunnyNet/SunnyNet"
-	"github.com/qtgolang/SunnyNet/src/public"
+	"github.com/WyntersN/SunnyNet/src/public"
 	"time"
 	"log"
 	"fmt"

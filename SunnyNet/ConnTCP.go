@@ -4,7 +4,7 @@ import (
 	"github.com/qtgolang/SunnyNet/src/CrossCompiled"
 	"github.com/qtgolang/SunnyNet/src/Interface"
 	"github.com/qtgolang/SunnyNet/src/SunnyProxy"
-	"github.com/qtgolang/SunnyNet/src/public"
+	"github.com/WyntersN/SunnyNet/src/public"
 )
 
 type ConnTCP Interface.ConnTCPCall

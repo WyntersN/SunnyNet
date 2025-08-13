@@ -4,7 +4,7 @@ import (
 	"context"
 	"github.com/qtgolang/SunnyNet/src/ReadWriteObject"
 	"github.com/qtgolang/SunnyNet/src/http"
-	"github.com/qtgolang/SunnyNet/src/public"
+	"github.com/WyntersN/SunnyNet/src/public"
 	"io"
 	"net"
 	"net/textproto"

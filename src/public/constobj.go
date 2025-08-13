@@ -16,6 +16,10 @@ import (
 	"github.com/qtgolang/SunnyNet/src/websocket"
 )
 
+const (
+	SunnyVersion = "2025-07-26"
+)
+
 // TCP请求相关
 const (
 	SunnyNetMsgTypeTCPConnectOK      = 0 // TCP连接成功

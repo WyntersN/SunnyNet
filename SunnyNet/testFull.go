@@ -11,7 +11,7 @@ import (
 	"github.com/qtgolang/SunnyNet/src/Interface"
 	"github.com/qtgolang/SunnyNet/src/Resource"
 	"github.com/qtgolang/SunnyNet/src/http"
-	"github.com/qtgolang/SunnyNet/src/public"
+	"github.com/WyntersN/SunnyNet/src/public"
 	"strings"
 )
 

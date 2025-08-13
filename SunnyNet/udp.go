@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/qtgolang/SunnyNet/src/Call"
 	"github.com/qtgolang/SunnyNet/src/ProcessDrv/nfapi"
-	"github.com/qtgolang/SunnyNet/src/public"
+	"github.com/WyntersN/SunnyNet/src/public"
 
 	"net"
 	"sync/atomic"

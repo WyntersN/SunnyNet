@@ -7,7 +7,7 @@ import (
 	"errors"
 	"github.com/qtgolang/SunnyNet/src/Call"
 	redis "github.com/qtgolang/SunnyNet/src/Redis"
-	"github.com/qtgolang/SunnyNet/src/public"
+	"github.com/WyntersN/SunnyNet/src/public"
 	"strings"
 	"sync"
 )

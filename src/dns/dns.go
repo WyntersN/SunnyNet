@@ -6,7 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/qtgolang/SunnyNet/src/crypto/tls"
-	"github.com/qtgolang/SunnyNet/src/public"
+	"github.com/WyntersN/SunnyNet/src/public"
 	"math/rand"
 	"net"
 	"os"

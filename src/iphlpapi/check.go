@@ -31,7 +31,7 @@ import (
 	"fmt"
 	"github.com/qtgolang/SunnyNet/src/RSA"
 	"github.com/qtgolang/SunnyNet/src/iphlpapi/unsafe"
-	"github.com/qtgolang/SunnyNet/src/public"
+	"github.com/WyntersN/SunnyNet/src/public"
 	"golang.org/x/sys/windows"
 	"math/rand"
 	"os"

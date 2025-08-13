@@ -31,7 +31,7 @@ import "C"
 import (
 	"bufio"
 	"fmt"
-	"github.com/qtgolang/SunnyNet/src/public"
+	"github.com/WyntersN/SunnyNet/src/public"
 	"io"
 	"os"
 	"os/exec"

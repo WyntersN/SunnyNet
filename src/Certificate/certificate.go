@@ -5,7 +5,7 @@ import (
 	"errors"
 	"github.com/qtgolang/SunnyNet/src/crypto/pkcs"
 	"github.com/qtgolang/SunnyNet/src/crypto/tls"
-	"github.com/qtgolang/SunnyNet/src/public"
+	"github.com/WyntersN/SunnyNet/src/public"
 	"io/ioutil"
 	"os"
 	"strings"

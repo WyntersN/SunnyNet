@@ -16,7 +16,7 @@ import (
 	"github.com/qtgolang/SunnyNet/src/http"
 	_ "github.com/qtgolang/SunnyNet/src/http/pprof"
 	"github.com/qtgolang/SunnyNet/src/protobuf"
-	"github.com/qtgolang/SunnyNet/src/public"
+	"github.com/WyntersN/SunnyNet/src/public"
 	"reflect"
 	"strconv"
 	"strings"
@@ -165,7 +165,7 @@ func init() {
 		"JsonToPB":  reflect.ValueOf(protobuf.JsonToPB),
 		"JsonParse": reflect.ValueOf(protobuf.JsonParse),
 	}
-	Symbols["github.com/qtgolang/SunnyNet/src/public/public"] = map[string]reflect.Value{
+	Symbols["github.com/WyntersN/SunnyNet/src/public/public"] = map[string]reflect.Value{
 		"Free": reflect.ValueOf(public.Free),
 	}
 	Symbols["github.com/qtgolang/SunnyNet/src/RSA/RSA"] = map[string]reflect.Value{

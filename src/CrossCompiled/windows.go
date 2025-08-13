@@ -15,7 +15,7 @@ import (
 	"github.com/qtgolang/SunnyNet/src/ProcessDrv/Proxifier"
 	NFapi2 "github.com/qtgolang/SunnyNet/src/ProcessDrv/nfapi"
 	"github.com/qtgolang/SunnyNet/src/iphlpapi"
-	"github.com/qtgolang/SunnyNet/src/public"
+	"github.com/WyntersN/SunnyNet/src/public"
 	"golang.org/x/sys/windows"
 	"io"
 	"net"

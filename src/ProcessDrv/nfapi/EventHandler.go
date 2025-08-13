@@ -8,7 +8,7 @@ import (
 	"fmt"
 	. "github.com/qtgolang/SunnyNet/src/ProcessDrv/Info"
 	net2 "github.com/qtgolang/SunnyNet/src/iphlpapi/net"
-	"github.com/qtgolang/SunnyNet/src/public"
+	"github.com/WyntersN/SunnyNet/src/public"
 	"github.com/shirou/gopsutil/process"
 	"net"
 	"regexp"

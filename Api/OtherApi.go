@@ -3,7 +3,7 @@ package Api
 import (
 	"bytes"
 	"encoding/binary"
-	"github.com/qtgolang/SunnyNet/src/public"
+	"github.com/WyntersN/SunnyNet/src/public"
 )
  
 // BytesToInt 将Go int的Bytes 转为int

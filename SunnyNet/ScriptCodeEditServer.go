@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"github.com/qtgolang/SunnyNet/src/GoScriptCode"
 	"github.com/qtgolang/SunnyNet/src/http"
-	"github.com/qtgolang/SunnyNet/src/public"
+	"github.com/WyntersN/SunnyNet/src/public"
 	"github.com/qtgolang/SunnyNet/src/websocket"
 	"go/format"
 	"strings"

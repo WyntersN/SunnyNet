@@ -4,7 +4,7 @@ import (
 	"github.com/qtgolang/SunnyNet/src/CrossCompiled"
 	"github.com/qtgolang/SunnyNet/src/Interface"
 	"github.com/qtgolang/SunnyNet/src/http"
-	"github.com/qtgolang/SunnyNet/src/public"
+	"github.com/WyntersN/SunnyNet/src/public"
 )
 
 type ConnWebSocket Interface.ConnWebSocketCall
