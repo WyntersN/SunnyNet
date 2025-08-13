@@ -8,6 +8,19 @@ import (
 	"encoding/pem"
 	"errors"
 	"fmt"
+	"io"
+	"io/ioutil"
+	"net"
+	"net/url"
+	"regexp"
+	"runtime"
+	"strconv"
+	"strings"
+	"sync"
+	"sync/atomic"
+	"time"
+	"unsafe"
+
 	"github.com/qtgolang/SunnyNet/src/Certificate"
 	"github.com/qtgolang/SunnyNet/src/CrossCompiled"
 	"github.com/qtgolang/SunnyNet/src/GoScriptCode"
@@ -23,29 +36,17 @@ import (
 	"github.com/qtgolang/SunnyNet/src/httpClient"
 	"github.com/qtgolang/SunnyNet/src/public"
 	"github.com/qtgolang/SunnyNet/src/websocket"
-	"io"
-	"io/ioutil"
-	"net"
-	"net/url"
-	"regexp"
-	"runtime"
-	"strconv"
-	"strings"
-	"sync"
-	"sync/atomic"
-	"time"
-	"unsafe"
 )
 
 func init() {
-	//使用全部-1个CPU性能,例如你电脑CPU是4核心 那么就使用4-1 使用3核心的的CPU性能
+	// 使用全部-1个CPU性能,例如你电脑CPU是4核心 那么就使用4-1 使用3核心的的CPU性能
 	runtime.GOMAXPROCS(runtime.NumCPU() - 1)
 	CrossCompiled.SetNetworkConnectNumber()
 }
 
 // TargetInfo 请求连接信息
 type TargetInfo struct {
-	Host string //带端口号
+	Host string // 带端口号
 	Port uint16
 	IPV6 bool
 }
@@ -60,6 +61,7 @@ func (s *TargetInfo) Clone() *TargetInfo {
 		IPV6: s.IPV6,
 	}
 }
+
 func (s *TargetInfo) IsDomain() bool {
 	if s == nil {
 		return false
@@ -114,10 +116,10 @@ func parseIPv6Address(address string) (string, uint16, net.IP) {
 
 // Parse 解析连接信息
 func (s *TargetInfo) Parse(HostName string, Port interface{}, IPV6 ...bool) {
-	//如果是8.8.8.8 则端口号不变
-	//如果是8.8.8.8:8888 Host和端口都变
-	//如果是Host="" Port=8888 Host不变,端口变
-	//如果是8.8.8.8:8888 Port=8889 那么端口=8888
+	// 如果是8.8.8.8 则端口号不变
+	// 如果是8.8.8.8:8888 Host和端口都变
+	// 如果是Host="" Port=8888 Host不变,端口变
+	// 如果是8.8.8.8:8888 Port=8889 那么端口=8888
 	if s == nil {
 		return
 	}
@@ -184,37 +186,40 @@ func (s *TargetInfo) String() string {
 
 // 请求信息
 type proxyRequest struct {
-	Conn                  net.Conn                         //请求的原始TCP连接
-	RwObj                 *ReadWriteObject.ReadWriteObject //读写对象
-	Theology              int                              //中间件回调唯一ID
-	Target                *TargetInfo                      //目标连接信息
-	ProxyHost             string                           //请求之上的代理
-	Pid                   string                           //s5连接过来的pid
-	Global                *Sunny                           //继承全局中间件信息
-	Request               *http.Request                    //要发送的请求体
-	Response              response                         //HTTP响应体
-	TCP                   public.TCP                       //TCP收发数据
-	Proxy                 *SunnyProxy.Proxy                //设置指定代理
-	HttpCall              int                              //http 请求回调地址
-	TcpCall               int                              //TCP请求回调地址
-	wsCall                int                              //ws回调地址
-	HttpGoCall            func(ConnHTTP)                   //http 请求回调地址
-	TcpGoCall             func(ConnTCP)                    //TCP请求回调地址
-	wsGoCall              func(ConnWebSocket)              //ws回调地址
-	NoRepairHttp          bool                             //不要纠正Http
+	Conn                  net.Conn                         // 请求的原始TCP连接
+	RwObj                 *ReadWriteObject.ReadWriteObject // 读写对象
+	Theology              int                              // 中间件回调唯一ID
+	Target                *TargetInfo                      // 目标连接信息
+	ProxyHost             string                           // 请求之上的代理
+	Pid                   string                           // s5连接过来的pid
+	Global                *Sunny                           // 继承全局中间件信息
+	Request               *http.Request                    // 要发送的请求体
+	Response              response                         // HTTP响应体
+	TCP                   public.TCP                       // TCP收发数据
+	Proxy                 *SunnyProxy.Proxy                // 设置指定代理
+	HttpCall              int                              // http 请求回调地址
+	TcpCall               int                              // TCP请求回调地址
+	wsCall                int                              // ws回调地址
+	HttpGoCall            func(ConnHTTP)                   // http 请求回调地址
+	TcpGoCall             func(ConnTCP)                    // TCP请求回调地址
+	wsGoCall              func(ConnWebSocket)              // ws回调地址
+	NoRepairHttp          bool                             // 不要纠正Http
 	Lock                  sync.Mutex
 	defaultScheme         string
 	SendTimeout           time.Duration
 	TlsConfig             *tls.Config
-	_Display              bool //是否允许显示到列表，也就是是否调用Call
+	_Display              bool // 是否允许显示到列表，也就是是否调用Call
 	_isRandomCipherSuites bool
 	_SocksUser            string
+	_isAuthenticated      bool // Socket5认证状态标记
 	outRouterIP           *net.TCPAddr
 	rawTarget             uint32
 }
 
-var sUser = make(map[int]string)
-var sL sync.Mutex
+var (
+	sUser = make(map[int]string)
+	sL    sync.Mutex
+)
 
 // 设置s5连接账号
 func (s *proxyRequest) setSocket5User(user string) {
@@ -255,20 +260,20 @@ func GetSocket5User(TheologyId int) string {
 func (s *proxyRequest) AuthMethod() (bool, string) {
 	av, err := s.RwObj.ReadByte()
 	if err != nil || av != 1 {
-		//fmt.Println(ID, "Socks5 auth version invalid")
+		// fmt.Println(ID, "Socks5 auth version invalid")
 		return false, public.NULL
 	}
 
 	uLen, err := s.RwObj.ReadByte()
 	if err != nil || uLen <= 0 || uLen > 255 {
-		//fmt.Println(ID, "Socks5 auth user length invalid")
+		// fmt.Println(ID, "Socks5 auth user length invalid")
 		return false, public.NULL
 	}
 
 	uBuf := make([]byte, uLen)
 	nr, err := s.RwObj.Read(uBuf)
 	if err != nil || nr != int(uLen) {
-		//fmt.Println(ID, "Socks5 auth user error", nr)
+		// fmt.Println(ID, "Socks5 auth user error", nr)
 		return false, public.NULL
 	}
 
@@ -276,35 +281,59 @@ func (s *proxyRequest) AuthMethod() (bool, string) {
 
 	pLen, err := s.RwObj.ReadByte()
 	if err != nil || pLen <= 0 || pLen > 255 {
-		//fmt.Println(ID, "Socks5 auth passwd length invalid", pLen)
+		// fmt.Println(ID, "Socks5 auth passwd length invalid", pLen)
 		return false, public.NULL
 	}
 
 	pBuf := make([]byte, pLen)
 	nr, err = s.RwObj.Read(pBuf)
 	if err != nil || nr != int(pLen) {
-		//fmt.Println(ID, "Socks5 auth passwd error", pLen, nr)
+		// fmt.Println(ID, "Socks5 auth passwd error", pLen, nr)
 		return false, public.NULL
 	}
 
 	passwd := string(pBuf)
+
 	if s.Global.socket5VerifyUser {
+		// 检查是否已经认证过
+		if s._isAuthenticated {
+			_ = s.RwObj.WriteByte(0x01)
+			_ = s.RwObj.WriteByte(0x00)
+			return true, user
+		}
+		
+		// 回退到原有的用户列表验证方式
 		if len(user) > 0 && len(passwd) > 0 {
+			println(user, passwd)
 			s.Global.socket5VerifyUserLock.Lock()
+			// 优先使用身份认证回调函数
+			if s.Global.goAuthCallback != nil {
+				if s.Global.goAuthCallback(user, passwd) {
+					s.Global.socket5VerifyUserLock.Unlock()
+					_ = s.RwObj.WriteByte(0x01)
+					_ = s.RwObj.WriteByte(0x00)
+					s.setSocket5User(user)
+					s._isAuthenticated = true // 标记为已认证
+					return true, passwd
+				}
+			}
 			if passwd == s.Global.socket5VerifyUserList[user] {
 				s.Global.socket5VerifyUserLock.Unlock()
 				_ = s.RwObj.WriteByte(0x01)
 				_ = s.RwObj.WriteByte(0x00)
 				s.setSocket5User(user)
+				s._isAuthenticated = true // 标记为已认证
 				return true, passwd
 			}
 			s.Global.socket5VerifyUserLock.Unlock()
 		}
 	} else {
+		// 不需要验证的情况
 		if len(user) > -1 || len(passwd) > -1 {
-			//fmt.Println(1, user, passwd)
+			// fmt.Println(1, user, passwd)
 			_ = s.RwObj.WriteByte(0x01)
 			_ = s.RwObj.WriteByte(0x00)
+			s._isAuthenticated = true // 标记为已认证
 			return true, passwd
 		}
 	}
@@ -385,7 +414,7 @@ func (s *proxyRequest) Socks5ProxyVerification() bool {
 	}
 	command, err := s.RwObj.ReadByte()
 	if err != nil {
-		//fmt.Println(ID, "Socks5 read command error", err.Error())
+		// fmt.Println(ID, "Socks5 read command error", err.Error())
 		return false
 	}
 	if command != public.Socks5CmdConnect &&
@@ -498,14 +527,14 @@ func (s *proxyRequest) Socks5ProxyVerification() bool {
 		}
 		return false
 	}
-	//var RemoteTCP net.Conn
+	// var RemoteTCP net.Conn
 	err = nil
 	a := strings.Split(s.Conn.RemoteAddr().String(), ":")
 	if len(a) >= 2 {
 		hostname = strings.ReplaceAll(hostname, "127.0.0.1", a[0])
 	}
 	if err != nil {
-		//fmt.Println(hostname, err)
+		// fmt.Println(hostname, err)
 		_ = s.RwObj.WriteByte(1) // SOCKS5_GENERAL_SOCKS_SERVER_FAILURE
 	} else {
 		_ = s.RwObj.WriteByte(0) // SOCKS5_SUCCEEDED
@@ -526,19 +555,23 @@ func (s *proxyRequest) Socks5ProxyVerification() bool {
 	return true
 }
 
-var loopLock sync.Mutex
-var linkMap = make(map[string]string)
+var (
+	loopLock sync.Mutex
+	linkMap  = make(map[string]string)
+)
 
 func linkAdd(o, n string) {
 	loopLock.Lock()
 	defer loopLock.Unlock()
 	linkMap[n] = o
 }
+
 func linkDel(n string) {
 	loopLock.Lock()
 	defer loopLock.Unlock()
 	delete(linkMap, n)
 }
+
 func linkQuery(n string) string {
 	loopLock.Lock()
 	defer loopLock.Unlock()
@@ -549,6 +582,7 @@ func linkQuery(n string) string {
 func dialTCP(proxyTools *SunnyProxy.Proxy, remoteAddr string, outRouterIP *net.TCPAddr) (net.Conn, error) {
 	return proxyTools.DialWithTimeout("tcp", remoteAddr, 2*time.Second, outRouterIP)
 }
+
 func connectToTarget(s *proxyRequest, proxyTools *SunnyProxy.Proxy, outRouterIP *net.TCPAddr) (net.Conn, string) {
 	ip := net.ParseIP(s.Target.Host)
 	if ip != nil {
@@ -574,7 +608,7 @@ func connectToTarget(s *proxyRequest, proxyTools *SunnyProxy.Proxy, outRouterIP 
 
 	ips, _ := dns.LookupIP(s.Target.Host, ProxyHost, outRouterIP, dial)
 
-	//优先尝试IPV4
+	// 优先尝试IPV4
 	for _, ip2 := range ips {
 		if ip4 := ip2.To4(); ip4 != nil {
 			remoteAddr := SunnyProxy.FormatIP(ip2, fmt.Sprintf("%d", s.Target.Port))
@@ -586,7 +620,7 @@ func connectToTarget(s *proxyRequest, proxyTools *SunnyProxy.Proxy, outRouterIP 
 		}
 	}
 
-	//最后尝试IPV6
+	// 最后尝试IPV6
 	for _, ip2 := range ips {
 		if ip6 := ip2.To16(); ip6 != nil {
 			remoteAddr := SunnyProxy.FormatIP(ip2, fmt.Sprintf("%d", s.Target.Port))
@@ -610,7 +644,7 @@ func (s *proxyRequest) MustTcpProcessing(Tag string) {
 		return
 	}
 	var err error
-	var isClose = false
+	isClose := false
 	as := &public.TcpMsg{}
 	as.Data.WriteString(Tag)
 	s.CallbackTCPRequest(public.SunnyNetMsgTypeTCPAboutToConnect, as, s.Target.String())
@@ -663,7 +697,7 @@ func (s *proxyRequest) MustTcpProcessing(Tag string) {
 	if err == nil && RemoteTCP != nil {
 		tw := ReadWriteObject.NewReadWriteObject(RemoteTCP)
 		{
-			//构造结构体数据,主动发送，关闭等操作时需要用
+			// 构造结构体数据,主动发送，关闭等操作时需要用
 			if s.TCP.Send == nil {
 				s.TCP.Send = &public.TcpMsg{}
 			}
@@ -724,21 +758,21 @@ func (s *proxyRequest) TcpCallback(RemoteTCP *net.Conn, Tag string, tw *ReadWrit
 	}
 	var wg sync.WaitGroup
 	wg.Add(1)
-	isHttpReq := false //是否纠正HTTP请求，可能由于某些原因 客户端发送数据不及时判断为了TCP请求，后续TCP处理时纠正为HTTP请求
-	//读取客户端消息转发给服务端
+	isHttpReq := false // 是否纠正HTTP请求，可能由于某些原因 客户端发送数据不及时判断为了TCP请求，后续TCP处理时纠正为HTTP请求
+	// 读取客户端消息转发给服务端
 	go func() {
 		s.SocketForward(*tw.Writer, s.RwObj, public.SunnyNetMsgTypeTCPClientSend, s.Conn, *RemoteTCP, &s.TCP, &isHttpReq, RemoteAddr)
 		wg.Done()
 	}()
-	//读取服务器消息转发给客户端
+	// 读取服务器消息转发给客户端
 	s.SocketForward(*s.RwObj.Writer, tw, public.SunnyNetMsgTypeTCPClientReceive, *RemoteTCP, s.Conn, &s.TCP, &isHttpReq, RemoteAddr)
 	wg.Wait()
 	s.releaseTcp()
 	if isHttpReq {
-		//可能由于某些原因 客户端发送数据不及时判断为了TCP请求,此时纠正为HTTP请求
+		// 可能由于某些原因 客户端发送数据不及时判断为了TCP请求,此时纠正为HTTP请求
 		s.CallbackTCPRequest(public.SunnyNetMsgTypeTCPClose, nil, RemoteAddr)
 		s.updateSocket5User()
-		//如果之前是HTTP请求识别错误 这里转由HTTP请求处理函数继续处理
+		// 如果之前是HTTP请求识别错误 这里转由HTTP请求处理函数继续处理
 		if Tag == public.TagTcpSSLAgreement {
 			s.httpProcessing(nil, Tag)
 		} else {
@@ -751,22 +785,22 @@ func (s *proxyRequest) TcpCallback(RemoteTCP *net.Conn, Tag string, tw *ReadWrit
 
 // transparentProcessing 透明代理请求 处理过程
 func (s *proxyRequest) transparentProcessing() {
-	//将数据全部取出，稍后重新放进去
+	// 将数据全部取出，稍后重新放进去
 	_bytes, _ := s.RwObj.Peek(s.RwObj.Reader.Buffered())
-	//升级到TLS客户端
+	// 升级到TLS客户端
 	fig := &tls.Config{InsecureSkipVerify: true}
 	T := tls.Client(s.Conn, fig)
-	//将数据重新写进去
+	// 将数据重新写进去
 	T.Reset(_bytes)
-	//进行握手处理
+	// 进行握手处理
 	msg, serverName, e := T.ClientHello()
 	if e == nil {
-		//从握手信息中取出要连接的服务器域名
+		// 从握手信息中取出要连接的服务器域名
 		if serverName == public.NULL {
-			//如果没有取出 则按照连接地址处理
+			// 如果没有取出 则按照连接地址处理
 			serverName = s.Conn.LocalAddr().String()
 		}
-		//将地址写到请求中间件连接信息中
+		// 将地址写到请求中间件连接信息中
 		s.Target.Parse(serverName, public.HttpsDefaultPort)
 		var certificate *tls.Certificate
 		var er error
@@ -775,26 +809,26 @@ func (s *proxyRequest) transparentProcessing() {
 		} else {
 			certificate, _, er = WhoisCache(s.Global, nil, "null", s.Target.String(), s.Global.rootCa, s.Global.rootKey)
 		}
-		//进行生成证书，用于服务器返回握手信息
+		// 进行生成证书，用于服务器返回握手信息
 		if er != nil {
 			_ = T.Close()
 			return
 		}
-		//将证书和域名信息设置到TLS客户端中
+		// 将证书和域名信息设置到TLS客户端中
 		cfg := &tls.Config{Certificates: []tls.Certificate{*certificate}, ServerName: HttpCertificate.ParsingHost(s.Target.String()), InsecureSkipVerify: true}
 		T.SetServer(cfg)
-		//进行与客户端握手
+		// 进行与客户端握手
 		e = T.ServerHandshake(msg)
 		if e == nil {
-			//如果握手过程中没有发生意外， 则重写客户端会话
-			s.Conn = T                                      //将TLS会话替换原始会话
-			s.RwObj = ReadWriteObject.NewReadWriteObject(T) //重新包装读写对象
-			//开始按照HTTP请求流程处理
+			// 如果握手过程中没有发生意外， 则重写客户端会话
+			s.Conn = T                                      // 将TLS会话替换原始会话
+			s.RwObj = ReadWriteObject.NewReadWriteObject(T) // 重新包装读写对象
+			// 开始按照HTTP请求流程处理
 			s.TlsConfig = cfg
 			s.httpProcessing(nil, public.TagTcpSSLAgreement)
 		}
 	} else {
-		//如果握手失败 直接返回，不做任何处理
+		// 如果握手失败 直接返回，不做任何处理
 	}
 }
 
@@ -813,6 +847,7 @@ func (s *proxyRequest) isLoop() bool {
 	}
 	return ok
 }
+
 func (s *proxyRequest) targetIsInterfaceAdders() bool {
 	if int(s.Target.Port) != s.Global.port {
 		return false
@@ -863,7 +898,7 @@ func (s *proxyRequest) httpProcessing(aheadData []byte, Tag string) {
 		var lineNumber int
 		for {
 			lineNumber++
-			//找到HOST 进行匹配是否强制走 TCP
+			// 找到HOST 进行匹配是否强制走 TCP
 			bs, e := s.RwObj.ReadSlice('\n')
 			ms := string(bs)
 			buff.Write(bs)
@@ -871,7 +906,7 @@ func (s *proxyRequest) httpProcessing(aheadData []byte, Tag string) {
 				isRules = !strings.Contains(strings.ToLower(buff.String()), "http/")
 				if isRules {
 					_ = s.RwObj.SetReadDeadline(time.Now().Add(time.Millisecond * 100))
-					Method = public.HttpMethodGET //防止 不是标准的 CONNECT 请求 ,防止在循环退出后出错
+					Method = public.HttpMethodGET // 防止 不是标准的 CONNECT 请求 ,防止在循环退出后出错
 				}
 			}
 			if e != nil || len(bs) < 3 {
@@ -936,7 +971,7 @@ func (s *proxyRequest) httpProcessing(aheadData []byte, Tag string) {
 		s.h1Request(buff.Bytes())
 		return
 	}
-	//s.NoRepairHttp = true
+	// s.NoRepairHttp = true
 	if len(aheadData) > 0 {
 		s.RwObj = ReadWriteObject.NewReadWriteObject(newObjHook(s.RwObj, aheadData))
 	}
@@ -1007,6 +1042,7 @@ func (s *proxyRequest) isCerDownloadPage(request *http.Request) bool {
 	}
 	return false
 }
+
 func (s *proxyRequest) Error(error error, _Display bool) {
 	s._Display = _Display
 	s.CallbackError(public.ProcessError(error))
@@ -1097,6 +1133,7 @@ func (s *proxyRequest) doRequest() error {
 	s.Response.Close = Close
 	return err
 }
+
 func (s *proxyRequest) sendHttps(req *http.Request) {
 	s.Target.Parse(req.Host, public.HttpsDefaultPort)
 	if req.URL.Port() != public.NULL {
@@ -1108,7 +1145,7 @@ func (s *proxyRequest) sendHttps(req *http.Request) {
 }
 
 func (s *proxyRequest) https() {
-	//判断有没有连接信息，没有连接地址信息就直接返回
+	// 判断有没有连接信息，没有连接地址信息就直接返回
 	if s.Target.Host == public.NULL || s.Target.Port < 1 {
 		return
 	}
@@ -1120,13 +1157,13 @@ func (s *proxyRequest) https() {
 			s.Target.Host = "223.5.5.5"
 		}
 	}
-	//是否开启了强制走TCP  And 如果是DNS请求则不用判断了，直接强制走TCP
+	// 是否开启了强制走TCP  And 如果是DNS请求则不用判断了，直接强制走TCP
 	if (s.Global.isMustTcp || s.Target.Port == 853) && !s.targetIsInterfaceAdders() {
 		if s.Global.disableTCP {
 			return
 		}
 		s.NoRepairHttp = true
-		//开启了强制走TCP，则按TCP流程处理
+		// 开启了强制走TCP，则按TCP流程处理
 		s.MustTcpProcessing(public.TagMustTCP)
 		return
 	}
@@ -1139,24 +1176,24 @@ func (s *proxyRequest) https() {
 	s.RwObj.Hook = &hook
 	tlsConn = tls.Server(s.RwObj, tlsConfig)
 	defer func() {
-		//函数退出时 清理TLS会话
+		// 函数退出时 清理TLS会话
 		_ = tlsConn.Close()
 		tlsConn = nil
 	}()
 	host := s.Target.String()
-	//设置1秒的超时 来判断是否 https 请求 因为正常的非HTTPS TCP 请求也会进入到这里来，需要判断一下
+	// 设置1秒的超时 来判断是否 https 请求 因为正常的非HTTPS TCP 请求也会进入到这里来，需要判断一下
 	_ = tlsConn.SetDeadline(time.Now().Add(1 * time.Second))
-	//取出第一个字节，判断是否TLS
+	// 取出第一个字节，判断是否TLS
 	peek := tlsConn.Peek(1)
 	if len(peek) == 1 && (peek[0] == 22 || peek[0] == 23) {
-		//发送数据 如果 不是 HEX 16 或 17 那么肯定不是HTTPS 或TLS-TCP
-		//HEX 16=ANSI 22 HEX 17=ANSI 23
-		//如果是TLS请求设置3秒超时来处理握手信息
+		// 发送数据 如果 不是 HEX 16 或 17 那么肯定不是HTTPS 或TLS-TCP
+		// HEX 16=ANSI 22 HEX 17=ANSI 23
+		// 如果是TLS请求设置3秒超时来处理握手信息
 		_ = tlsConn.SetDeadline(time.Now().Add(3 * time.Second))
-		//开始握手
+		// 开始握手
 		HelloMsg, serverName, err = tlsConn.ClientHello()
 		s.RwObj.Hook = nil
-		//得到握手信息后 恢复30秒的读写超时
+		// 得到握手信息后 恢复30秒的读写超时
 		_ = tlsConn.SetDeadline(time.Now().Add(30 * time.Second))
 		if err == nil {
 			var certificate *tls.Certificate
@@ -1174,7 +1211,7 @@ func (s *proxyRequest) https() {
 				}
 				if res == whoisHTTPS1 {
 					tlsConfig.NextProtos = public.HTTP1NextProtos
-				} else { //res == whoisHTTPS2
+				} else { // res == whoisHTTPS2
 					tlsConfig.NextProtos = public.HTTP2NextProtos
 				}
 				name := ""
@@ -1204,7 +1241,7 @@ func (s *proxyRequest) https() {
 				if ip := net.ParseIP(v); ip == nil {
 					if !strings.Contains(v, "*") {
 						ServerName = v
-						//s.Target.Parse(v, 0)
+						// s.Target.Parse(v, 0)
 					}
 				}
 			}
@@ -1218,8 +1255,8 @@ func (s *proxyRequest) https() {
 					tlsConfig.ServerName = ServerName
 				}
 				tlsConfig.InsecureSkipVerify = true
-				//tlsConfig.CipherSuites=
-				//继续握手
+				// tlsConfig.CipherSuites=
+				// 继续握手
 				err = tlsConn.ServerHandshake(HelloMsg)
 				if err != nil {
 					s.Target.Parse(serverName, "")
@@ -1256,8 +1293,8 @@ func (s *proxyRequest) https() {
 	}
 	s.RwObj.Hook = nil
 	if err != nil {
-		//以上握手过程中 有错误产生 有错误则不是TLS
-		//判断这些错误信息，是否还能继续处理
+		// 以上握手过程中 有错误产生 有错误则不是TLS
+		// 判断这些错误信息，是否还能继续处理
 		if s.Global.isMustTcp == false && (err == io.EOF || strings.Index(err.Error(), "An existing connection was forcibly closed by the remote host.") != -1 || strings.Index(err.Error(), "An established connection was aborted by the software in your host machine") != -1) {
 			s.Request = new(http.Request)
 			s.Request.URL, _ = url.Parse(public.HttpsRequestPrefix + strings.ReplaceAll(s.Target.Host, public.Space, public.NULL))
@@ -1266,15 +1303,15 @@ func (s *proxyRequest) https() {
 			s.Error(errors.New("The client closes the connection "), true)
 			return
 		}
-		//将TLS握手过程中的信息取出来
+		// 将TLS握手过程中的信息取出来
 		bs := hook.Bytes()
 		if len(bs) == 0 {
-			//如果没有客户端没有主动发送数据的话
-			//强制走TCP，按TCP流程处理
+			// 如果没有客户端没有主动发送数据的话
+			// 强制走TCP，按TCP流程处理
 			s.MustTcpProcessing(public.TagTcpAgreement)
 			return
 		}
-		//证书无效
+		// 证书无效
 		if s.Global.isMustTcp == false && strings.Index(err.Error(), "unknown certificate") != -1 || strings.Index(err.Error(), "client offered only unsupported versions") != -1 {
 			s.Request = new(http.Request)
 			if serverName == public.NULL {
@@ -1287,20 +1324,22 @@ func (s *proxyRequest) https() {
 			s.Error(err, true)
 			return
 		}
-		//如果是其他错误，进行http处理流程，继续判断
+		// 如果是其他错误，进行http处理流程，继续判断
 		s.httpProcessing(bs, public.TagTcpAgreement)
 		return
 	}
 	// 以上握手过程中 没有错误产生 说明是https 或TLS-TCP
-	s.Conn = tlsConn                                      //重新保存TLS会话
-	s.RwObj = ReadWriteObject.NewReadWriteObject(tlsConn) //重新包装读写对象
-	//s.MustTcpProcessing(nil, public.TagTcpSSLAgreement)
+	s.Conn = tlsConn                                      // 重新保存TLS会话
+	s.RwObj = ReadWriteObject.NewReadWriteObject(tlsConn) // 重新包装读写对象
+	// s.MustTcpProcessing(nil, public.TagTcpSSLAgreement)
 	s.TlsConfig = tlsConfig
 	s.httpProcessing(nil, public.TagTcpSSLAgreement)
 }
 
-var clientHandshakeFail = `与客户端握手失败`
-var noHttps = errors.New("No HTTPS ")
+var (
+	clientHandshakeFail = `与客户端握手失败`
+	noHttps             = errors.New("No HTTPS ")
+)
 
 func (s *proxyRequest) handleWss() bool {
 	if s.Request == nil || s.Request.Header == nil {
@@ -1309,7 +1348,7 @@ func (s *proxyRequest) handleWss() bool {
 	if s.Request.ProtoMajor != 1 {
 		return false
 	}
-	//判断是否是websocket的请求体 如果不是直接返回继续正常处理请求
+	// 判断是否是websocket的请求体 如果不是直接返回继续正常处理请求
 
 	ok := strings.ToLower(s.Request.Header.Get("Upgrade")) == "websocket"
 	if !ok {
@@ -1331,7 +1370,7 @@ func (s *proxyRequest) handleWss() bool {
 		} else {
 			dialer = &websocket.Dialer{}
 		}
-		//发送请求
+		// 发送请求
 		Server, r, er := dialer.ConnDialContext(s.Request, s.Proxy, s.outRouterIP)
 		ip, _ := s.Request.Context().Value(public.SunnyNetServerIpTags).(string)
 		if ip != "" {
@@ -1346,15 +1385,15 @@ func (s *proxyRequest) handleWss() bool {
 			}
 		}()
 		if er != nil {
-			//如果发送错误
+			// 如果发送错误
 			s.Error(er, true)
 			return true
 		}
 		s.Response.ServerIP = Server.RemoteAddr().String()
 		_ = s.Conn.SetDeadline(time.Time{})
-		//通知http请求完成回调
+		// 通知http请求完成回调
 		s.CallbackBeforeResponse()
-		//将当前客户端的连接升级为Websocket会话
+		// 将当前客户端的连接升级为Websocket会话
 		upgrade := &websocket.Upgrader{}
 		Client, er := upgrade.UpgradeClient(s.Request, r, s.RwObj)
 		if er != nil {
@@ -1368,7 +1407,7 @@ func (s *proxyRequest) handleWss() bool {
 		var sc sync.Mutex
 		var wg sync.WaitGroup
 		wg.Add(1)
-		//开始转发消息
+		// 开始转发消息
 		receive := func() {
 			as := &public.WebsocketMsg{Mt: 255, Server: Server, Client: Client, Sync: &sc}
 			MessageId := 0
@@ -1376,9 +1415,9 @@ func (s *proxyRequest) handleWss() bool {
 				message := websocket.FormatCloseMessage(code, text)
 				as1 := &public.WebsocketMsg{Mt: websocket.CloseMessage, Server: Server, Client: Client, Sync: &sc}
 				as1.Data.Write(message)
-				//构造一个新的MessageId
+				// 构造一个新的MessageId
 				MessageId1 := NewMessageId()
-				//储存对象
+				// 储存对象
 				messageIdLock.Lock()
 				wsStorage[MessageId1] = as1
 				httpStorage[MessageId1] = s
@@ -1399,9 +1438,9 @@ func (s *proxyRequest) handleWss() bool {
 			Server.SetPingHandler(func(appData []byte) error {
 				as1 := &public.WebsocketMsg{Mt: websocket.PingMessage, Server: Server, Client: Client, Sync: &sc}
 				as1.Data.Write(appData)
-				//构造一个新的MessageId
+				// 构造一个新的MessageId
 				MessageId1 := NewMessageId()
-				//储存对象
+				// 储存对象
 				messageIdLock.Lock()
 				wsStorage[MessageId1] = as1
 				httpStorage[MessageId1] = s
@@ -1422,9 +1461,9 @@ func (s *proxyRequest) handleWss() bool {
 			Server.SetPongHandler(func(appData []byte) error {
 				as1 := &public.WebsocketMsg{Mt: websocket.PongMessage, Server: Server, Client: Client, Sync: &sc}
 				as1.Data.Write(appData)
-				//构造一个新的MessageId
+				// 构造一个新的MessageId
 				MessageId1 := NewMessageId()
-				//储存对象
+				// 储存对象
 				messageIdLock.Lock()
 				wsStorage[MessageId1] = as1
 				httpStorage[MessageId] = s
@@ -1444,7 +1483,7 @@ func (s *proxyRequest) handleWss() bool {
 			})
 			for {
 				{
-					//清除上次的 MessageId
+					// 清除上次的 MessageId
 					messageIdLock.Lock()
 					wsStorage[MessageId] = nil
 					delete(wsStorage, MessageId)
@@ -1452,10 +1491,10 @@ func (s *proxyRequest) handleWss() bool {
 					delete(httpStorage, MessageId)
 					messageIdLock.Unlock()
 
-					//构造一个新的MessageId
+					// 构造一个新的MessageId
 					MessageId = NewMessageId()
 
-					//储存对象
+					// 储存对象
 					messageIdLock.Lock()
 					httpStorage[MessageId] = s
 					wsStorage[MessageId] = as
@@ -1475,7 +1514,7 @@ func (s *proxyRequest) handleWss() bool {
 				as.Mt = mt
 				s.CallbackWssRequest(public.WebsocketServerSend, Method, Url, as, MessageId)
 				sc.Lock()
-				//发到客户端
+				// 发到客户端
 				err = Client.WriteMessage(as.Mt, as.Data.Bytes())
 				sc.Unlock()
 				if err != nil {
@@ -1508,9 +1547,9 @@ func (s *proxyRequest) handleWss() bool {
 			message := websocket.FormatCloseMessage(code, text)
 			as1 := &public.WebsocketMsg{Mt: websocket.CloseMessage, Server: Server, Client: Client, Sync: &sc}
 			as1.Data.Write(message)
-			//构造一个新的MessageId
+			// 构造一个新的MessageId
 			MessageId1 := NewMessageId()
-			//储存对象
+			// 储存对象
 			messageIdLock.Lock()
 			wsStorage[MessageId1] = as1
 			httpStorage[MessageId1] = s
@@ -1531,9 +1570,9 @@ func (s *proxyRequest) handleWss() bool {
 		Client.SetPingHandler(func(appData []byte) error {
 			as1 := &public.WebsocketMsg{Mt: websocket.PingMessage, Server: Server, Client: Client, Sync: &sc}
 			as1.Data.Write(appData)
-			//构造一个新的MessageId
+			// 构造一个新的MessageId
 			MessageId1 := NewMessageId()
-			//储存对象
+			// 储存对象
 			messageIdLock.Lock()
 			wsStorage[MessageId1] = as1
 			httpStorage[MessageId1] = s
@@ -1554,9 +1593,9 @@ func (s *proxyRequest) handleWss() bool {
 		Client.SetPongHandler(func(appData []byte) error {
 			as1 := &public.WebsocketMsg{Mt: websocket.PongMessage, Server: Server, Client: Client, Sync: &sc}
 			as1.Data.Write(appData)
-			//构造一个新的MessageId
+			// 构造一个新的MessageId
 			MessageId1 := NewMessageId()
-			//储存对象
+			// 储存对象
 			messageIdLock.Lock()
 			wsStorage[MessageId1] = as1
 			httpStorage[MessageId1] = s
@@ -1577,7 +1616,7 @@ func (s *proxyRequest) handleWss() bool {
 
 		for {
 			{
-				//清除上次的 MessageId
+				// 清除上次的 MessageId
 				messageIdLock.Lock()
 				wsStorage[MessageId] = nil
 				delete(wsStorage, MessageId)
@@ -1585,10 +1624,10 @@ func (s *proxyRequest) handleWss() bool {
 				delete(httpStorage, MessageId)
 				messageIdLock.Unlock()
 
-				//构造一个新的MessageId
+				// 构造一个新的MessageId
 				MessageId = NewMessageId()
 
-				//储存对象
+				// 储存对象
 				messageIdLock.Lock()
 				wsStorage[MessageId] = as
 				httpStorage[MessageId] = s
@@ -1612,7 +1651,7 @@ func (s *proxyRequest) handleWss() bool {
 			s.CallbackWssRequest(public.WebsocketUserSend, Method, Url, as, MessageId)
 			sc.Lock()
 			if as.Mt != websocket.BinaryMessage {
-				//发到服务器
+				// 发到服务器
 				err = Server.WriteMessage(as.Mt, as.Data.Bytes())
 			} else {
 				err = Server.WriteFullMessage(as.Mt, as.Data.Bytes())
@@ -1643,6 +1682,7 @@ func (s *proxyRequest) handleWss() bool {
 	}
 	return false
 }
+
 func (s *Sunny) proxyRules(Host string) bool {
 	s.lock.Lock()
 	defer s.lock.Unlock()
@@ -1653,21 +1693,22 @@ func (s *Sunny) proxyRules(Host string) bool {
 		return false
 	}
 	x := s.proxyRegexp.MatchString(Host)
-	//fmt.Println("proxyRegexp", Host, x)
+	// fmt.Println("proxyRegexp", Host, x)
 	return x
 }
+
 func (s *Sunny) tcpRules(server, Host string, dns ...string) bool {
 	s.lock.Lock()
 	defer s.lock.Unlock()
 	if s.isMustTcp {
 		return true
 	}
-	//如果是DNS请求则不用判断了，直接强制走TCP
+	// 如果是DNS请求则不用判断了，直接强制走TCP
 	if strings.HasSuffix(server, ":853") {
 		return true
 	}
 	if s.mustTcpRulesAllow {
-		//规则内走TCP
+		// 规则内走TCP
 		{
 			if s.mustTcpRegexp == nil {
 				return false
@@ -1695,7 +1736,7 @@ func (s *Sunny) tcpRules(server, Host string, dns ...string) bool {
 		}
 		return false
 	}
-	//规则内不走TCP
+	// 规则内不走TCP
 	{
 		if s.mustTcpRegexp == nil {
 			return true
@@ -1718,8 +1759,9 @@ func (s *Sunny) tcpRules(server, Host string, dns ...string) bool {
 	}
 	return true
 }
+
 func (s *proxyRequest) CompleteRequest(req *http.Request) {
-	//储存 要发送的请求体
+	// 储存 要发送的请求体
 	s.Request = req
 	defer func() {
 		if s.Request != nil {
@@ -1742,7 +1784,7 @@ func (s *proxyRequest) CompleteRequest(req *http.Request) {
 		s.Proxy = nil
 		req = nil
 	}()
-	//继承全局上游代理
+	// 继承全局上游代理
 	if !s.Global.proxyRules(s.Target.Host) {
 		s.Proxy = s.Global.proxy.Clone()
 		if s.Proxy != nil {
@@ -1763,21 +1805,21 @@ func (s *proxyRequest) CompleteRequest(req *http.Request) {
 		}
 	}
 	{
-		//记录原始Body
-		var RequestBody = s.Request.Body
+		// 记录原始Body
+		RequestBody := s.Request.Body
 		{
 			if s.IsRequestRawBody() {
-				s.Request.Body = io.NopCloser(bytes.NewBuffer(public.MaxUploadMsg)) //替换为提示信息在回调中显示
+				s.Request.Body = io.NopCloser(bytes.NewBuffer(public.MaxUploadMsg)) // 替换为提示信息在回调中显示
 			}
 		}
-		//通知回调 即将开始发送请求
+		// 通知回调 即将开始发送请求
 		s.CallbackBeforeRequest()
 		{
 			if s.outRouterIP != nil {
 				req.SetContext(public.OutRouterIPKey, s.outRouterIP)
 			}
 			if s.IsRequestRawBody() {
-				//当回调中处理完毕后,替换为原始Body
+				// 当回调中处理完毕后,替换为原始Body
 				if s.Request.Body != nil {
 					_ = s.Request.Body.Close()
 				}
@@ -1790,7 +1832,7 @@ func (s *proxyRequest) CompleteRequest(req *http.Request) {
 		}
 	}
 
-	//回调中设置 不发送 直接响应指定数据 或终止发送
+	// 回调中设置 不发送 直接响应指定数据 或终止发送
 	if s.Response.Response != nil {
 		s.Response.ServerIP = fmt.Sprintf("%s:%d", "127.0.0.1", s.Global.port)
 		s.Response.Response.ProtoMajor, s.Response.Response.ProtoMinor = s.Request.ProtoMajor, s.Request.ProtoMinor
@@ -1799,16 +1841,15 @@ func (s *proxyRequest) CompleteRequest(req *http.Request) {
 		s.Response.Done()
 		return
 	}
-	//验证处理是否websocket请求,如果是直接处理
+	// 验证处理是否websocket请求,如果是直接处理
 	if s.handleWss() {
-
 		return
 	}
-	//为了保证在请求完成时,还能获取到到请求的提交信息,先备份数据
+	// 为了保证在请求完成时,还能获取到到请求的提交信息,先备份数据
 	bakBytes := s.Request.GetData()
 	err := s.doRequest()
 
-	//为了保证在请求完成时,还能获取到到请求的提交信息,这里还原数据
+	// 为了保证在请求完成时,还能获取到到请求的提交信息,这里还原数据
 	s.Request.SetData(bakBytes)
 	defer func() {
 		if s.Response.Close != nil {
@@ -1840,6 +1881,7 @@ func (s *proxyRequest) CompleteRequest(req *http.Request) {
 	s.copyBuffer(Method, Length)
 	//	s.copyBuffer(s.Response.Body, s.Conn, s.ResponseConn, SetBodyValue, Length, SetReqHeadsValue, s.Response.Header.Get("Content-Type"), setOut, Method)
 }
+
 func (s *proxyRequest) RawRequestDataToFile(SaveFilePath string) bool {
 	if s == nil {
 		return false
@@ -1883,10 +1925,10 @@ func (s *proxyRequest) copyBuffer(Method string, ExpectLen int) {
 
 	dstConn := s.Response.Conn
 	size := 512
-	MaxSize := 5 * 1024 * 1024 //5M
+	MaxSize := 5 * 1024 * 1024 // 5M
 	IsText := public.ContentTypeIsText(ContentType)
 	if IsText && ExpectLen < 1 {
-		MaxSize = 5 * 1024 * 1024 * 10 //50M
+		MaxSize = 5 * 1024 * 1024 * 10 // 50M
 		size = 32 * 1024
 	}
 	buf := make([]byte, size)
@@ -1896,9 +1938,9 @@ func (s *proxyRequest) copyBuffer(Method string, ExpectLen int) {
 		buf = make([]byte, 0)
 		buf = nil
 	}()
-	var isForward = false
+	isForward := false
 	// 是否是大文件类型 是的话,不判断长度直接转发 并且长度大于指定值(5M) 则直接转发
-	var ToIsForward = public.IsForward(ContentType) && (ExpectLen < 1 || ExpectLen > 5*1024*1024) //5M
+	ToIsForward := public.IsForward(ContentType) && (ExpectLen < 1 || ExpectLen > 5*1024*1024) // 5M
 
 	if Method == public.HttpMethodHEAD {
 		s.CallbackBeforeResponse()
@@ -1988,6 +2030,7 @@ func (s *proxyRequest) SetOutRouterIP(RouterIP string) bool {
 	s.outRouterIP = localAddr
 	return true
 }
+
 func (s *proxyRequest) sendHttp(req *http.Request) {
 	if req.URL == nil {
 		return
@@ -2058,9 +2101,9 @@ func (s *proxyRequest) SocketForward(dst bufio.Writer, src *ReadWriteObject.Read
 			fmt.Println("SocketForward 出了错：", err)
 		}
 		as.Data.Reset()
-		//是否已经纠正为了HTTP请求
+		// 是否已经纠正为了HTTP请求
 		if !*isHttpReq {
-			//如果没有纠正，退出SocketForward函数时将关闭socket会话
+			// 如果没有纠正，退出SocketForward函数时将关闭socket会话
 			buf = nil
 			if t1 != nil {
 				_ = t1.Close()
@@ -2074,7 +2117,7 @@ func (s *proxyRequest) SocketForward(dst bufio.Writer, src *ReadWriteObject.Read
 	if t1 == nil {
 		return
 	}
-	firstRequest := true //是否是首次接收请求
+	firstRequest := true // 是否是首次接收请求
 	if s.Global.isMustTcp || s.NoRepairHttp {
 		firstRequest = false
 	}
@@ -2084,17 +2127,17 @@ func (s *proxyRequest) SocketForward(dst bufio.Writer, src *ReadWriteObject.Read
 		_ = t2.SetDeadline(time.Now().Add(165 * time.Second))
 		TCP.L.Unlock()
 		if firstRequest {
-			//是否是客户端发送数据
+			// 是否是客户端发送数据
 			if MsgType == public.SunnyNetMsgTypeTCPClientSend {
 				{
-					//提取取出1个字节,
+					// 提取取出1个字节,
 					peek, e := src.Peek(1)
 					if e == nil {
 						if len(peek) > 0 {
-							//判断是否是HTTP请求
+							// 判断是否是HTTP请求
 							if public.IsHTTPRequest(peek[0], src) {
 								_ = t2.Close()
-								//如果是，那么关闭本次连接服务器的socket，并且纠正为HTTP请求，后续交给HTTP请求处理函数继续处理
+								// 如果是，那么关闭本次连接服务器的socket，并且纠正为HTTP请求，后续交给HTTP请求处理函数继续处理
 								*isHttpReq = true
 								return
 							}
@@ -2111,15 +2154,15 @@ func (s *proxyRequest) SocketForward(dst bufio.Writer, src *ReadWriteObject.Read
 		}
 		nr, er := src.Read(buf[0:]) // io.ReadAtLeast(src, buf[0:], 1)
 		{
-			//自动扩容，优化响应速度
+			// 自动扩容，优化响应速度
 			if nr == length {
-				//如果连续10次接收大小为 4096 装满默认容器，那么就扩容到 40960
+				// 如果连续10次接收大小为 4096 装满默认容器，那么就扩容到 40960
 				MaxCount1++
 				if MaxCount1 >= 10 {
 					buf = resize(buf, MaxLength)
 				}
 			} else if nr == MaxLength {
-				//如果连续10次接收大小为 40960 装满默认容器，那么就扩容到 81920，尽量不要扩容太大，否则可能会导致内存占用太高
+				// 如果连续10次接收大小为 40960 装满默认容器，那么就扩容到 81920，尽量不要扩容太大，否则可能会导致内存占用太高
 				MaxCount2++
 				if MaxCount2 >= 10 {
 					buf = resize(buf, MaxMaxLength)
@@ -2150,6 +2193,7 @@ func (s *proxyRequest) SocketForward(dst bufio.Writer, src *ReadWriteObject.Read
 		}
 	}
 }
+
 func resize(slice []byte, newLength int) []byte {
 	if newLength <= cap(slice) {
 		return slice[:newLength] // 如果容量足够，直接返回切片
@@ -2169,48 +2213,49 @@ func resize(slice []byte, newLength int) []byte {
 
 // Sunny  请使用 NewSunny 方法 请不要直接构造
 type Sunny struct {
-	disableTCP            bool              //禁止TCP连接
-	disableUDP            bool              //禁止TCP连接
-	certificates          []byte            //CA证书原始数据
-	rootCa                *x509.Certificate //中间件CA证书
+	disableTCP            bool              // 禁止TCP连接
+	disableUDP            bool              // 禁止TCP连接
+	certificates          []byte            // CA证书原始数据
+	rootCa                *x509.Certificate // 中间件CA证书
 	rootKey               *rsa.PrivateKey   // 证书私钥
 	initCertOK            bool              // 是否已经初始化证书
-	port                  int               //启动的端口号
-	Error                 error             //错误信息
-	tcpSocket             *net.Listener     //TcpSocket服务器
-	udpSocket             *net.UDPConn      //UdpSocket服务器
+	port                  int               // 启动的端口号
+	Error                 error             // 错误信息
+	tcpSocket             *net.Listener     // TcpSocket服务器
+	udpSocket             *net.UDPConn      // UdpSocket服务器
 	outRouterIP           *net.TCPAddr
-	connList              map[int64]net.Conn  //会话连接客户端、停止服务器时可以全部关闭
-	lock                  sync.Mutex          //会话连接互斥锁
-	socket5VerifyUser     bool                //S5代理是否需要验证账号密码
-	socket5VerifyUserList map[string]string   //S5代理需要验证的账号密码列表
-	socket5VerifyUserLock sync.Mutex          //S5代理验证时的锁
-	isMustTcp             bool                //强制走TCP
-	httpCallback          int                 //http 请求回调地址
-	tcpCallback           int                 //TCP请求回调地址
-	websocketCallback     int                 //ws请求回调地址
-	udpCallback           int                 //udp请求回调地址
-	goHttpCallback        func(ConnHTTP)      //http请求GO回调地址
-	goTcpCallback         func(ConnTCP)       //TCP请求GO回调地址
-	goWebsocketCallback   func(ConnWebSocket) //ws请求GO回调地址
-	goUdpCallback         func(ConnUDP)       //UDP请求GO回调地址
-	proxy                 *SunnyProxy.Proxy   //全局上游代理
-	proxyRegexp           *regexp.Regexp      //上游代理使用规则
-	mustTcpRegexp         *regexp.Regexp      //强制走TCP规则,如果 isMustTcp 打开状态,本功能则无效
-	mustTcpRulesAllow     bool                // true 表示 mustTcpRegexp 规则内的强制走TCP，反之不在规则内的强制都TCP
-	isRun                 bool                //是否在运行中
+	connList              map[int64]net.Conn        // 会话连接客户端、停止服务器时可以全部关闭
+	lock                  sync.Mutex                // 会话连接互斥锁
+	socket5VerifyUser     bool                      // S5代理是否需要验证账号密码
+	socket5VerifyUserList map[string]string         // S5代理需要验证的账号密码列表
+	socket5VerifyUserLock sync.Mutex                // S5代理验证时的锁
+	isMustTcp             bool                      // 强制走TCP
+	httpCallback          int                       // http 请求回调地址
+	tcpCallback           int                       // TCP请求回调地址
+	websocketCallback     int                       // ws请求回调地址
+	udpCallback           int                       // udp请求回调地址
+	goHttpCallback        func(ConnHTTP)            // http请求GO回调地址
+	goTcpCallback         func(ConnTCP)             // TCP请求GO回调地址
+	goWebsocketCallback   func(ConnWebSocket)       // ws请求GO回调地址
+	goUdpCallback         func(ConnUDP)             // UDP请求GO回调地址
+	goAuthCallback        func(string, string) bool // 身份认证GO回调地址
+	proxy                 *SunnyProxy.Proxy         // 全局上游代理
+	proxyRegexp           *regexp.Regexp            // 上游代理使用规则
+	mustTcpRegexp         *regexp.Regexp            // 强制走TCP规则,如果 isMustTcp 打开状态,本功能则无效
+	mustTcpRulesAllow     bool                      // true 表示 mustTcpRegexp 规则内的强制走TCP，反之不在规则内的强制都TCP
+	isRun                 bool                      // 是否在运行中
 	SunnyContext          int
-	isRandomTLS           bool   //是否随机使用TLS指纹
-	userScriptCode        []byte //用户脚本代码
-	_http_max_body_len    int64  //最大的用户提交数据长度
+	isRandomTLS           bool   // 是否随机使用TLS指纹
+	userScriptCode        []byte // 用户脚本代码
+	_http_max_body_len    int64  // 最大的用户提交数据长度
 	script                struct {
-		http         GoScriptCode.GoScriptTypeHTTP  //脚本代码	HTTP		事件入口函数
-		tcp          GoScriptCode.GoScriptTypeTCP   //脚本代码	TCP			事件入口函数
-		udp          GoScriptCode.GoScriptTypeUDP   //脚本代码	UDP			事件入口函数
-		websocket    GoScriptCode.GoScriptTypeWS    //脚本代码	Websocket	事件入口函数
-		SaveCallback GoScriptCode.SaveFuncInterface //保存代码执行的回调函数
-		LogCallback  GoScriptCode.LogFuncInterface  //日志输出执行的回调函数
-		AdminPage    string                         //管理页面
+		http         GoScriptCode.GoScriptTypeHTTP  // 脚本代码	HTTP		事件入口函数
+		tcp          GoScriptCode.GoScriptTypeTCP   // 脚本代码	TCP			事件入口函数
+		udp          GoScriptCode.GoScriptTypeUDP   // 脚本代码	UDP			事件入口函数
+		websocket    GoScriptCode.GoScriptTypeWS    // 脚本代码	Websocket	事件入口函数
+		SaveCallback GoScriptCode.SaveFuncInterface // 保存代码执行的回调函数
+		LogCallback  GoScriptCode.LogFuncInterface  // 日志输出执行的回调函数
+		AdminPage    string                         // 管理页面
 	}
 }
 
@@ -2221,12 +2266,13 @@ func (s *Sunny) scriptHTTPCall(arg Interface.ConnHTTPScriptCall) {
 	if _call != nil {
 		defer func() {
 			if err := recover(); err != nil {
-				//fmt.Println("script HTTP Call 出了错：", err)
+				// fmt.Println("script HTTP Call 出了错：", err)
 			}
 		}()
 		_call(arg)
 	}
 }
+
 func (s *Sunny) scriptTCPCall(arg Interface.ConnTCPScriptCall) {
 	s.lock.Lock()
 	_call := s.script.tcp
@@ -2234,7 +2280,7 @@ func (s *Sunny) scriptTCPCall(arg Interface.ConnTCPScriptCall) {
 	if _call != nil {
 		defer func() {
 			if err := recover(); err != nil {
-				//fmt.Println("script TCP Call 出了错：", err)
+				// fmt.Println("script TCP Call 出了错：", err)
 			}
 		}()
 		_call(arg)
@@ -2248,12 +2294,11 @@ func (s *Sunny) scriptUDPCall(arg Interface.ConnUDPScriptCall) {
 	if _call != nil {
 		defer func() {
 			if err := recover(); err != nil {
-				//fmt.Println("script UDP Call 出了错：", err)
+				// fmt.Println("script UDP Call 出了错：", err)
 			}
 		}()
 		_call(arg)
 	}
-
 }
 
 func (s *Sunny) scriptWebsocketCall(arg Interface.ConnWebSocketScriptCall) {
@@ -2263,7 +2308,7 @@ func (s *Sunny) scriptWebsocketCall(arg Interface.ConnWebSocketScriptCall) {
 	if _call != nil {
 		defer func() {
 			if err := recover(); err != nil {
-				//fmt.Println("script Websocket Call 出了错：", err)
+				// fmt.Println("script Websocket Call 出了错：", err)
 			}
 		}()
 		_call(arg)
@@ -2337,7 +2382,7 @@ func (s *Sunny) CompileProxyRegexp(Regexp string) error {
 	r = strings.ReplaceAll(r, ".", "\\.")
 	r = strings.ReplaceAll(r, "*", ".*.?")
 	if r == "" {
-		r = "ALL" //让其全部匹配失败，也就是全部使用上游代理代理
+		r = "ALL" // 让其全部匹配失败，也就是全部使用上游代理代理
 	}
 	a, e := regexp.Compile(r)
 	s.lock.Lock()
@@ -2346,7 +2391,7 @@ func (s *Sunny) CompileProxyRegexp(Regexp string) error {
 		s.proxyRegexp = a
 	} else {
 		a1, _ := regexp.Compile("ALL")
-		s.proxyRegexp = a1 //让其全部匹配失败，也就是全部使用上游代理代理
+		s.proxyRegexp = a1 // 让其全部匹配失败，也就是全部使用上游代理代理
 	}
 	return e
 }
@@ -2396,7 +2441,6 @@ func (s *Sunny) Socket5VerifyUser(n bool) *Sunny {
 
 // Socket5AddUser S5代理添加需要验证的账号密码
 func (s *Sunny) Socket5AddUser(u, p string) *Sunny {
-
 	s.socket5VerifyUserLock.Lock()
 	s.socket5VerifyUserList[u] = p
 	s.socket5VerifyUserLock.Unlock()
@@ -2549,6 +2593,14 @@ func (s *Sunny) SetGoCallback(httpCall func(ConnHTTP), tcpCall func(ConnTCP), ws
 	return s
 }
 
+// SetAuthCallback 设置身份认证回调
+func (s *Sunny) SetAuthCallback(authCall func(username, password string) bool) *Sunny {
+	s.lock.Lock()
+	defer s.lock.Unlock()
+	s.goAuthCallback = authCall
+	return s
+}
+
 // UnDrive 卸载驱动，仅Windows 有效【需要管理权限】执行成功后会立即重启系统,若函数执行后没有重启系统表示没有管理员权限
 func (s *Sunny) UnDrive() {
 	CrossCompiled.Drive_UnInstall()
@@ -2591,7 +2643,7 @@ func (s *Sunny) OpenDrive(IsNfapi bool) bool {
 				return true
 			}
 		}
-		//已经启动或已经在其他SunnyNet启动
+		// 已经启动或已经在其他SunnyNet启动
 		return false
 	}
 	fmt.Println("你已选择另一个模式,不可切换")
@@ -2611,35 +2663,35 @@ func (s *Sunny) ProcessALLName(open, StopNetwork bool) *Sunny {
 // ProcessDelName 删除进程名  所有 SunnyNet 通用
 func (s *Sunny) ProcessDelName(name string) *Sunny {
 	CrossCompiled.NFapi_DelName(name)
-	//CrossCompiled.NFapi_CloseNameTCP(name)
+	// CrossCompiled.NFapi_CloseNameTCP(name)
 	return s
 }
 
 // ProcessAddName 进程代理 添加进程名 所有 SunnyNet 通用
 func (s *Sunny) ProcessAddName(Name string) *Sunny {
 	CrossCompiled.NFapi_AddName(Name)
-	//CrossCompiled.NFapi_CloseNameTCP(Name)
+	// CrossCompiled.NFapi_CloseNameTCP(Name)
 	return s
 }
 
 // ProcessDelPid 删除PID  所有 SunnyNet 通用
 func (s *Sunny) ProcessDelPid(Pid int) *Sunny {
 	CrossCompiled.NFapi_DelPid(uint32(Pid))
-	//CrossCompiled.NFapi_ClosePidTCP(Pid)
+	// CrossCompiled.NFapi_ClosePidTCP(Pid)
 	return s
 }
 
 // ProcessAddPid 进程代理 添加PID 所有 SunnyNet 通用
 func (s *Sunny) ProcessAddPid(Pid int) *Sunny {
 	CrossCompiled.NFapi_AddPid(uint32(Pid))
-	//CrossCompiled.NFapi_ClosePidTCP(Pid)
+	// CrossCompiled.NFapi_ClosePidTCP(Pid)
 	return s
 }
 
 // ProcessCancelAll 进程代理 取消全部已设置的进程名
 func (s *Sunny) ProcessCancelAll() *Sunny {
 	CrossCompiled.NFapi_CancelAll()
-	//CrossCompiled.NFapi_ClosePidTCP(-1)
+	// CrossCompiled.NFapi_ClosePidTCP(-1)
 	return s
 }
 
@@ -2787,6 +2839,7 @@ func (s *proxyRequest) clone() *proxyRequest {
 	s.Global.lock.Unlock()
 	return req
 }
+
 func (s *proxyRequest) free() {
 	if s == nil {
 		return
@@ -2798,7 +2851,7 @@ func (s *proxyRequest) free() {
 	s.Global.lock.Lock()
 	delete(s.Global.connList, int64(s.Theology))
 	s.Global.lock.Unlock()
-	//当 handleClientConn 函数 即将退出时 销毁 请求中间件 中的一些信息，避免内存泄漏
+	// 当 handleClientConn 函数 即将退出时 销毁 请求中间件 中的一些信息，避免内存泄漏
 	s.RwObj = nil
 	s.Conn = nil
 	s.Global = nil
@@ -2806,6 +2859,7 @@ func (s *proxyRequest) free() {
 	s.Request = nil
 	s.Target = nil
 }
+
 func (s *proxyRequest) isDriveConn() (Info.DrvInfo, uint16) {
 	if s == nil {
 		return nil, 0
@@ -2818,6 +2872,7 @@ func (s *proxyRequest) isDriveConn() (Info.DrvInfo, uint16) {
 	}
 	return nil, 0
 }
+
 func (s *proxyRequest) RandomCipherSuites() {
 	s._isRandomCipherSuites = true
 }
@@ -2834,20 +2889,20 @@ func (s *proxyRequest) getTLSValues() []uint16 {
 }
 
 func (s *Sunny) handleClientConn(conn net.Conn) {
-	req := &proxyRequest{Global: s, TcpCall: s.tcpCallback, HttpCall: s.httpCallback, wsCall: s.websocketCallback, TcpGoCall: s.goTcpCallback, HttpGoCall: s.goHttpCallback, wsGoCall: s.goWebsocketCallback, SendTimeout: 0} //原始请求对象
+	req := &proxyRequest{Global: s, TcpCall: s.tcpCallback, HttpCall: s.httpCallback, wsCall: s.websocketCallback, TcpGoCall: s.goTcpCallback, HttpGoCall: s.goHttpCallback, wsGoCall: s.goWebsocketCallback, SendTimeout: 0} // 原始请求对象
 
 	Theoni := atomic.AddInt64(&public.Theology, 1)
-	//存入会话列表 方便停止时，将所以连接断开
+	// 存入会话列表 方便停止时，将所以连接断开
 	s.lock.Lock()
 	s.connList[Theoni] = conn
-	//构造一个请求中间件
+	// 构造一个请求中间件
 	if s.outRouterIP != nil {
 		req.outRouterIP = &net.TCPAddr{IP: s.outRouterIP.IP}
 	}
 	s.lock.Unlock()
 
 	defer func() {
-		//当 handleClientConn 函数 即将退出时 从会话列表中删除当前会话
+		// 当 handleClientConn 函数 即将退出时 从会话列表中删除当前会话
 		_ = conn.Close()
 		s.lock.Lock()
 		delete(s.connList, Theoni)
@@ -2855,35 +2910,35 @@ func (s *Sunny) handleClientConn(conn net.Conn) {
 		req.free()
 		conn = nil
 	}()
-	//请求中间件一些必要参数赋值
-	req.Conn = conn                                      //请求会话
-	req.Target = &TargetInfo{}                           //构建一个请求连接信息，后续解析到值后会进行赋值
-	req.RwObj = ReadWriteObject.NewReadWriteObject(conn) //构造客户端读写对象
-	req.Theology = int(Theoni)                           //当前请求唯一ID
+	// 请求中间件一些必要参数赋值
+	req.Conn = conn                                      // 请求会话
+	req.Target = &TargetInfo{}                           // 构建一个请求连接信息，后续解析到值后会进行赋值
+	req.RwObj = ReadWriteObject.NewReadWriteObject(conn) // 构造客户端读写对象
+	req.Theology = int(Theoni)                           // 当前请求唯一ID
 	req.Response = response{}
 	info, DrivePort := req.isDriveConn()
 	if info != nil {
 		req.setSocket5User("驱动程序")
-		//如果是 通过 NFapi 驱动进来的数据 对连接信息进行赋值
+		// 如果是 通过 NFapi 驱动进来的数据 对连接信息进行赋值
 		req.Pid = info.GetPid()
 		req.Target.Parse(info.GetRemoteAddress(), info.GetRemotePort(), info.IsV6())
-		//然后进行数据处理,按照HTTPS数据进行处理
+		// 然后进行数据处理,按照HTTPS数据进行处理
 		req.https()
 		info.Close()
 		CrossCompiled.NFapi_DelTcpConnectInfo(DrivePort)
 		return
 	}
 	req.Pid = CrossCompiled.GetTcpInfoPID(conn.RemoteAddr().String(), s.port)
-	//若不是 通过 NFapi 驱动进来的数据 那么就是通过代理传递过来的数据
-	//进行预读1个字节的数据
+	// 若不是 通过 NFapi 驱动进来的数据 那么就是通过代理传递过来的数据
+	// 进行预读1个字节的数据
 	peek, err := req.RwObj.Peek(1)
 	if err != nil {
-		//读取1个字节失败直接返回
+		// 读取1个字节失败直接返回
 		return
 	}
-	//如果第一个字节是0x05 说明是通过S5代理连接的
+	// 如果第一个字节是0x05 说明是通过S5代理连接的
 	if peek[0] == 0x05 {
-		//进行S5鉴权
+		// 进行S5鉴权
 		if req.Socks5ProxyVerification() == false {
 			return
 		}
@@ -2891,26 +2946,27 @@ func (s *Sunny) handleClientConn(conn net.Conn) {
 			if s.disableTCP {
 				return
 			}
-			//如果开启了强制走TCP ，则按TCP处理流程处理
+			// 如果开启了强制走TCP ，则按TCP处理流程处理
 			req.MustTcpProcessing(public.TagMustTCP)
 			return
 		}
-		//如果没有开启强制走TCP，则按https 数据进行处理
+		// 如果没有开启强制走TCP，则按https 数据进行处理
 		req.https()
 		return
 	}
-	//如果没有开启用户身份验证 且 第一个字节是 22 或 23 说明可能是透明代理
+	// 如果没有开启用户身份验证 且 第一个字节是 22 或 23 说明可能是透明代理
 	if s.socket5VerifyUser == false && (peek[0] == 22 || peek[0] == 23) {
-		//按透明代理处理流程处理
+		// 按透明代理处理流程处理
 		req.transparentProcessing()
 		return
 	}
-	//如果没有开启用户身份验证 且 第一个字节符合HTTP/S 请求头
+	// 如果没有开启用户身份验证 且 第一个字节符合HTTP/S 请求头
 	if s.socket5VerifyUser == false && public.IsHTTPRequest(peek[0], req.RwObj) {
-		//按照http请求处理
+		// 按照http请求处理
 		req.httpProcessing(nil, public.TagTcpAgreement)
 	}
 }
+
 func (s *Sunny) SetDnsServer(server string) {
 	dns.SetDnsServer(server)
 }

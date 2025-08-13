@@ -3,14 +3,15 @@ package main
 import "C"
 import (
 	"fmt"
+	"log"
+
 	"github.com/qtgolang/SunnyNet/SunnyNet"
 	"github.com/qtgolang/SunnyNet/src/encoding/hex"
 	"github.com/qtgolang/SunnyNet/src/public"
-	"log"
 )
 
 func Test() {
-	var Sunny = SunnyNet.NewSunny()
+	Sunny := SunnyNet.NewSunny()
 	/*
 		//载入自定义证书
 		cert := SunnyNet.NewCertManager()
@@ -72,8 +73,9 @@ func Test() {
 	//
 	//Sunny.SetOutRouterIP("192.168.31.154")
 	//Sunny.SetMustTcpRegexp("shopr-cnlive.mcoc-cdn.cn", false)
-
-	//设置回调地址
+	// 设置身份认证回调
+	Sunny.SetAuthCallback(authCallback).Socket5VerifyUser(true).DisableTCP(true)
+	// 设置回调地址
 	Sunny.SetGoCallback(HttpCallback, TcpCallback, WSCallback, UdpCallback)
 	Port := 2025
 	Sunny.SetPort(Port).Start()
@@ -88,75 +90,104 @@ func Test() {
 		panic(err)
 	}
 	fmt.Println("Run Port=", Port)
-	//阻止程序退出
+	// 阻止程序退出
 	select {}
 }
+
 func updateLog() {
-	//2025-07-16 修复 GET 请求，可能导致服务器出现响应501：https://c1-nuwa.lefile.cn/t_/cn_zh/version/css/aaa13d3c3f1d2708624c179cbba4e8bb.css
-	//2025-07-19 修复 WSS 可能异常断开
-	//2025-07-26 修复 开启强制TCP 无法访问脚本编辑
-	//2025-07-26 优化 脚本编辑
+	// 2025-07-16 修复 GET 请求，可能导致服务器出现响应501：https://c1-nuwa.lefile.cn/t_/cn_zh/version/css/aaa13d3c3f1d2708624c179cbba4e8bb.css
+	// 2025-07-19 修复 WSS 可能异常断开
+	// 2025-07-26 修复 开启强制TCP 无法访问脚本编辑
+	// 2025-07-26 优化 脚本编辑
 }
+
+func authCallback(username, password string) bool {
+	// 这里可以实现自定义的身份认证逻辑
+	// 例如：查询数据库、调用外部API等
+	fmt.Printf("身份认证请求: 用户名=%s, 密码=%s\n", username, password)
+
+	// 示例：简单的用户名密码验证
+	validUsers := map[string]string{
+		"admin":    "123456",
+		"user1":    "password1",
+		"testuser": "testpass",
+	}
+
+	if validPassword, exists := validUsers[username]; exists {
+		if validPassword == password {
+			fmt.Printf("身份认证成功: %s\n", username)
+			return true
+		}
+	}
+
+	fmt.Printf("身份认证失败: %s\n", username)
+	return false
+}
+
 func HttpCallback(Conn SunnyNet.ConnHTTP) {
+	fmt.Println("GetSocket5User", Conn.GetSocket5User())
+
 	return
 	switch Conn.Type() {
-	case public.HttpSendRequest: //发起请求
+	case public.HttpSendRequest: // 发起请求
 		fmt.Println("发起请求", Conn.Proto())
-		//Conn.SetResponseBody([]byte("123456"))
-		//直接响应,不让其发送请求
-		//Conn.StopRequest(200, "Hello Word")
+		// Conn.SetResponseBody([]byte("123456"))
+		// 直接响应,不让其发送请求
+		// Conn.StopRequest(200, "Hello Word")
 		return
-	case public.HttpResponseOK: //请求完成
+	case public.HttpResponseOK: // 请求完成
 		bs := Conn.GetResponseBody()
 		log.Println("请求完成", Conn.GetResponseProto(), Conn.URL(), len(bs), Conn.GetResponseHeader())
 		return
-	case public.HttpRequestFail: //请求错误
-		//fmt.Println(time.Now(), Conn.URL(), Conn.Error())
+	case public.HttpRequestFail: // 请求错误
+		// fmt.Println(time.Now(), Conn.URL(), Conn.Error())
 		return
 	}
 }
+
 func WSCallback(Conn SunnyNet.ConnWebSocket) {
 	return
 	switch Conn.Type() {
-	case public.WebsocketConnectionOK: //连接成功
+	case public.WebsocketConnectionOK: // 连接成功
 		log.Println("PID", Conn.PID(), "Websocket 连接成功:", Conn.URL())
 		return
-	case public.WebsocketUserSend: //发送数据
+	case public.WebsocketUserSend: // 发送数据
 		if Conn.MessageType() < 5 {
 			log.Println("PID", Conn.PID(), "Websocket 发送数据:", Conn.MessageType(), "->", hex.EncodeToString(Conn.Body()))
 		}
 		return
-	case public.WebsocketServerSend: //收到数据
+	case public.WebsocketServerSend: // 收到数据
 		if Conn.MessageType() < 5 {
 			log.Println("PID", Conn.PID(), "Websocket 收到数据:", Conn.MessageType(), "->", hex.EncodeToString(Conn.Body()))
 		}
 		return
-	case public.WebsocketDisconnect: //连接关闭
+	case public.WebsocketDisconnect: // 连接关闭
 		log.Println("PID", Conn.PID(), "Websocket 连接关闭", Conn.URL())
 		return
 	default:
 		return
 	}
 }
+
 func TcpCallback(Conn SunnyNet.ConnTCP) {
 	return
 	switch Conn.Type() {
-	case public.SunnyNetMsgTypeTCPAboutToConnect: //即将连接
+	case public.SunnyNetMsgTypeTCPAboutToConnect: // 即将连接
 		mode := string(Conn.Body())
 		log.Println("PID", Conn.PID(), "TCP 即将连接到:", mode, Conn.LocalAddress(), "->", Conn.RemoteAddress())
-		//修改目标连接地址
-		//Conn.SetNewAddress("8.8.8.8:8080")
+		// 修改目标连接地址
+		// Conn.SetNewAddress("8.8.8.8:8080")
 		return
-	case public.SunnyNetMsgTypeTCPConnectOK: //连接成功
+	case public.SunnyNetMsgTypeTCPConnectOK: // 连接成功
 		log.Println("PID", Conn.PID(), "TCP 连接到:", Conn.LocalAddress(), "->", Conn.RemoteAddress(), "成功")
 		return
-	case public.SunnyNetMsgTypeTCPClose: //连接关闭
+	case public.SunnyNetMsgTypeTCPClose: // 连接关闭
 		log.Println("PID", Conn.PID(), "TCP 断开连接:", Conn.LocalAddress(), "->", Conn.RemoteAddress())
 		return
-	case public.SunnyNetMsgTypeTCPClientSend: //客户端发送数据
+	case public.SunnyNetMsgTypeTCPClientSend: // 客户端发送数据
 		log.Println("PID", Conn.PID(), "TCP 发送数据", Conn.LocalAddress(), Conn.RemoteAddress(), Conn.Type(), Conn.BodyLen(), Conn.Body())
 		return
-	case public.SunnyNetMsgTypeTCPClientReceive: //客户端收到数据
+	case public.SunnyNetMsgTypeTCPClientReceive: // 客户端收到数据
 
 		log.Println("PID", Conn.PID(), "收到数据", Conn.LocalAddress(), Conn.RemoteAddress(), Conn.Type(), Conn.BodyLen(), Conn.Body())
 		return
@@ -164,24 +195,24 @@ func TcpCallback(Conn SunnyNet.ConnTCP) {
 		return
 	}
 }
+
 func UdpCallback(Conn SunnyNet.ConnUDP) {
 	return
 	switch Conn.Type() {
-	case public.SunnyNetUDPTypeSend: //客户端向服务器端发送数据
+	case public.SunnyNetUDPTypeSend: // 客户端向服务器端发送数据
 
 		log.Println("PID", Conn.PID(), "发送UDP", Conn.LocalAddress(), Conn.RemoteAddress(), Conn.BodyLen())
-		//修改发送的数据
-		//Conn.SetBody([]byte("Hello Word"))
+		// 修改发送的数据
+		// Conn.SetBody([]byte("Hello Word"))
 
 		return
-	case public.SunnyNetUDPTypeReceive: //服务器端向客户端发送数据
+	case public.SunnyNetUDPTypeReceive: // 服务器端向客户端发送数据
 		log.Println("PID", Conn.PID(), "接收UDP", Conn.LocalAddress(), Conn.RemoteAddress(), Conn.BodyLen())
-		//修改响应的数据
-		//Conn.SetBody([]byte("Hello Word"))
+		// 修改响应的数据
+		// Conn.SetBody([]byte("Hello Word"))
 		return
-	case public.SunnyNetUDPTypeClosed: //关闭会话
+	case public.SunnyNetUDPTypeClosed: // 关闭会话
 		log.Println("PID", Conn.PID(), "关闭UDP", Conn.LocalAddress(), Conn.RemoteAddress())
 		return
 	}
-
 }
