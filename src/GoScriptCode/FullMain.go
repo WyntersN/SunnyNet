@@ -9,10 +9,18 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/WyntersN/SunnyNet/src/Call"
+	"github.com/WyntersN/SunnyNet/src/Compress"
+	"github.com/WyntersN/SunnyNet/src/GoScriptCode/base"
+	"github.com/WyntersN/SunnyNet/src/GoScriptCode/check"
 	"github.com/WyntersN/SunnyNet/src/GoScriptCode/yaegi/interp"
+	"github.com/WyntersN/SunnyNet/src/GoScriptCode/yaegi/stdlib"
 	"github.com/WyntersN/SunnyNet/src/Interface"
+	"github.com/WyntersN/SunnyNet/src/RSA"
 	"github.com/WyntersN/SunnyNet/src/http"
 	_ "github.com/WyntersN/SunnyNet/src/http/pprof"
+	"github.com/WyntersN/SunnyNet/src/protobuf"
+	"github.com/WyntersN/SunnyNet/src/public"
 )
 
 func init() {
@@ -131,49 +139,48 @@ func extractCodeBody(s string) string {
 
 var Symbols = map[string]map[string]reflect.Value{}
 
-/*
-	func init() {
-		Symbols = stdlib.Symbols
-		for k, v := range base.Symbols {
-			Symbols[k] = v
-		}
-		Symbols["SunnyNet/src/Call/Call"] = map[string]reflect.Value{
-			"Call":          reflect.ValueOf(Call.Call),
-			"ConnHTTP":      reflect.ValueOf((*Interface.ConnHTTPScriptCall)(nil)),
-			"ConnWebSocket": reflect.ValueOf((*Interface.ConnWebSocketScriptCall)(nil)),
-			"ConnTCP":       reflect.ValueOf((*Interface.ConnTCPScriptCall)(nil)),
-			"ConnUDP":       reflect.ValueOf((*Interface.ConnUDPScriptCall)(nil)),
-		}
-		Symbols["SunnyNet/src/mmCompress/mmCompress"] = map[string]reflect.Value{
-			"DeflateCompress":   reflect.ValueOf(Compress.DeflateCompress),
-			"DeflateUnCompress": reflect.ValueOf(Compress.DeflateUnCompress),
-			"ZlibUnCompress":    reflect.ValueOf(Compress.ZlibUnCompress),
-			"ZlibCompress":      reflect.ValueOf(Compress.ZlibCompress),
-			"GzipCompress":      reflect.ValueOf(Compress.GzipCompress),
-			"BrUnCompress":      reflect.ValueOf(Compress.BrUnCompress),
-			"BrCompress":        reflect.ValueOf(Compress.BrCompress),
-			"GzipUnCompress":    reflect.ValueOf(Compress.GzipUnCompress),
-			"ZSTDCompress":      reflect.ValueOf(Compress.ZSTDCompress),
-			"ZSTDDecompress":    reflect.ValueOf(Compress.ZSTDDecompress),
-		}
-		Symbols["SunnyNet/src/SunnyProtobuf/SunnyProtobuf"] = map[string]reflect.Value{
-			"PbToJson":  reflect.ValueOf(protobuf.ToJson),
-			"JsonToPB":  reflect.ValueOf(protobuf.JsonToPB),
-			"JsonParse": reflect.ValueOf(protobuf.JsonParse),
-		}
-		Symbols["github.com/qtgolang/SunnyNet/src/public/public"] = map[string]reflect.Value{
-			"Free": reflect.ValueOf(public.Free),
-		}
-		Symbols["github.com/qtgolang/SunnyNet/src/RSA/RSA"] = map[string]reflect.Value{
-			"PubKeyIO": reflect.ValueOf(RSA.PubKeyIO),
-		}
-		Symbols["reflect/reflect"] = map[string]reflect.Value{
-			"TypeOf": reflect.ValueOf(reflect.TypeOf),
-			"Func":   reflect.ValueOf(reflect.Func),
-		}
-		check.Check(Symbols)
+func init() {
+	Symbols = stdlib.Symbols
+	for k, v := range base.Symbols {
+		Symbols[k] = v
 	}
-*/
+	Symbols["SunnyNet/src/Call/Call"] = map[string]reflect.Value{
+		"Call":          reflect.ValueOf(Call.Call),
+		"ConnHTTP":      reflect.ValueOf((*Interface.ConnHTTPScriptCall)(nil)),
+		"ConnWebSocket": reflect.ValueOf((*Interface.ConnWebSocketScriptCall)(nil)),
+		"ConnTCP":       reflect.ValueOf((*Interface.ConnTCPScriptCall)(nil)),
+		"ConnUDP":       reflect.ValueOf((*Interface.ConnUDPScriptCall)(nil)),
+	}
+	Symbols["SunnyNet/src/mmCompress/mmCompress"] = map[string]reflect.Value{
+		"DeflateCompress":   reflect.ValueOf(Compress.DeflateCompress),
+		"DeflateUnCompress": reflect.ValueOf(Compress.DeflateUnCompress),
+		"ZlibUnCompress":    reflect.ValueOf(Compress.ZlibUnCompress),
+		"ZlibCompress":      reflect.ValueOf(Compress.ZlibCompress),
+		"GzipCompress":      reflect.ValueOf(Compress.GzipCompress),
+		"BrUnCompress":      reflect.ValueOf(Compress.BrUnCompress),
+		"BrCompress":        reflect.ValueOf(Compress.BrCompress),
+		"GzipUnCompress":    reflect.ValueOf(Compress.GzipUnCompress),
+		"ZSTDCompress":      reflect.ValueOf(Compress.ZSTDCompress),
+		"ZSTDDecompress":    reflect.ValueOf(Compress.ZSTDDecompress),
+	}
+	Symbols["SunnyNet/src/protobuf/protobuf"] = map[string]reflect.Value{
+		"ToJson":    reflect.ValueOf(protobuf.ToJson),
+		"JsonToPB":  reflect.ValueOf(protobuf.JsonToPB),
+		"JsonParse": reflect.ValueOf(protobuf.JsonParse),
+	}
+	Symbols["github.com/WyntersN/SunnyNet/src/public/public"] = map[string]reflect.Value{
+		"Free": reflect.ValueOf(public.Free),
+	}
+	Symbols["github.com/qtgolang/SunnyNet/src/RSA/RSA"] = map[string]reflect.Value{
+		"PubKeyIO": reflect.ValueOf(RSA.PubKeyIO),
+	}
+	Symbols["reflect/reflect"] = map[string]reflect.Value{
+		"TypeOf": reflect.ValueOf(reflect.TypeOf),
+		"Func":   reflect.ValueOf(reflect.Func),
+	}
+	check.Check(Symbols)
+}
+
 type (
 	LogFuncInterface  func(SunnyNetContext int, info ...any)
 	SaveFuncInterface func(SunnyNetContext int, code []byte)
