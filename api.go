@@ -4,12 +4,14 @@
 package main
 
 import "C"
+
 import (
 	"errors"
-	"github.com/qtgolang/SunnyNet/Api"
-	"github.com/qtgolang/SunnyNet/src/dns"
-	"github.com/qtgolang/SunnyNet/src/public"
 	"unsafe"
+
+	"github.com/WyntersN/SunnyNet/Api"
+	"github.com/WyntersN/SunnyNet/src/dns"
+	"github.com/WyntersN/SunnyNet/src/public"
 )
 
 /*
