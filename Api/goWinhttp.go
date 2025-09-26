@@ -3,18 +3,19 @@ package Api
 import (
 	"bytes"
 	"fmt"
-	"github.com/WyntersN/SunnyNet/src/Certificate"
-	"github.com/WyntersN/SunnyNet/src/SunnyProxy"
-	"github.com/WyntersN/SunnyNet/src/crypto/tls"
-	"github.com/WyntersN/SunnyNet/src/http"
-	"github.com/WyntersN/SunnyNet/src/httpClient"
-	"github.com/WyntersN/SunnyNet/src/public"
 	"io"
 	"net"
 	"sort"
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/WyntersN/SunnyNet/src/Certificate"
+	"github.com/WyntersN/SunnyNet/src/SunnyProxy"
+	"github.com/WyntersN/SunnyNet/src/crypto/tls"
+	"github.com/WyntersN/SunnyNet/src/http"
+	"github.com/WyntersN/SunnyNet/src/httpClient"
+	"github.com/WyntersN/SunnyNet/src/public"
 )
 
 // ---------------------------------------------
@@ -30,8 +31,10 @@ type request struct {
 	respBody  []byte
 }
 
-var HTTPMap = make(map[int]*request)
-var HTTPMapLock sync.Mutex
+var (
+	HTTPMap     = make(map[int]*request)
+	HTTPMapLock sync.Mutex
+)
 
 func LoadHTTPClient(Context int) *request {
 	HTTPMapLock.Lock()
@@ -196,7 +199,6 @@ func HTTPSetServerIP(Context int, s string) {
 // HTTPSendBin
 // HTTP 客户端 发送Body
 func HTTPSendBin(Context int, data []byte) {
-
 	k := LoadHTTPClient(Context)
 	if k == nil {
 		return
@@ -226,7 +228,7 @@ func HTTPSendBin(Context int, data []byte) {
 	resp, _, _, f := httpClient.Do(k.req, k.proxy, k.redirect, k.tlsConfig, time.Duration(k.outTime)*time.Millisecond, random, nil)
 
 	defer func() {
-		if f != nil {
+		if f != nil && resp != nil {
 			f()
 		}
 	}()
@@ -279,7 +281,7 @@ func HTTPGetHeads(Context int) string {
 	}
 	Head := ""
 	var key []string
-	for value, _ := range k.resp.Header {
+	for value := range k.resp.Header {
 		key = append(key, value)
 	}
 	sort.Strings(key)
@@ -315,7 +317,7 @@ func HTTPGetRequestHeader(Context int) string {
 	}
 	Head := ""
 	var key []string
-	for value, _ := range k.req.Header {
+	for value := range k.req.Header {
 		key = append(key, value)
 	}
 	sort.Strings(key)

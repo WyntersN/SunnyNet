@@ -2,17 +2,18 @@ package SunnyNet
 
 import (
 	"crypto/x509"
+
 	"github.com/WyntersN/SunnyNet/src/Certificate"
 	"github.com/WyntersN/SunnyNet/src/HttpCertificate"
 	"github.com/WyntersN/SunnyNet/src/crypto/tls"
 )
 
 const (
-	//HTTPCertRules_Request 仅发送使用
+	// HTTPCertRules_Request 仅发送使用
 	HTTPCertRules_Request = 1
-	//HTTPCertRules_ResponseAndRequest 发送和解析都使用
+	// HTTPCertRules_ResponseAndRequest 发送和解析都使用
 	HTTPCertRules_ResponseAndRequest = 2
-	//HTTPCertRules_Response 仅解析使用
+	// HTTPCertRules_Response 仅解析使用
 	HTTPCertRules_Response = 3
 )
 

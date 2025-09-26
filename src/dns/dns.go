@@ -5,8 +5,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/WyntersN/SunnyNet/src/crypto/tls"
-	"github.com/WyntersN/SunnyNet/src/public"
 	"math/rand"
 	"net"
 	"os"
@@ -14,16 +12,23 @@ import (
 	"strings"
 	"sync"
 	"time"
+
+	"github.com/WyntersN/SunnyNet/src/crypto/tls"
+	"github.com/WyntersN/SunnyNet/src/public"
 )
 
 var dnsConfig = &tls.Config{
 	ClientSessionCache: tls.NewLRUClientSessionCache(32),
 	InsecureSkipVerify: true,
 }
-var dnsList = make(map[string]*rsIps)
-var dnsLock sync.Mutex
-var dnsTools = make(map[string]*tools)
-var dnsServer = "localhost" //223.5.5.5:853  阿里云公共DNS解析服务器
+
+var (
+	dnsList   = make(map[string]*rsIps)
+	dnsLock   sync.Mutex
+	dnsTools  = make(map[string]*tools)
+	dnsServer = "localhost" // 223.5.5.5:853  阿里云公共DNS解析服务器
+)
+
 const dnsServerLocal = "localhost"
 
 func init() {
@@ -45,7 +50,7 @@ func newResolver(proxy string, outRouterIP *net.TCPAddr, Dial func(network, addr
 				if proxy == "" {
 					return dialer.DialContext(context, network_, address)
 				}
-				//使用代理进行查询，代理仅支持TCP
+				// 使用代理进行查询，代理仅支持TCP
 				return Dial("tcp", address, outRouterIP)
 			}
 			_tlsTCP := strings.HasSuffix(_dnsServer, ":853")
@@ -54,26 +59,28 @@ func newResolver(proxy string, outRouterIP *net.TCPAddr, Dial func(network, addr
 				if proxy == "" {
 					conn, err = dialer.DialContext(context, network_, _dnsServer)
 				} else {
-					//使用代理连接到自定义DNS服务器，代理仅支持TCP
+					// 使用代理连接到自定义DNS服务器，代理仅支持TCP
 					conn, err = Dial("tcp", _dnsServer, outRouterIP)
 				}
 				if err != nil {
 					return nil, err
 				}
+
 				_ = conn.(*net.TCPConn).SetKeepAlive(true)
-				_ = conn.(*net.TCPConn).SetKeepAlivePeriod(10 * time.Second)
+				_ = conn.(*net.TCPConn).SetKeepAlivePeriod(30 * time.Second)
 				return tls.Client(conn, dnsConfig), nil
 			}
 
 			if proxy == "" {
 				return dialer.DialContext(context, network_, _dnsServer)
 			}
-			//使用代理连接到自定义DNS服务器，代理仅支持TCP
+			// 使用代理连接到自定义DNS服务器，代理仅支持TCP
 			return Dial("tcp", _dnsServer, outRouterIP)
 		},
 	}
 	return _default_
 }
+
 func clean() {
 	for {
 		time.Sleep(time.Minute)
@@ -104,14 +111,27 @@ type rsIps struct {
 
 func SetDnsServer(server string) {
 	dnsLock.Lock()
-	dnsServer = server
+	if server == "local" {
+		dnsServer = "localhost"
+	} else {
+		dnsServer = server
+	}
 	dnsList = make(map[string]*rsIps)
 	dnsTools = make(map[string]*tools)
 	dnsLock.Unlock()
 }
+
+func IsRemoteDnsServer() bool {
+	dnsLock.Lock()
+	ok := strings.ToLower(dnsServer) == "remote"
+	dnsLock.Unlock()
+	return ok
+}
+
 func GetDnsServer() string {
 	return dnsServer
 }
+
 func SetFirstIP(host string, proxyHost string, ip net.IP) {
 	key := ""
 	if proxyHost == "" {
@@ -131,6 +151,7 @@ func SetFirstIP(host string, proxyHost string, ip net.IP) {
 	}
 	dnsLock.Unlock()
 }
+
 func GetFirstIP(host string, proxyHost string) net.IP {
 	key := ""
 	if proxyHost == "" {
@@ -160,6 +181,7 @@ func deepCopyIPs(src []net.IP) []net.IP {
 	}
 	return dst
 }
+
 func LookupIP(host string, proxy string, outRouterIP *net.TCPAddr, Dial func(network, address string, outRouterIP *net.TCPAddr) (net.Conn, error)) ([]net.IP, error) {
 	dnsLock.Lock()
 	localDns, _ := GetLocalEntry(host)
@@ -189,9 +211,10 @@ func LookupIP(host string, proxy string, outRouterIP *net.TCPAddr, Dial func(net
 	if proxy == "" {
 		return deepCopyIPs(ips), err
 	}
-	//如果远程没有解析成功,则使用本地DNS解析一次
+	// 如果远程没有解析成功,则使用本地DNS解析一次
 	return localLookupIP(host, proxy, outRouterIP)
 }
+
 func lookupIP(host string, proxy string, outRouterIP *net.TCPAddr, Dial func(network, address string, outRouterIP *net.TCPAddr) (net.Conn, error), Net string) ([]net.IP, error) {
 	if proxy == "" {
 		return localLookupIP(host, proxy, outRouterIP)
@@ -213,6 +236,7 @@ func lookupIP(host string, proxy string, outRouterIP *net.TCPAddr, Dial func(net
 	resolver.time = time.Now()
 	dnsLock.Unlock()
 	_ips_, _err := resolver.rs.LookupIP(context.Background(), Net, host)
+	fmt.Println("ips", _ips_, Net)
 	_ips := deepCopyIPs(_ips_)
 	if len(_ips) > 0 {
 		t := &rsIps{ips: _ips, time: time.Now()}
@@ -222,6 +246,7 @@ func lookupIP(host string, proxy string, outRouterIP *net.TCPAddr, Dial func(net
 	}
 	return _ips, _err
 }
+
 func localLookupIP(host, proxyHost string, outRouterIP *net.TCPAddr) ([]net.IP, error) {
 	key := ""
 	if proxyHost == "" {
@@ -332,8 +357,10 @@ func getHostsFilePath() string {
 	return `/etc/hosts`
 }
 
-var localDnsHostEntry, _ = readAndParseHosts()
-var NoLocalDnsEntry = errors.New("No Local Dns Entry ")
+var (
+	localDnsHostEntry, _ = readAndParseHosts()
+	NoLocalDnsEntry      = errors.New("No Local Dns Entry ")
+)
 
 func GetLocalEntry(host string) ([]net.IP, error) {
 	// 打印读取到的所有条目
@@ -349,5 +376,4 @@ func GetLocalEntry(host string) ([]net.IP, error) {
 		return ips, nil
 	}
 	return nil, NoLocalDnsEntry
-
 }

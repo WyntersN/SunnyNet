@@ -360,7 +360,6 @@ func (r *Request) SetData(data []byte) {
 		return
 	}
 	if r.Body != nil {
-		_, _ = io.ReadAll(r.Body)
 		_ = r.Body.Close()
 	}
 	r.ContentLength = int64(len(data))
@@ -378,11 +377,7 @@ func (r *Request) GetData() []byte {
 	if r.Body != nil {
 		buf, _ := io.ReadAll(r.Body)
 		_ = r.Body.Close()
-		if len(buf) > 0 {
-			r.ContentLength = -1
-		} else {
-			r.ContentLength = 0
-		}
+		r.ContentLength = int64(len(buf))
 		r.Header.Set("Content-Length", fmt.Sprintf("%d", len(buf)))
 		r.Body = io.NopCloser(bytes.NewBuffer(buf))
 		return buf
@@ -449,7 +444,8 @@ func (r *Request) SetHTTP2Config(config *H2Config) {
 }
 
 func (r *Request) IsSetHTTP2Config() bool {
-	return r.Context().Value(h2ConfigKey) != nil
+	rv := r.Context().Value(h2ConfigKey)
+	return rv != nil
 }
 
 // WithContext returns a shallow copy of r with its context changed
@@ -751,7 +747,7 @@ func (r *Request) write(w io.Writer, usingProxy bool, extraHeaders Header, waitF
 		}
 	}
 	if stringContainsCTLByte(ruri) {
-		return errors.New("github.com/WyntersN/SunnyNet/src/http: can't write control character in Request.URL")
+		return errors.New("github.com/qtgolang/SunnyNet/src/http: can't write control character in Request.URL")
 	}
 	// TODO: validate r.Method too? At least it's less likely to
 	// come from an attacker (more likely to be a constant in
@@ -1000,10 +996,10 @@ func NewRequestWithContext(ctx context.Context, method, url string, body io.Read
 		method = "GET"
 	}
 	if !validMethod(method) {
-		return nil, fmt.Errorf("github.com/WyntersN/SunnyNet/src/http: invalid method %q", method)
+		return nil, fmt.Errorf("github.com/qtgolang/SunnyNet/src/http: invalid method %q", method)
 	}
 	if ctx == nil {
-		return nil, errors.New("github.com/WyntersN/SunnyNet/src/http: nil Context")
+		return nil, errors.New("github.com/qtgolang/SunnyNet/src/http: nil Context")
 	}
 	u, err := urlpkg.Parse(url)
 	if err != nil {

@@ -2,17 +2,20 @@ package SunnyNet
 
 import (
 	"context"
-	"github.com/WyntersN/SunnyNet/src/ReadWriteObject"
-	"github.com/WyntersN/SunnyNet/src/http"
-	"github.com/WyntersN/SunnyNet/src/public"
+	"fmt"
 	"io"
 	"net"
 	"net/textproto"
 	"net/url"
 	"os"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
+
+	"github.com/WyntersN/SunnyNet/src/ReadWriteObject"
+	"github.com/WyntersN/SunnyNet/src/http"
+	"github.com/WyntersN/SunnyNet/src/public"
 )
 
 type objHook struct {
@@ -26,6 +29,7 @@ func newObjHook(obj *ReadWriteObject.ReadWriteObject, aheadData []byte) *objHook
 	hookObj.aheadData = aheadData
 	return &hookObj
 }
+
 func (n *objHook) Read(p []byte) (int, error) {
 	if len(n.aheadData) < 1 {
 		return n.ReadWriteObject.Read(p)
@@ -43,14 +47,17 @@ func (n *objHook) Read(p []byte) (int, error) {
 	}
 	return copyLength, nil
 }
+
 func (s *proxyRequest) h2Request(aheadData []byte) {
 	s._SocksUser = GetSocket5User(s.Theology)
 	http.H2NewConn(newObjHook(s.RwObj, aheadData), s.httpCall)
 }
+
 func (s *proxyRequest) h1Request(aheadData []byte) {
 	s._SocksUser = GetSocket5User(s.Theology)
 	http.H1NewConn(newObjHook(s.RwObj, aheadData), s.httpCall)
 }
+
 func (s *proxyRequest) httpCall(rw http.ResponseWriter, req *http.Request) {
 	if req == nil {
 		return
@@ -75,6 +82,42 @@ func (s *proxyRequest) httpCall(rw http.ResponseWriter, req *http.Request) {
 	res.SetContext(public.SunnyNetRawRequestBodyLength, Length)
 	res.IsRawBody = IsRequestRawBody
 	{
+		{
+			if strings.Contains(res.Host, "[") && strings.Contains(res.Host, ".") {
+				host, port, _ := net.SplitHostPort(res.Host)
+				if host != "" {
+					if port != "" {
+						res.Host = fmt.Sprintf("%s:%s", host, port)
+					} else {
+						res.Host = host
+					}
+				}
+			}
+			if res.URL != nil {
+				if strings.Contains(res.URL.Host, "[") && strings.Contains(res.URL.Host, ".") {
+					host, port, _ := net.SplitHostPort(res.URL.Host)
+					if host != "" {
+						if port != "" {
+							res.URL.Host = fmt.Sprintf("%s:%s", host, port)
+						} else {
+							res.URL.Host = host
+						}
+					}
+				}
+			}
+			m := req.Header.Get("host")
+			if strings.Contains(m, "[") && strings.Contains(m, ".") {
+				host, port, _ := net.SplitHostPort(m)
+				if host != "" {
+					if port != "" {
+						m = fmt.Sprintf("%s:%s", host, port)
+					} else {
+						m = host
+					}
+					req.Header.Del(m)
+				}
+			}
+		}
 		res.RequestURI = ""
 		if res.URL != nil {
 			if r.defaultScheme == "" || req.URL.Scheme == "https" {
@@ -105,7 +148,16 @@ func (s *proxyRequest) httpCall(rw http.ResponseWriter, req *http.Request) {
 					res.URL.Host = res.Host
 				}
 			}
-
+			if strings.Contains(res.Host, "[") && strings.Contains(res.Host, ".") {
+				host, port, _ := net.SplitHostPort(res.Host)
+				if host != "" {
+					if port != "" {
+						res.Host = fmt.Sprintf("%s:%s", host, port)
+					} else {
+						res.Host = host
+					}
+				}
+			}
 			if res.Host == "" && req.Header.Get("host") != "" {
 				res.URL.Host = req.Header.Get("host")
 				u, _ := url.Parse(res.URL.String())
@@ -196,7 +248,7 @@ func (h *httpBody) Read(p []byte) (n int, err error) {
 		h.init = true
 		SaveFilePath, ok := h.req.Context().Value(public.SunnyNetRawBodySaveFilePath).(string)
 		if ok && SaveFilePath != "" {
-			//防止多个请求写入同一个文件，导致闪退等问题
+			// 防止多个请求写入同一个文件，导致闪退等问题
 			_lock.Lock()
 			lo := _lockfileMap[SaveFilePath]
 			if lo == nil {
@@ -205,7 +257,7 @@ func (h *httpBody) Read(p []byte) (n int, err error) {
 			}
 			h.lock = lo
 			_lock.Unlock()
-			file, er1 := os.OpenFile(SaveFilePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0777)
+			file, er1 := os.OpenFile(SaveFilePath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0o777)
 			if er1 == nil {
 				h.file = file
 			}
@@ -226,6 +278,7 @@ func (h *httpBody) Read(p []byte) (n int, err error) {
 	}
 	return n, e
 }
+
 func (h *httpBody) Close() error {
 	if h.lock != nil {
 		h.lock.Lock()
@@ -238,5 +291,7 @@ func (h *httpBody) Close() error {
 	return h.Body.Close()
 }
 
-var _lock sync.Mutex
-var _lockfileMap = make(map[string]*sync.Mutex)
+var (
+	_lock        sync.Mutex
+	_lockfileMap = make(map[string]*sync.Mutex)
+)
