@@ -1,6 +1,5 @@
 
-<div style="text-align: center;"><h3><a style="color: red;">请注意:由于本仓库历史记录太大</a></div></h3></center>
-<div style="text-align: center;"><h3><a style="color: red;">本仓库于 2025-04-24 删除重建</a></div></h3></center>
+<div style="text-align: center;"><h3><a style="color: red;">可自定义权限认证</a></div></h3></center>
 
 # <center><h3>Sunny网络中间件</center></h3></center>
 
@@ -32,8 +31,6 @@
 * # 请使用Go1.21以下版本编译,例如 go 1.20.4版本
 
 * # <a href="https://github.com/jmeubank/tdm-gcc/releases/download/v10.3.0-tdm64-2/tdm64-gcc-10.3.0-2.exe">编译请使用 TDM-GCC</a>
-
-<div style="text-align: center;"><h2><a style="color: red;">可自定义权限认证</a></h2></div>
 
 ---
 
