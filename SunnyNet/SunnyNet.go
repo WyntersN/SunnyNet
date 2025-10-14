@@ -305,8 +305,10 @@ func (s *proxyRequest) AuthMethod() (bool, string) {
 					_ = s.RwObj.WriteByte(0x00)
 					s.setSocket5User(*user)
 					return true, passwd
+				} else {
+					s.Global.socket5VerifyUserLock.Unlock()
+					return false, public.NULL
 				}
-				s.Global.socket5VerifyUserLock.Unlock()
 			}
 			s.Global.socket5VerifyUserLock.Unlock()
 		}
