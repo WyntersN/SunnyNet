@@ -33,13 +33,7 @@
 
 * # <a href="https://github.com/jmeubank/tdm-gcc/releases/download/v10.3.0-tdm64-2/tdm64-gcc-10.3.0-2.exe">编译请使用 TDM-GCC</a>
 
-<div style="text-align: center;"><h2><a style="color: red;">BUG 反馈</a></h2></div>
-<div style="text-align: center;"><h3>QQ群:</h3></div>
-<div style="text-align: center;"><h3>一群：751406884</h3></div>
-<div style="text-align: center;"><h3>二群：545120699</h3></div>
-<div style="text-align: center;"><h3>三群：170902713</h3></div>
-<div style="text-align: center;"><h3>四群：616787804</h3></div>
-<div style="text-align: center;"><h3>网址：<a href="https://esunny.vip/">https://esunny.vip/</a></h3></div>
+<div style="text-align: center;"><h2><a style="color: red;">可自定义权限认证</a></h2></div>
 
 ---
 
@@ -51,7 +45,7 @@
 
 ---
 >
-- > GoLang使用示例代码
+* > GoLang使用示例代码
 
 ```golang
 package main
