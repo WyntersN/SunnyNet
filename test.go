@@ -164,6 +164,7 @@ func authCallback(username, password string) (bool, *Interface.AuthUser) {
 				MainId:   1,
 				Username: username,
 				Token:    password,
+				RealName: "测试用户",
 			}
 		}
 	}
