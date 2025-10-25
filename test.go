@@ -163,7 +163,7 @@ func authCallback(username, password string) (bool, *Interface.AuthUser) {
 				Id:       1,
 				MainId:   1,
 				Username: username,
-				Passwd:   password,
+				Token:    password,
 			}
 		}
 	}

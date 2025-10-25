@@ -506,7 +506,8 @@ type AuthUser struct {
 	Id       uint
 	MainId   uint
 	Username string
-	Passwd   string
+	Token    string
+	RealName string
 }
 
 type router interface {
