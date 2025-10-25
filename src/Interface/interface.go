@@ -504,6 +504,7 @@ type general interface {
 // AuthUser Socket5认证用户信息
 type AuthUser struct {
 	Id       uint
+	MainId   uint
 	Username string
 	Passwd   string
 }
