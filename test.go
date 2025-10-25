@@ -2,8 +2,12 @@ package main
 
 import "C"
 import (
+	"bytes"
+	"compress/gzip"
 	"fmt"
+	"io"
 	"log"
+	"strings"
 
 	"github.com/WyntersN/SunnyNet/SunnyNet"
 	"github.com/WyntersN/SunnyNet/src/Interface"
@@ -13,6 +17,7 @@ import (
 
 func Test() {
 	Sunny := SunnyNet.NewSunny()
+	//Sunny.SetDnsServer("223.5.5.5:853")
 	/*
 		//载入自定义证书
 		cert := SunnyNet.NewCertManager()
@@ -74,6 +79,8 @@ func Test() {
 	//
 	//Sunny.SetOutRouterIP("192.168.31.154")
 	//Sunny.SetMustTcpRegexp("shopr-cnlive.mcoc-cdn.cn", false)
+	//Sunny.SetGlobalProxy("http://117.57.84.50:40016", 10000)
+
 	// 设置身份认证回调
 	Sunny.Socket5VerifyUser(true).SetAuthCallback(authCallback).DisableTCP(true)
 	// 设置回调地址
@@ -102,6 +109,40 @@ func updateLog() {
 	// 2025-07-26 优化 脚本编辑
 }
 
+func getResponseBody(Conn SunnyNet.ConnHTTP) []byte {
+	var (
+		responseBody    = Conn.GetResponseBody()
+		responseHeaders = Conn.GetResponseHeader()
+	)
+	// 检查是否为GZIP压缩
+	contentEncoding := ""
+	if encoding, exists := responseHeaders["content-encoding"]; exists && len(encoding) > 0 {
+		contentEncoding = strings.ToLower(encoding[0])
+	}
+	if strings.Contains(contentEncoding, "gzip") {
+		if decompressedBody, err := decompressGzip(responseBody); err == nil {
+			responseBody = decompressedBody
+		}
+	}
+	return responseBody
+}
+
+// decompressGzip 解压GZIP压缩的数据
+func decompressGzip(data []byte) ([]byte, error) {
+	reader, err := gzip.NewReader(bytes.NewReader(data))
+	if err != nil {
+		return nil, err
+	}
+	defer reader.Close()
+
+	decompressed, err := io.ReadAll(reader)
+	if err != nil {
+		return nil, err
+	}
+
+	return decompressed, nil
+}
+
 func authCallback(username, password string) (bool, *Interface.AuthUser) {
 	// 这里可以实现自定义的身份认证逻辑
 	// 例如：查询数据库、调用外部API等
@@ -109,7 +150,7 @@ func authCallback(username, password string) (bool, *Interface.AuthUser) {
 
 	// 示例：简单的用户名密码验证
 	validUsers := map[string]string{
-		"Wynters":  "1",
+		"1":        "1",
 		"user1":    "password1",
 		"testuser": "testpass",
 	}
@@ -120,6 +161,7 @@ func authCallback(username, password string) (bool, *Interface.AuthUser) {
 			// 返回认证成功和用户信息
 			return true, &Interface.AuthUser{
 				Id:       1,
+				MainId:   1,
 				Username: username,
 				Passwd:   password,
 			}
@@ -133,7 +175,12 @@ func authCallback(username, password string) (bool, *Interface.AuthUser) {
 
 func HttpCallback(Conn SunnyNet.ConnHTTP) {
 	d := Conn.GetSocket5User()
-	fmt.Println("GetSocket5AuthUser", d.Id, d.Username)
+	fmt.Println("GetSocket5AuthUser", d.MainId, d.Id, d.Username)
+
+	if strings.Contains(Conn.URL(), "api.pinduoduo.com") {
+		println(Conn.URL(), Conn.GetRequestHeader().Get("AccessToken"))
+		println(string(getResponseBody(Conn)))
+	}
 
 	return
 	switch Conn.Type() {
